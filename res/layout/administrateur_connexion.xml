@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#FFFFFF"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="60dp"
+        android:background="#FF5E3A"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/admin_connexion_titre"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="30dp"
+            android:text="@string/administrateur_connexion_titre_texte"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp" />
+    </RelativeLayout>
+
+    <EditText
+        android:id="@+id/connex_zone_pseudo"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp"
+        android:hint="@string/admin_connex_pseudo"
+        android:inputType="text" />
+
+    <EditText
+        android:id="@+id/connex_zone_mdp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp"
+        android:hint="@string/admin_connex_mdp"
+        android:inputType="textPassword" />
+
+    <Button
+        android:id="@+id/connex_connexion"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/button_style"
+        android:onClick="connexion"
+        android:padding="10dp"
+        android:text="@string/admin_bout_connexion_texte"
+        android:textColor="@drawable/button_color_selector" />
+
+    <TextView
+        android:id="@+id/connex_texte_mdp_oublie"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:clickable="true"
+        android:gravity="center"
+        android:onClick="resetPassword"
+        android:textColor="#000000"
+        android:text="@string/connex_texte_mdp_oublie"
+        android:textSize="15sp" />
+    
+    <TextView
+        android:id="@+id/connex_texte_inscription"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:clickable="true"
+        android:textColor="#000000"
+        android:gravity="center"
+        android:onClick="inscription"
+        android:text="@string/connex_texte_inscription"
+        android:textSize="15sp" />
+
+</LinearLayout>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#FFFFFF"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="60dp"
+        android:background="#FF5E3A"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/admin_crea_ue_titre"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="30dp"
+            android:text="@string/administrateur_creation_ue_titre_texte"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp" />
+    </RelativeLayout>
+
+    <EditText
+        android:id="@+id/admin_creation_ue_nom"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp"
+        android:hint="@string/admin_crea_ue_hint_nom"
+        android:inputType="text"
+        android:singleLine="true" />
+
+    <Button
+        android:id="@+id/crea_ue_bout_creer"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/button_style"
+        android:onClick="creerUE"
+        android:padding="10dp"
+        android:text="@string/bout_creer_txt"
+        android:textColor="@drawable/button_color_selector" />
+
+</LinearLayout>

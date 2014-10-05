@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#FFFFFF"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="60dp"
+        android:background="#FF5E3A"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/admin_crea_regle_titre"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="30dp"
+            android:text="@string/administrateur_creation_regle_titre_texte"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp" />
+    </RelativeLayout>
+    
+    <Spinner
+        android:id="@+id/admin_creation_regle_spinner"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:prompt="@string/crea_regle_type" />
+
+    <Spinner
+        android:id="@+id/admin_creation_regle_op_spinner"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:prompt="@string/crea_regle_operateur" />
+    
+    <TextView
+        android:id="@+id/admin_creation_regle_txt_choix"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="10dp"
+        android:text="S'applique sur : "
+        android:textColor="#000000" />
+    
+    <Spinner
+        android:id="@+id/admin_creation_regle_liste_ue_spinner"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:prompt="@string/admin_choix_ue" />
+    
+    <Spinner
+        android:id="@+id/admin_creation_regle_liste_matieres_spinner"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:prompt="@string/admin_choix_matiere" />
+    
+    <EditText
+        android:id="@+id/admin_creation_regle_value"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp"
+        android:hint="Valeur"
+        android:inputType="number"
+        android:singleLine="true" />
+
+    <Button
+        android:id="@+id/crea_ue_regle_creer"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/button_style"
+        android:onClick="creerRegle"
+        android:padding="10dp"
+        android:text="@string/bout_creer_txt"
+        android:textColor="@drawable/button_color_selector" />
+    
+</LinearLayout>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#FFFFFF"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="60dp"
+        android:background="#FF5E3A"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/admin_crea_diplome_titre"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="30dp"
+            android:layout_centerInParent="true"
+            android:textColor="#FFFFFF"
+            android:text="@string/administrateur_creation_diplome_titre_texte"
+            android:textSize="20sp" />
+    </RelativeLayout>
+
+    <EditText
+        android:id="@+id/admin_creation_diplome_nom"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/admin_crea_diplome_hint_nom"
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp"
+        android:inputType="text"
+        android:singleLine="true" />
+
+    <Button
+        android:id="@+id/crea_diplome_bout_creer"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/button_style"
+        android:textColor="@drawable/button_color_selector" 
+        android:padding="10dp"
+        android:onClick="creerDiplome"
+        android:text="@string/bout_creer_txt" />
+
+</LinearLayout>

@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <!-- Nom de l'application -->
+    
+    <string name="app_name">JMD</string>
+    
+    <!-- Vues -->
+    
+    <string name="ecran_choix_user_view_name">Page de choix du type de user</string>
+    
+    <!-- Nom des vues d'un étudiant -->
+    
+    <string name="etudiant_liste_annees_view_name">Liste des années</string>
+    <string name="etudiant_liste_ue_view_name">Liste des UE</string>
+    <string name="etudiant_liste_matieres_view_name">Liste des matières</string>
+    <string name="administrateur_liste_sem_view_name">Liste des semestres</string>
+    <string name="administrateur_liste_tri_view_name">Liste des trimestres</string>
+    
+    <string name="etudiant_liste_trimestre_view_name">Trimestres</string>
+    <string name="etudiant_liste_semestre_view_name">Semestres</string>
+    
+    <string name="etudiant_ajouter_annee_ae_view_name">Ajout des années</string>
+    
+    <string name="etudiant_modifier_ae_view_name">Bienvenue</string>
+    <string name="etudiant_accueil_view_name">Accueil (Etudiant)</string>
+    <string name="etudiant_contact_view_name">Contact</string>
+    <string name="etudiant_faq_view_name">FAQ</string>
+    <string name="etudiant_saisie_note_titre_view_name">Saisie de notes</string>
+    <string name="etudiant_profil_view_name">Profil</string>
+    <string name="etudiant_stats_annee_view_name">Stats sur l\'année</string>
+    
+    <!-- Nom des vues d'un administrateur -->
+    
+    <string name="administrateur_creation_eta_view_name">Création d\`un établissement</string>
+    <string name="administrateur_creation_matiere_view_name">Création d\`une matière</string>
+    <string name="administrateur_creation_annee_view_name">Création d\`une année</string>
+    <string name="administrateur_creation_ue_view_name">Création d\`une UE</string>
+    <string name="administrateur_creation_diplome_view_name">Création d\`un diplôme</string>
+    <string name="administrateur_creation_regle_view_name">Création d\`une règle</string>
+    
+    <string name="administrateur_liste_eta_view_name">Liste des établissements</string>
+    <string name="administrateur_liste_diplome_view_name">Liste des diplômes</string>
+    <string name="administrateur_liste_annee_view_name">Liste des années</string>
+    <string name="administrateur_liste_ue_view_name">Liste des UE</string>
+    <string name="administrateur_liste_matiere_view_name">Liste des matières</string>
+    <string name="administrateur_liste_ue_regle_view_name">Accueil liste ue / règle</string>
+    <string name="administrateur_liste_regle_view_name">Liste des règles</string>
+    
+    <string name="administrateur_accueil_view_name">Accueil (Administrateur)</string>
+    <string name="administrateur_ajout_admin_view_name">Ajouter un administrateur</string>
+    
+    <string name="administrateur_connexion_view_name">Connexion</string>
+    <string name="admin_faq_view_name">FAQ</string>
+    <string name="administrateur_inscription_view_name">Inscription</string>
+    <string name="administrateur_recup_mdp_view_name">Récupération d\'un mot de passe</string>
+    
+	<!-- Menu -->
+	
+	<string name="menu_connexion">Connexion</string>
+	<string name="menu_deconnexion">Déconnexion</string>
+	<string name="menu_faq">FAQ</string>
+	<string name="menu_nommer_admin">Nommer un admin</string>
+	<string name="menu_contact">Contact</string>
+	<string name="menu_a_propos">A propos</string>
+	<string name="menu_accueil">Accueil</string>
+	<string name="menu_profil">Profil</string>
+	
+	<string name="menu_contact_message">Message</string>
+	<string name="menu_contact_sujet">Sujet</string>
+	
+	<!-- Connexion / inscription -->
+	
+	<string name="connex_texte_mdp_oublie"><u>Mot de passe oublié ?</u></string>
+	<string name="connex_texte_inscription"><u>Inscription</u></string>
+	
+	<string name="admin_mdp_oublie_texte_pseudo">Pseudo du compte à récupérer</string>
+	
+	<string name="admin_inscription_pseudo_titre">Pseudo</string>
+	<string name="admin_inscription_password_titre">Mot de passe</string>
+	<string name="admin_inscription_password_titre_again">Retapez votre mot de passe</string>
+	<string name="admin_inscription_email_titre">Email</string>
+    
+    <!-- Boutons -->
+    
+    <string name="bout_creer_txt">Créer</string>
+    <string name="bout_ajouter_txt">Ajouter</string>
+    <string name="btn_txt_plus">+</string>
+    <string name="btn_fermer_txt">Fermer</string>
+    
+    <string name="admin_accueil_bout_creer_eta_pop_up_txt">Créer un établissement</string>
+    <string name="admin_accueil_bout_creer_dip_pop_up_txt">Créer un diplôme</string>
+    
+    <string name="menu_contact_bout_envoyer">Envoyer</string>
+    <string name="etudiant_ajout_diplome_bout_valider">Ajouter</string>
+    <string name="bout_ok_txt">OK</string>
+    <string name="profil_etudiant_bout_supprimer_profil_txt">Supprimer le profil</string>
+    <string name="btn_creer_note_txt">Créer la note</string>
+     
+    <string name="admin_bout_connexion_texte">Connexion</string>
+    <string name="admin_inscription_bout_inscription">Inscription</string>
+    <string name="admin_mdp_oublie_bout_texte">Valider</string>
+    <string name="admin_ajout_admin_bout_ajouter_texte">Ajouter</string>
+    
+    <!-- Hints -->
+    
+    <string name="admin_crea_diplome_hint_nom">Nom</string>
+	<string name="admin_crea_annee_hint_nom">Nom</string>
+	<string name="admin_crea_ue_hint_nom">Nom</string>
+	<string name="admin_crea_regle_hint_nom">Nom</string>
+	<string name="admin_crea_mat_hint_nom">Nom</string>
+	<string name="admin_crea_annee_hint_etablissement">Etablissement</string>
+	<string name="admin_crea_eta_hint_ville">Ville</string>
+	<string name="admin_crea_eta_hint_nom">Nom</string>
+	<string name="admin_crea_eta_hint_coeff">Coefficient</string>
+	<string name="admin_crea_mat_checkbox_option_txt">Cette matière est une option</string>
+	
+    <string name="admin_inscr_pseudo">Pseudo</string>
+    <string name="admin_inscr_password">Mot de passe</string>
+    <string name="admin_inscr_password_retype">Retapez votre mot de passe</string>
+    <string name="admin_inscr_email">Email</string>
+    
+    <string name="admin_connex_pseudo">Pseudo</string>
+    <string name="admin_connex_mdp">Mot de passe</string>
+    
+    <string name="admin_ajout_admin_pseudo_txt">Pseudo</string>
+    <string name="admin_mdp_oublie_pseudo_txt">Pseudo</string>
+    
+    <string name="etudiant_ajout_ue_hint_nom_ue_txt">Nom de l\'UE</string>
+    <string name="etudiant_ajout_annees_hint_nom_annee_txt">Nom de l\'année</string>
+    <string name="etudiant_ajout_matiere_hint_nom_matiere_txt">Nom de la matière</string>
+    
+    <!-- Titre des vues -->
+    
+    <string name="administrateur_creation_diplome_titre_texte">Création d\'un diplôme</string>
+    <string name="administrateur_creation_eta_titre_texte">Création d\'un établissement</string>
+    <string name="administrateur_creation_annee_titre_texte">Création d\'une année</string>
+    <string name="administrateur_creation_ue_titre_texte">Création d\'une UE</string>
+    <string name="administrateur_creation_matiere_titre_texte">Création d\'une matière</string>
+    <string name="administrateur_creation_regle_titre_texte">Création d\'une règle</string>
+        
+    <string name="administrateur_mdp_oublie_titre_texte">Récupération du mot de passe</string>
+    <string name="administrateur_ajout_admin_titre_texte">Ajouter un administrateur</string>
+    <string name="administrateur_connexion_titre_texte">Connexion</string>
+    <string name="administrateur_inscription_titre_texte">Inscription</string>
+    <string name="administrateur_accueil_bienvenue">Bienvenue</string>
+    <string name="administrateur_liste_ue_regle_titre">UE</string>
+    
+    <string name="admin_liste_semestres_txt">Semestres</string>
+    <string name="admin_liste_trimestres_txt">Trimestres</string>
+    
+    <string name="etudiant_liste_semestres_txt">Semestres</string>
+    <string name="etudiant_liste_trimestres_txt">Trimestres</string>
+    
+    <string name="etudiant_contact_titre_texte">Contact</string>
+	<string name="etudiant_modifier_accueil_titre">Modification de l\'accueil</string>
+	<string name="etudiant_ajouter_diplome_titre_texte">Ajouter un diplôme</string>
+	<string name="etudiant_accueil_bienvenue">Bienvenue</string>
+	<string name="etudiant_saisie_note_titre_txt">Saisie de notes</string>
+	<string name="etudiant_profil_titre_txt">Profil</string>
+	
+	<string name="faq_titre">FAQ</string>
+	<string name="menu_a_propos_titre">A propos</string>
+	<string name="ecran_choix_user_titre_texte">Accueil</string>
+	
+	<!-- Autres -->
+	    
+	<string name="admin_liste_eta_titre_texte">Liste des établissements</string>
+	<string name="admin_liste_diplome_titre">Liste des diplômes</string>
+	
+	<string name="administrateur_txt">Administrateur</string>
+	<string name="etudiant_txt">Etudiant</string>
+	
+	<string name="admin_choix_ue">Choisir une UE</string>
+	<string name="admin_choix_matiere">Choisir une matière</string>
+	
+	<string name="administrateur_creation_matiere_coefficient_tv">Coefficient</string>
+	<string name="accueil_choix_user_admin_txt">Qui êtes-vous ?</string>
+	<string name="etudiant_modifier_accueil_txt_bout_ok">OK</string>
+	<string name="ecran_choix_user_checkbox_texte">Se souvenir de mon choix ?</string>
+	<string name="desc_img">Description</string>
+	
+	<!-- Spinners -->
+	
+	<string name="crea_annee_decoupage">Découpage de l\'année</string>
+    <string-array name="decoupage_array">
+        <item>Aucun</item>
+        <item>Trimestre</item>
+        <item>Semestre</item>
+    </string-array> 
+    
+    <string name="crea_ue_type">Appartient à</string>
+    <string-array name="type_ue_decoup_array_1">
+        <item>Trimestre 1</item>
+        <item>Trimestre 2</item>
+        <item>Trimestre 3</item>
+    </string-array> 
+    
+    <string-array name="type_ue_decoup_array_2">
+        <item>Aucun</item>
+    </string-array> 
+    
+    <string-array name="type_ue_decoup_array_3">
+        <item>Semestre 1</item>
+        <item>Semestre 2</item>
+    </string-array>  
+	
+    <string name="crea_regle_type">Type</string>
+    <string-array name="type_regle_array">
+        <item>Note minimale</item>
+        <item>Nombre d\'options minimum</item>
+    </string-array> 
+    
+    <string name="crea_regle_operateur">Opérateur</string>
+    <string-array name="operateur_array">
+        <item>Supérieur</item>
+        <item>Supérieur ou égal</item>
+        <item>Egal</item>
+        <item>Inférieur</item>
+        <item>Inférieur ou égal</item>
+    </string-array> 
+    
+</resources>

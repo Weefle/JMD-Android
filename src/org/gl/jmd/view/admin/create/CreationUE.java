@@ -1,0 +1,235 @@
+package org.gl.jmd.view.admin.create;
+
+import java.io.*;
+import java.net.URLEncoder;
+import java.util.regex.*;
+
+import org.apache.http.client.ClientProtocolException;
+import org.gl.jmd.R;
+import org.gl.jmd.model.UE;
+import org.gl.jmd.utils.*;
+
+import android.app.*;
+import android.content.*;
+import android.content.res.Configuration;
+import android.os.*;
+import android.view.View;
+import android.widget.*;
+
+/**
+ * Activité correspondant à la vue de création d'une UE.
+ * 
+ * @author Jordi CHARPENTIER & Yoann VANHOESERLANDE
+ */
+public class CreationUE extends Activity {
+	
+	private Activity activity;
+
+	private Toast toast;
+	
+	private String contenuPage = "";
+	
+	private Intent lastIntent;
+	
+	private String decoupage = "";
+	
+	private String idAnnee = "";
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		
+		setContentView(R.layout.administrateur_creation_ue);
+		overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+		
+		activity = this;
+		toast = Toast.makeText(activity, "", Toast.LENGTH_SHORT);
+		
+		lastIntent = getIntent();
+		
+		idAnnee = lastIntent.getExtras().getString("idAnnee");
+		decoupage = lastIntent.getExtras().getString("decoupage");
+	}
+	
+	/**
+	 * Méthode permettant de créer une UE (déclenchée lors d'un click sur le bouton "créer").
+	 * 
+	 * @param view La vue lors du click sur le bouton de création.
+	 */
+	public void creerUE(View view) {
+		final EditText NOM = (EditText) findViewById(R.id.admin_creation_ue_nom);
+		
+		if (NOM.getText().toString().length() != 0) {
+			Pattern pattern = Pattern.compile("^[a-zA-Z\\s]*$");
+			Matcher matcher = pattern.matcher(NOM.getText().toString());
+			
+			if (!matcher.matches()) {
+				NOM.setBackgroundResource(R.drawable.border_edittext_error);
+				
+				toast.setText("Le nom ne peut contenir que des lettres.");
+				toast.show();
+				
+				return;
+			}
+			
+			UE ue = new UE();
+			ue.setNom(NOM.getText().toString());
+			
+			File repCache = new File(Environment.getExternalStorageDirectory().getPath() + "/cacheJMD/");
+			File fileLogin = new File(repCache.getPath() + "/logins.jmd");
+			
+			String idAdmin = FileUtils.lireFichier(fileLogin);
+			
+			if (idAdmin.length() == 0) {
+				fileLogin.delete();
+				
+				AlertDialog.Builder errorDia = new AlertDialog.Builder(activity);
+				errorDia.setTitle("Erreur");
+				errorDia.setMessage("Erreur - Veuillez relancer l'application.");
+				errorDia.setCancelable(false);
+				errorDia.setPositiveButton("Ok", new AlertDialog.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						CreationUE.this.finish();
+						android.os.Process.killProcess(android.os.Process.myPid());
+					}
+				});
+				
+				errorDia.show();
+			} else {
+				if (idAdmin.matches("[+-]?\\d*(\\.\\d+)?") == false){
+					fileLogin.delete();
+					
+					AlertDialog.Builder errorDia = new AlertDialog.Builder(activity);
+					errorDia.setTitle("Erreur");
+					errorDia.setMessage("Erreur - Veuillez relancer l'application.");
+					errorDia.setCancelable(false);
+					errorDia.setPositiveButton("Ok", new AlertDialog.OnClickListener() {
+						public void onClick(DialogInterface dialog, int id) {
+							CreationUE.this.finish();
+							android.os.Process.killProcess(android.os.Process.myPid());
+						}
+					});
+					
+					errorDia.show();
+				}
+			}
+			
+			String URL = "http://www.jordi-charpentier.com/jmd/mobile/create.php?idAdmin=" + idAdmin + "&type=ue&nom=" + URLEncoder.encode(ue.getNom()) + "&idAnnee=" + idAnnee + "&yearType=" + decoupage;
+			
+			ProgressDialog progress = new ProgressDialog(activity);
+			progress.setMessage("Chargement...");
+			new CreerUE(progress, URL).execute(); 
+		} else {
+			NOM.setBackgroundResource(R.drawable.border_edittext_error);
+			
+			toast.setText("Au moins un des champs est vide.");
+			toast.show();
+		}
+	}
+	
+	/**
+	 * Classe interne représentant une tâche asynchrone qui sera effectuée en fond pendant un rond de chargement.
+	 * 
+	 * @author Jordi CHARPENTIER & Yoann VANHOESERLANDE
+	 */
+	private class CreerUE extends AsyncTask<Void, Void, Void> {
+		private ProgressDialog progress;
+		private String pathUrl;
+
+		public CreerUE(ProgressDialog progress, String pathUrl) {
+			this.progress = progress;
+			this.pathUrl = pathUrl;
+		}
+
+		public void onPreExecute() {
+			progress.show();
+		}
+
+		public void onPostExecute(Void unused) {
+			progress.dismiss();
+		}
+
+		protected Void doInBackground(Void... arg0) {
+			try {
+				if((contenuPage = WebUtils.getPage(pathUrl)) != "-1");
+
+				else {
+					CreationUE.this.runOnUiThread(new Runnable() {
+						public void run() {
+							AlertDialog.Builder builder = new AlertDialog.Builder(CreationUE.this);
+							builder.setMessage("Erreur - Vérifiez votre connexion");
+							builder.setCancelable(false);
+							builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog, int which) {
+									CreationUE.this.finish();
+								}
+							});
+
+							AlertDialog error = builder.create();
+							error.show();
+						}});
+
+					return null;
+				}
+			} catch (ClientProtocolException e) { 
+				return null;
+			} catch (IOException e) { 
+				return null;
+			} 
+			
+			contenuPage = contenuPage.replaceAll(" ", "");
+
+			if(contenuPage.equals("ok")) {
+				toast.setText("UE créée.");
+				toast.show();
+				
+				finish();
+			} else if (contenuPage.equals("error")) {
+				toast.setText("Erreur. Veuillez réessayer.");
+				toast.show();	
+			} else {
+				toast.setText("Erreur. Veuillez réessayer.");
+				toast.show();	
+			} 
+
+			return null;
+		}
+	}
+	
+	/* Méthodes héritées de la classe Activity. */
+	
+	/**
+	 * Méthode permettant d'empécher la reconstruction de la vue lors de la rotation de l'écran. 
+	 * 
+	 * @param newConfig L'état de la vue avant la rotation.
+	 */
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		// Vide.
+	}
+	
+	/**
+	 * Méthode déclenchée lors d'un click sur le bouton virtuel Android de retour.
+	 */
+	@Override
+	public void onBackPressed() {
+		final EditText NOM = (EditText) findViewById(R.id.admin_creation_ue_nom);
+		
+		if (NOM.getText().toString().length() != 0) {
+			AlertDialog.Builder confirmQuitter = new AlertDialog.Builder(this);
+			confirmQuitter.setTitle("Annulation");
+			confirmQuitter.setMessage("Voulez-vous vraiment annuler ?");
+			confirmQuitter.setCancelable(false);
+			confirmQuitter.setPositiveButton("Oui", new AlertDialog.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					finish();
+				}
+			});
+
+			confirmQuitter.setNegativeButton("Non", null);
+			confirmQuitter.show();
+		} else {
+			finish();
+		}
+	}
+}
