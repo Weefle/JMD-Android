@@ -1,6 +1,5 @@
 package org.gl.jmd.utils;
 
-import java.math.BigInteger;
 import java.security.*;
 
 /**
@@ -18,27 +17,6 @@ public class SecurityUtils {
 		
 	}
 	
-	/**
-	 * Méthode permettant d'hasher une chaîne de caractères en MD5.
-	 * 
-	 * @param s La chaîne à hasher en MD5.
-	 * 
-	 * @return Une chaîne hashée en MD5.
-	 */
-	public static String md5(String strings) {
-		MessageDigest md = null;
-		try {
-			md = MessageDigest.getInstance("MD5");
-			md.update(strings.getBytes());
-		} catch (NoSuchAlgorithmException ex) {
-			throw new RuntimeException("Le MD5 n'est pas supporté.");
-		}
-
-		final BigInteger bigInt = new BigInteger(1, md.digest());
-
-		return String.format("%032x", bigInt);
-	}
-
 	/**
 	 * Méthode permettant d'hasher une chaîne de caractères en SHA-256.
 	 * 

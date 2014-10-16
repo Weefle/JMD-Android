@@ -8,7 +8,6 @@ import org.gl.jmd.view.admin.create.*;
 import org.gl.jmd.view.admin.listing.*;
 import org.gl.jmd.view.menu.admin.AjouterAdminA;
 import org.gl.jmd.view.menu.admin.ConnexionA;
-import org.gl.jmd.view.menu.admin.FaqA;
 
 import android.app.*;
 import android.content.*;
@@ -175,11 +174,6 @@ public class AccueilA extends TabActivity {
 
 		case R.id.menu_nommer_admin:
 			startActivity(new Intent(AccueilA.this, AjouterAdminA.class));				
-
-			return true;
-			
-		case R.id.menu_faq:
-			startActivity(new Intent(AccueilA.this, FaqA.class));								
 
 			return true;
 		}

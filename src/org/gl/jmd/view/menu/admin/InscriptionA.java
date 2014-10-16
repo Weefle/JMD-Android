@@ -68,7 +68,7 @@ public class InscriptionA extends Activity {
 
 			if (PASSWORD.getText().toString().equals(PASSWORD_AGAIN.getText().toString())) {
 				if (validate(EMAIL.getText().toString())) {					
-					String URL = "http://www.jordi-charpentier.com/jmd/mobile/inscription.php?pseudo=" + PSEUDO.getText().toString() + "&password=" + SecurityUtils.md5(PASSWORD.getText().toString()) + "&email=" + EMAIL.getText().toString();
+					String URL = "http://www.jordi-charpentier.com/jmd/mobile/inscription.php?pseudo=" + PSEUDO.getText().toString() + "&password=" + SecurityUtils.sha256(PASSWORD.getText().toString()) + "&email=" + EMAIL.getText().toString();
 
 					ProgressDialog progress = new ProgressDialog(activity);
 					progress.setMessage("Chargement...");

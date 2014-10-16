@@ -190,11 +190,6 @@ public class AccueilE extends Activity {
 			startActivity(new Intent(AccueilE.this, ProfilView.class));				
 
 			return true;
-			
-		case R.id.menu_faq:
-			startActivity(new Intent(AccueilE.this, FaqE.class));							
-
-			return true;
 		}
 
 		return false;

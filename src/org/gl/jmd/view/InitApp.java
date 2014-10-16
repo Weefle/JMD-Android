@@ -43,19 +43,6 @@ public class InitApp extends Activity {
 				checkbox.setChecked(true);
 			}
 		}
-		
-		// Permet de rediriger l'utilisateur vers le site de JMD lors d'un click sur l'image d'accueil.
-		ImageView img = (ImageView)findViewById(R.id.accueil_choix_user_admin_logo);
-		img.setOnClickListener(new View.OnClickListener(){
-		    public void onClick(View v){
-		        Intent intent = new Intent();
-		        intent.setAction(Intent.ACTION_VIEW);
-		        intent.addCategory(Intent.CATEGORY_BROWSABLE);
-		        intent.setData(Uri.parse("http://www.jordi-charpentier.com/jmd/index.php"));
-		        
-		        startActivity(intent);
-		    }
-		});
 	}
 	
 	/**

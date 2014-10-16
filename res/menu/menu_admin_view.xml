@@ -14,10 +14,5 @@
         android:id="@+id/menu_nommer_admin"
         android:icon="@drawable/nommer_admin"
         android:title="@string/menu_nommer_admin"/>
-    
-    <item
-        android:id="@+id/menu_faq"
-        android:icon="@drawable/faq"
-        android:title="@string/menu_faq" />
 
 </menu>
