@@ -22,7 +22,34 @@
             android:textColor="#FFFFFF"
             android:textSize="20sp" />
     </RelativeLayout>
+    
+    <EditText
+        android:id="@+id/admin_inscription_ta_nom"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:hint="@string/admin_inscr_nom"
+        android:inputType="text" />
+    
+    <EditText
+        android:id="@+id/admin_inscription_ta_prenom"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:hint="@string/admin_inscr_prenom"
+        android:inputType="text" />
 
+    <EditText
+        android:id="@+id/admin_inscription_ta_email"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:hint="@string/admin_inscr_email"
+        android:inputType="textEmailAddress" />
+    
     <EditText
         android:id="@+id/admin_inscription_ta_pseudo"
         android:layout_width="fill_parent"
@@ -49,16 +76,7 @@
         android:layout_marginTop="20dp"
         android:hint="@string/admin_inscr_password_retype"
         android:inputType="textPassword" />
-
-    <EditText
-        android:id="@+id/admin_inscription_ta_email"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="20dp"
-        android:hint="@string/admin_inscr_email"
-        android:inputType="textEmailAddress" />
-
+    
     <Button
         android:id="@+id/admin_inscription_bout_inscription"
         android:layout_width="fill_parent"

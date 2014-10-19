@@ -1,13 +1,21 @@
 package org.gl.jmd.view.menu.admin;
 
 import java.io.IOException;
-import java.math.BigInteger;
-import java.security.*;
+import java.util.*;
+import java.util.logging.*;
 
-import org.apache.http.client.ClientProtocolException;
+import org.apache.http.*;
+import org.apache.http.client.*;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
+import org.gl.jmd.Constantes;
 import org.gl.jmd.R;
 import org.gl.jmd.model.user.Admin;
-import org.gl.jmd.utils.*;
+import org.gl.jmd.utils.FileUtils;
+import org.gl.jmd.utils.SecurityUtils;
 import org.gl.jmd.view.InitApp;
 import org.gl.jmd.view.admin.*;
 
@@ -31,7 +39,7 @@ public class ConnexionA extends Activity {
 	
 	private Intent intent;
 	
-	private String contenuPage = "";
+	private Admin a;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -59,11 +67,11 @@ public class ConnexionA extends Activity {
 		final EditText PASSWORD = (EditText) findViewById(R.id.connex_zone_mdp);
 		
 		if ((PSEUDO.getText().toString().length() != 0) && (PASSWORD.getText().toString().length() != 0)) {
-			Admin a = new Admin();
+			a = new Admin();
 			a.setPseudo(PSEUDO.getText().toString());
-			a.setPassword(md5(PASSWORD.getText().toString()));
-
-			String URL = "http://www.jordi-charpentier.com/jmd/mobile/connexion.php?pseudo=" + a.getPseudo() + "&password=" + a.getPassword();
+			a.setPassword(SecurityUtils.sha256(PASSWORD.getText().toString()));
+			
+			String URL = Constantes.URL_SERVER + "admin/login";
 
 			ProgressDialog progress = new ProgressDialog(activity);
 			progress.setMessage("Chargement...");
@@ -81,29 +89,6 @@ public class ConnexionA extends Activity {
 	 */
 	public void resetPassword(View view) {
 		startActivity(new Intent(ConnexionA.this, RecupMDPA.class));
-	}
-	
-	/**
-	 * Méthode permettant d'hasher une chaîne de caractères en MD5.
-	 * 
-	 * @param s La chaîne à hasher en MD5.
-	 * @return Une chaîne hashée en MD5.
-	 */
-	public String md5(String... strings) {
-		MessageDigest md = null;
-		try {
-			md = MessageDigest.getInstance("MD5");
-			
-			for(final String s : strings) {
-				md.update(s.getBytes());
-			}
-		} catch (NoSuchAlgorithmException ex) {
-			throw new RuntimeException("Le MD5 n'est pas supporté.");
-		}
-		
-		final BigInteger bigInt = new BigInteger(1, md.digest());
-		
-		return String.format("%032x", bigInt);
 	}
 	
 	/**
@@ -129,50 +114,43 @@ public class ConnexionA extends Activity {
 		}
 
 		protected Void doInBackground(Void... arg0) {
-			try {
-				if((contenuPage = WebUtils.getPage(pathUrl)) != "-1");
+		    HttpClient httpclient = new DefaultHttpClient();
+		    HttpPost httppost = new HttpPost(pathUrl);
 
-				else {
-					ConnexionA.this.runOnUiThread(new Runnable() {
-						public void run() {
-							AlertDialog.Builder builder = new AlertDialog.Builder(ConnexionA.this);
-							builder.setMessage("Erreur - Vérifiez votre connexion");
-							builder.setCancelable(false);
-							builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog, int which) {
-									ConnexionA.this.finish();
-								}
-							});
+		    try {
+		        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+		        nameValuePairs.add(new BasicNameValuePair("username", a.getPseudo()));
+				nameValuePairs.add(new BasicNameValuePair("password", a.getPassword()));
+		        httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
-							AlertDialog error = builder.create();
-							error.show();
-						}});
-
-					return null;
-				}
-			} catch (ClientProtocolException e) { 
-				return null;
-			} catch (IOException e) { 
-				return null;
-			} 
-			
-			contenuPage = contenuPage.replaceAll(" ", "");
-			
-			if(contenuPage.equals("false")) {
-				toast.setText("Mauvais identifiants. Veuillez réessayer.");	
-				toast.show();
-			} else if (contenuPage.equals("error")) {
-				toast.setText("Erreur. Veuillez réessayer.");	
-				toast.show();
-			} else if (contenuPage.equals("non_active")) {
-				toast.setText("Erreur. Votre compte n'est pas encore activé.");	
-				toast.show();
-			} else {
-				FileUtils.ecrireTexteFichier(contenuPage, Environment.getExternalStorageDirectory().getPath() + "/cacheJMD/logins.jmd");
-				
-				finish();
-				startActivity(intent);
-			} 
+		        HttpResponse response = httpclient.execute(httppost);
+		        
+		        if (response.getStatusLine().getStatusCode() == 200) {
+		        	String responseBody = EntityUtils.toString(response.getEntity());
+		        	
+		        	FileUtils.ecrireTexteFichier(responseBody, Environment.getExternalStorageDirectory().getPath() + "/cacheJMD/token.jmd");
+		        	FileUtils.ecrireTexteFichier(a.getPseudo(), Environment.getExternalStorageDirectory().getPath() + "/cacheJMD/pseudo.jmd");
+		        	
+		        	finish();
+					startActivity(intent);
+		        } else if (response.getStatusLine().getStatusCode() == 401) {
+		        	toast.setText("Mauvais identifiants. Veuillez réessayer.");	
+					toast.show();
+		        } else if (response.getStatusLine().getStatusCode() == 403) {
+		        	toast.setText("Ce compte n'est pas activé ou n'est plus actif.");	
+					toast.show();
+		        } else if (response.getStatusLine().getStatusCode() == 500) {
+		        	toast.setText("Une erreur est survenue au niveau de la BDD.");	
+					toast.show();
+		        } else {
+		        	toast.setText("Erreur inconnue. Veuillez réessayer.");	
+					toast.show();
+		        }
+		    } catch (ClientProtocolException e) {
+		    	Logger.getLogger(ConnexionA.class.getName()).log(Level.SEVERE, null, e);
+		    } catch (IOException e) {
+		    	Logger.getLogger(ConnexionA.class.getName()).log(Level.SEVERE, null, e);
+		    }
 
 			return null;
 		}

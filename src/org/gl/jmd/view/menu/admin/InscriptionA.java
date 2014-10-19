@@ -1,14 +1,19 @@
 package org.gl.jmd.view.menu.admin;
 
 import java.io.*;
+import java.util.logging.*;
 import java.util.regex.*;
 
+import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.gl.jmd.Constantes;
 import org.gl.jmd.R;
 import org.gl.jmd.utils.*;
 
 import android.app.*;
-import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.os.*;
 import android.view.View;
@@ -27,11 +32,11 @@ public class InscriptionA extends Activity {
 
 	private Pattern pattern;
 
-	private String contenuPage = "";
-
 	private Matcher matcher;
-
-	private static final String EMAIL_PATTERN = "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}$";
+	
+	private EditText NOM;
+	
+	private EditText PRENOM;
 	
 	private EditText PSEUDO;
 	
@@ -51,6 +56,8 @@ public class InscriptionA extends Activity {
 		activity = this;
 		toast = Toast.makeText(activity, "", Toast.LENGTH_SHORT);
 		
+		NOM = (EditText) findViewById(R.id.admin_inscription_ta_nom);
+		PRENOM = (EditText) findViewById(R.id.admin_inscription_ta_prenom);
 		PSEUDO = (EditText) findViewById(R.id.admin_inscription_ta_pseudo);
 		PASSWORD = (EditText) findViewById(R.id.admin_inscription_ta_password);
 		PASSWORD_AGAIN = (EditText) findViewById(R.id.admin_inscription_ta_password_again);
@@ -64,11 +71,14 @@ public class InscriptionA extends Activity {
 	 */
 	public void inscription(View view) {
 		if ((PSEUDO.getText().toString().length() != 0) && (PASSWORD.getText().toString().length() != 0) && 
-				(PASSWORD_AGAIN.getText().toString().length() != 0) && (EMAIL.getText().toString().length() != 0)) {
+				(PASSWORD_AGAIN.getText().toString().length() != 0) && (EMAIL.getText().toString().length() != 0) &&
+				(NOM.getText().toString().length() != 0) && (PRENOM.getText().toString().length() != 0)) {
 
 			if (PASSWORD.getText().toString().equals(PASSWORD_AGAIN.getText().toString())) {
 				if (validate(EMAIL.getText().toString())) {					
-					String URL = "http://www.jordi-charpentier.com/jmd/mobile/inscription.php?pseudo=" + PSEUDO.getText().toString() + "&password=" + SecurityUtils.sha256(PASSWORD.getText().toString()) + "&email=" + EMAIL.getText().toString();
+					String URL = Constantes.URL_SERVER + 
+								 "admin/subscription" + 
+								 "?nom=" + NOM.getText().toString() + "&prenom=" + PRENOM.getText().toString() + "&pseudo=" + PSEUDO.getText().toString() + "&password=" + SecurityUtils.sha256(PASSWORD.getText().toString()) + "&email=" + EMAIL.getText().toString();
 
 					ProgressDialog progress = new ProgressDialog(activity);
 					progress.setMessage("Chargement...");
@@ -91,6 +101,8 @@ public class InscriptionA extends Activity {
 			boolean isPasswordOK = true;
 			boolean isPasswordAgainOK = true;
 			boolean isEmailOK = true;
+			boolean isNomOK = true;
+			boolean isPrenomOK = true;
 			
 			String txtToast = "";
 			
@@ -122,8 +134,22 @@ public class InscriptionA extends Activity {
 				EMAIL.setBackgroundResource(R.drawable.border_edittext);
 			}
 			
-			if (!isPseudoOK && !isPasswordOK && !isPasswordAgainOK && !isEmailOK) {
-				txtToast = "Les quatres champs sont vides.";
+			if (NOM.getText().toString().length() == 0) {
+				NOM.setBackgroundResource(R.drawable.border_edittext_error);
+				isNomOK = false;
+			} else {
+				NOM.setBackgroundResource(R.drawable.border_edittext);
+			}
+			
+			if (PRENOM.getText().toString().length() == 0) {
+				PRENOM.setBackgroundResource(R.drawable.border_edittext_error);
+				isPrenomOK = false;
+			} else {
+				PRENOM.setBackgroundResource(R.drawable.border_edittext);
+			}
+			
+			if (!isPseudoOK && !isPasswordOK && !isPasswordAgainOK && !isEmailOK && !isNomOK && !isPrenomOK) {
+				txtToast = "Les six champs sont vides.";
 			} else {
 				if (!isPseudoOK) {
 					txtToast = "Le champ \"Pseudo\" est vide.\n";
@@ -140,6 +166,14 @@ public class InscriptionA extends Activity {
 				if (!isEmailOK) {
 					txtToast += "Le champ \"Email\" est vide.";
 				} 
+				
+				if (!isNomOK) {
+					txtToast += "Le champ \"Nom\" est vide.";
+				} 
+				
+				if (!isPrenomOK) {
+					txtToast += "Le champ \"Prénom\" est vide.";
+				} 
 			}
 			
 			toast.setText(txtToast);
@@ -155,7 +189,7 @@ public class InscriptionA extends Activity {
 	 * @return <b>true</b> si l'email est validé.<br /><b>false</b> sinon.
 	 */
 	private boolean validate(String email) {
-		pattern = Pattern.compile(EMAIL_PATTERN);
+		pattern = Pattern.compile(Constantes.EMAIL_PATTERN);
 		matcher = pattern.matcher(email.toUpperCase());
 
 		return matcher.matches();
@@ -184,52 +218,32 @@ public class InscriptionA extends Activity {
 		}
 
 		protected Void doInBackground(Void... arg0) {
-			try {
-				if((contenuPage = WebUtils.getPage(pathUrl)) != "-1");
+			HttpClient httpclient = new DefaultHttpClient();
+		    HttpGet httpGet = new HttpGet(pathUrl);
 
-				else {
-					InscriptionA.this.runOnUiThread(new Runnable() {
-						public void run() {
-							AlertDialog.Builder builder = new AlertDialog.Builder(InscriptionA.this);
-							builder.setMessage("Erreur - Vérifiez votre connexion");
-							builder.setCancelable(false);
-							builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog, int which) {
-									InscriptionA.this.finish();
-								}
-							});
-
-							AlertDialog error = builder.create();
-							error.show();
-						}});
-
-					return null;
-				}
-			} catch (ClientProtocolException e) { 
-				return null;
-			} catch (IOException e) { 
-				return null;
-			} 
-
-			InscriptionA.this.runOnUiThread(new Runnable() {
-				public void run() {
-					contenuPage = contenuPage.replaceAll(" ", "");
-
-					if (contenuPage.equals("ok")) {
-						toast.setText("Inscription effectuée. Votre compte est en attente de validation par un administrateur.");
-						toast.show();
-					} else if (contenuPage.equals("doublon")) {
-						toast.setText("Un utilisateur existe déjà avec ce pseudo.");
-						toast.show();
-					} else if (contenuPage.equals("error")) {
-						toast.setText("Une erreur est arrivée. Veuillez réessayer.");
-						toast.show();
-					} else {
-						toast.setText("Une erreur est arrivée. Veuillez réessayer.");
-						toast.show();
-					}
-				}
-			});
+		    try {
+		        HttpResponse response = httpclient.execute(httpGet);
+		        
+		        if (response.getStatusLine().getStatusCode() == 200) {
+		        	toast.setText("Inscription effectuée. Votre compte est en attente de validation par un administrateur.");
+		        	toast.show();
+		        	
+		        	finish();
+		        } else if (response.getStatusLine().getStatusCode() == 403) {
+		        	toast.setText("Un utilisateur avec ce pseudo existe déjà.");	
+					toast.show();
+		        } else if (response.getStatusLine().getStatusCode() == 500) {
+		        	toast.setText("Une erreur est survenue au niveau de la BDD.");	
+					toast.show();
+		        } else {
+		        	toast.setText("Erreur inconnue. Veuillez réessayer.");	
+					toast.show();
+		        }
+		    } catch (ClientProtocolException e) {
+		    	Logger.getLogger(ConnexionA.class.getName()).log(Level.SEVERE, null, e);
+		    } catch (IOException e) {
+		    	Logger.getLogger(ConnexionA.class.getName()).log(Level.SEVERE, null, e);
+		    }
 
 			return null;
 		}

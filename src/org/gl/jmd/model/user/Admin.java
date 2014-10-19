@@ -8,7 +8,22 @@ package org.gl.jmd.model.user;
 public class Admin extends Utilisateur {
 
 	private static final long serialVersionUID = 1L;
+	
+	/**
+	 * L'identifiant de l'utilisateur.
+	 */
+	private int id;
 
+	/**
+	 * Le nom de l'utilisateur.
+	 */
+	private String nom;
+	
+	/**
+	 * Le prénom de l'utilisateur.
+	 */
+	private String prenom;
+	
 	/**
 	 * Le mot de passe de l'administrateur.
 	 */
@@ -32,6 +47,33 @@ public class Admin extends Utilisateur {
 	}
 	
 	/* Getters. */
+	
+	/**
+	 * Méthode retournant l'identifiant de l'utilisateur.
+	 * 
+	 * @return L'identifiant de l'utilisateur.
+	 */
+	public int getId() {
+		return this.id;
+	}
+	
+	/**
+	 * Méthode retournant le nom de l'utilisateur.
+	 * 
+	 * @return Le nom de l'utilisateur.
+	 */
+	public String getNom() {
+		return this.nom;
+	}
+	
+	/**
+	 * Méthode retournant le prénom de l'utilisateur.
+	 * 
+	 * @return Le prénom de l'utilisateur.
+	 */
+	public String getPrenom() {
+		return this.prenom;
+	}
 
 	/**
 	 * Méthode retournant le pseudo de l'administrateur.
@@ -62,6 +104,33 @@ public class Admin extends Utilisateur {
 	}
 	
 	/* Setters. */
+	
+	/**
+	 * Méthode permettant de modifier l'identifiant de l'utilisateur.
+	 * 
+	 * @param id Le nouvel identifiant de l'utilisateur.
+	 */
+	public void setId(int id) {
+		this.id = id;
+	}
+	
+	/**
+	 * Méthode permettant de modifier le nom de l'utilisateur.
+	 * 
+	 * @param nom Le nouveau nom de l'utilisateur.
+	 */
+	public void setNom(String nom) {
+		this.nom = nom;
+	}
+	
+	/**
+	 * Méthode permettant de modifier le prénom de l'utilisateur.
+	 * 
+	 * @param prenom Le nouveau prénom de l'utilisateur.
+	 */
+	public void setPrenom(String prenom) {
+		this.prenom = prenom;
+	}
 
 	/**
 	 * Méthode permettant de modifier le pseudo de l'administrateur.

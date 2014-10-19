@@ -14,12 +14,9 @@ import org.gl.jmd.view.menu.admin.ConnexionA;
 import android.app.*;
 import android.content.*;
 import android.content.res.Configuration;
-import android.net.Uri;
-import android.os.Bundle;
-import android.os.Environment;
+import android.os.*;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.ImageView;
 
 /**
  * Activité permettant de choisir si l'utilisateur est un administrater ou un étudiant.

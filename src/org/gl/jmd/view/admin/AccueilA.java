@@ -41,8 +41,8 @@ public class AccueilA extends TabActivity {
 		
 		tabHost = getTabHost();
 		
-		setupTab("Liste des établissements", "0", new Intent().setClass(this, ListeEtablissementA.class));
-        setupTab("Liste des diplômes", "1", new Intent().setClass(this, ListeDiplomeA.class));
+		setupTab("Etablissements", "0", new Intent().setClass(this, ListeEtablissementA.class));
+        setupTab("Diplômes", "1", new Intent().setClass(this, ListeDiplomeA.class));
 
 		tabHost.getTabWidget().getChildAt(0).getLayoutParams().height = 80;
 		tabHost.getTabWidget().getChildAt(0).setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_bg_selector)); 
@@ -54,7 +54,7 @@ public class AccueilA extends TabActivity {
 		TextView tv = (TextView) tabHost.getTabWidget().getChildAt(0).findViewById(R.id.tabsText);
 		tv.setTextColor(Color.parseColor("#FF5E3A"));
 		
-		SpannableString spanString = new SpannableString("Liste des établissements");
+		SpannableString spanString = new SpannableString("Etablissements");
 		spanString.setSpan(new StyleSpan(Typeface.BOLD), 0, spanString.length(), 0);
 		
 		tv.setText(spanString);
@@ -68,8 +68,8 @@ public class AccueilA extends TabActivity {
 				TextView tv = (TextView) tabHost.getTabWidget().getChildAt(0).findViewById(R.id.tabsText);
 				TextView tv2 = (TextView) tabHost.getTabWidget().getChildAt(1).findViewById(R.id.tabsText);
 				
-				SpannableString spanString = new SpannableString("Liste des établissements");
-				SpannableString spanString2 = new SpannableString("Liste des diplômes");
+				SpannableString spanString = new SpannableString("Etablissements");
+				SpannableString spanString2 = new SpannableString("Diplômes");
 				
 				if (tabId.equals("0")) {
 					currentTab = 0;

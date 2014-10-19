@@ -23,32 +23,10 @@
             android:textSize="20sp" />
     </RelativeLayout>
 
-    <AutoCompleteTextView
-        android:id="@+id/admin_ajout_admin_ta_pseudo_auto_complete"
+    <ListView
+        android:id="@android:id/list"
         android:layout_width="fill_parent"
-        android:hint="@string/admin_ajout_admin_pseudo_txt"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="20dp" />
-
-    <TextView
-        android:id="@+id/admin_ajout_admin_no_admin"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:enabled="false"
-        android:gravity="center" />
-
-    <Button
-        android:id="@+id/admin_ajout_admin_bout_ajouter"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:background="@drawable/button_style"
-        android:textColor="@drawable/button_color_selector" 
-        android:padding="10dp"
-        android:layout_marginTop="20dp"
-        android:onClick="nommer"
-        android:text="@string/admin_ajout_admin_bout_ajouter_texte" />
+        android:layout_height="fill_parent" >
+    </ListView>
 
 </LinearLayout>

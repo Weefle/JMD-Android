@@ -1,14 +1,19 @@
 package org.gl.jmd.view.menu.admin;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.StringTokenizer;
+import java.util.*;
+import java.util.logging.*;
 
-import org.apache.http.client.ClientProtocolException;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.*;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.gl.jmd.Constantes;
 import org.gl.jmd.R;
+import org.gl.jmd.ServiceHandler;
+import org.gl.jmd.model.user.Admin;
 import org.gl.jmd.utils.FileUtils;
-import org.gl.jmd.utils.WebUtils;
+import org.json.*;
 
 import android.app.*;
 import android.content.DialogInterface;
@@ -16,7 +21,6 @@ import android.content.res.Configuration;
 import android.os.*;
 import android.view.View;
 import android.widget.*;
-import android.widget.AdapterView.OnItemClickListener;
 
 /**
  * Activité correspondant à la vue permettant d'ajouter un administrateur.
@@ -29,14 +33,6 @@ public class AjouterAdminA extends Activity {
 
 	private Toast toast;
 	
-	private String contenuPage = "";
-	
-	private String[] listeComptes = null;
-	
-	private ArrayList<String> idList = new ArrayList<String>();
-	
-	private String selectedId = "";
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -46,46 +42,70 @@ public class AjouterAdminA extends Activity {
 		
 		activity = this;
 		toast = Toast.makeText(activity, "", Toast.LENGTH_SHORT);
-		
-		initListe();
-	}
-	
-	public void initListe() {
-		String url = "http://www.jordi-charpentier.com/jmd/mobile/getInfos.php?type=compteAttente";
 
 		ProgressDialog progress = new ProgressDialog(activity);
 		progress.setMessage("Chargement...");
-		new InitListeComptes(progress, url).execute();	
+		new InitListeComptes(progress, Constantes.URL_SERVER + "admin/getAllAdminInactive").execute();	
 	}
+	
+	private void initListe(final ArrayList<Admin> listeAdmins) {
+		final ListView liste = (ListView) findViewById(android.R.id.list);
 
-	/**
-	 * Méthode permettant de nommer un utilisateur administrateur.
-	 * 
-	 * @param view La vue lors du click sur le bouton "ajouter".
-	 */
-	public void nommer(View view) {
-		File loginFile = new File(Environment.getExternalStorageDirectory().getPath() + "/cacheJMD/logins.jmd");
-		String url = null;
-		
-		try {
-			url = "http://www.jordi-charpentier.com/jmd/mobile/nommerAdmin.php?idAdminNomme=" + selectedId + "&idAdminNommant=" + FileUtils.lireFichier(loginFile);
-		
-			ProgressDialog progress = new ProgressDialog(activity);
-			progress.setMessage("Chargement...");
-			new AjouterAdminC(progress, url).execute();
-		} catch (Exception e) {
-			toast.setText("L'administrateur entré n'est pas valide.");
-			toast.show();
-			
-			return;
+		if (listeAdmins.size() > 0) {
+			final ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
+			HashMap<String, String> map;
+
+			for(int s = 0; s < listeAdmins.size(); s++) {
+				map = new HashMap<String, String>();
+
+				map.put("id", "" + listeAdmins.get(s).getId());
+				map.put("titre", listeAdmins.get(s).getPseudo());
+
+				listItem.add(map);		
+			}
+
+			final SimpleAdapter mSchedule = new SimpleAdapter (getBaseContext(), listItem, R.layout.administrateur_ajout_admin_list, new String[] {"titre"}, new int[] {R.id.titre});
+
+			liste.setAdapter(mSchedule); 
+
+			liste.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+				public void onItemClick(AdapterView<?> arg0, View arg1, final int position, long arg3) {
+					AlertDialog.Builder confirmAjout = new AlertDialog.Builder(AjouterAdminA.this);
+					confirmAjout.setTitle("Confirmation");
+					confirmAjout.setMessage("Nommer " + listeAdmins.get(position).getPseudo() + " ?");
+					confirmAjout.setCancelable(false);
+					confirmAjout.setPositiveButton("Oui", new AlertDialog.OnClickListener() {
+						public void onClick(DialogInterface dialog, int id) {								
+							ProgressDialog progress = new ProgressDialog(activity);
+							progress.setMessage("Chargement...");
+							new NommerAdmin(progress, Constantes.URL_SERVER + "admin/nominateAdmin" +
+									"?pseudoToNominate=" + listeAdmins.get(position).getPseudo() +
+									"&token=" + FileUtils.lireFichier(Environment.getExternalStorageDirectory().getPath() + "/cacheJMD/token.jmd") + 
+									"&pseudo=" + FileUtils.lireFichier(Environment.getExternalStorageDirectory().getPath() + "/cacheJMD/pseudo.jmd") +
+									"&timestamp=" + new java.util.Date().getTime()
+							).execute();	
+						}
+					});
+					
+					confirmAjout.setNegativeButton("Non", null);
+					confirmAjout.show();
+				}
+			}); 
+		} else {
+			final ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
+			HashMap<String, String> map;
+
+			map = new HashMap<String, String>();
+			map.put("titre", "Aucun compte en attente.");
+
+			listItem.add(map);
+
+			SimpleAdapter mSchedule = new SimpleAdapter (getBaseContext(), listItem, R.layout.administrateur_ajout_admin_list, new String[] {"titre"}, new int[] {R.id.titre});
+
+			liste.setAdapter(mSchedule); 
 		}
 	}
 	
-	/**
-	 * Classe interne représentant une tâche asynchrone qui sera effectuée en fond pendant un rond de chargement.
-	 * 
-	 * @author Jordi CHARPENTIER & Yoann VANHOESERLANDE
-	 */
 	private class InitListeComptes extends AsyncTask<Void, Void, Void> {
 		private ProgressDialog progress;
 		private String pathUrl;
@@ -104,98 +124,50 @@ public class AjouterAdminA extends Activity {
 		}
 
 		protected Void doInBackground(Void... arg0) {
-			try {
-				if((contenuPage = WebUtils.getPage(pathUrl)) != "-1");
+            ServiceHandler sh = new ServiceHandler();
+            String jsonStr = sh.makeServiceCall(pathUrl, ServiceHandler.GET);
+            
+            final ArrayList<Admin> listeAdmins = new ArrayList<Admin>();
+            Admin a = null;
+            
+            if (jsonStr != null) {            	
+                try {
+                    JSONArray admins = new JSONArray(jsonStr);
+ 
+                    for (int i = 0; i < admins.length(); i++) {
+                    	JSONObject c = admins.getJSONObject(i);
+                        
+                        a = new Admin();
+                        a.setNom(c.getString("nom"));
+                        a.setIsActive(c.getBoolean("estActive"));
+                        a.setPrenom(c.getString("prenom"));
+                        a.setId(c.getInt("id"));
+                        a.setPseudo(c.getString("pseudo"));
+                        
+                        listeAdmins.add(a);
+                    }
+                    
+                    AjouterAdminA.this.runOnUiThread(new Runnable() {
+    					public void run() {
+    						initListe(listeAdmins);
 
-				else {
-					AjouterAdminA.this.runOnUiThread(new Runnable() {
-						public void run() {
-							AlertDialog.Builder builder = new AlertDialog.Builder(AjouterAdminA.this);
-							builder.setMessage("Erreur - Vérifiez votre connexion");
-							builder.setCancelable(false);
-							builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog, int which) {
-									AjouterAdminA.this.finish();
-								}
-							});
-
-							AlertDialog error = builder.create();
-							error.show();
-						}});
-
-					return null;
-				}
-			} catch (ClientProtocolException e) { 
-				return null;
-			} catch (IOException e) { 
-				return null;
-			} 
-
-			AjouterAdminA.this.runOnUiThread(new Runnable() {
-				public void run() {
-					contenuPage = contenuPage.replaceAll(" ", "");
-
-					AutoCompleteTextView textView = (AutoCompleteTextView) findViewById(R.id.admin_ajout_admin_ta_pseudo_auto_complete);
-					StringTokenizer chaineEclate = new StringTokenizer(contenuPage, ";");
-					final String[] temp = new String[chaineEclate.countTokens()];
-					
-					if (temp.length != 0) {
-						int i = 0;
-
-						while(chaineEclate.hasMoreTokens()) {
-							temp[i] = chaineEclate.nextToken();	
-							temp[i] = temp[i].replaceAll(" ", "");
-
-							i++;
-						}
-
-						listeComptes = new String[temp.length / 2];
-						int a = 0;
-
-						for(int s = 0; s < temp.length; s = s+ 2) {
-							listeComptes[a++] = temp[s] + " - " + temp[s+1];
-							idList.add(temp[s]);
-						}
-						
-						ArrayAdapter<String> adapter = new ArrayAdapter<String>(activity, R.xml.suggestion_liste, listeComptes);
-						textView.setAdapter(adapter);
-						
-						textView.setOnItemClickListener(new OnItemClickListener() {
-							@Override
-					        public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
-								selectedId = idList.get(position);
-					        }
-					    });
-						
-						TextView textViewNoAdmin = (TextView) findViewById(R.id.admin_ajout_admin_no_admin);
-						textViewNoAdmin.setText("Il y a " + listeComptes.length + " administrateur" + ((listeComptes.length > 1) ? "s" : "") + " en attente de validation.");
-					} else {
-						textView.setInputType(0);
-						
-						Button button = (Button) findViewById(R.id.admin_ajout_admin_bout_ajouter);
-						button.setEnabled(false);
-						
-						TextView textViewNoAdmin = (TextView) findViewById(R.id.admin_ajout_admin_no_admin);
-						textViewNoAdmin.setText("Aucun compte n'est en attente de validation.");
-						textViewNoAdmin.setEnabled(true);
-					}
-				}
-			});
+    						return;
+    					}
+    				});
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            } 
 
 			return null;
 		}
 	}
-	
-	/**
-	 * Classe interne représentant une tâche asynchrone qui sera effectuée en fond pendant un rond de chargement.
-	 * 
-	 * @author Jordi CHARPENTIER & Yoann VANHOESERLANDE
-	 */
-	private class AjouterAdminC extends AsyncTask<Void, Void, Void> {
+
+	private class NommerAdmin extends AsyncTask<Void, Void, Void> {
 		private ProgressDialog progress;
 		private String pathUrl;
 
-		public AjouterAdminC(ProgressDialog progress, String pathUrl) {
+		public NommerAdmin(ProgressDialog progress, String pathUrl) {
 			this.progress = progress;
 			this.pathUrl = pathUrl;
 		}
@@ -209,47 +181,34 @@ public class AjouterAdminA extends Activity {
 		}
 
 		protected Void doInBackground(Void... arg0) {
-			try {
-				if((contenuPage = WebUtils.getPage(pathUrl)) != "-1");
+			HttpClient httpclient = new DefaultHttpClient();
+		    HttpGet httppost = new HttpGet(pathUrl);
 
-				else {
-					AjouterAdminA.this.runOnUiThread(new Runnable() {
-						public void run() {
-							AlertDialog.Builder builder = new AlertDialog.Builder(AjouterAdminA.this);
-							builder.setMessage("Erreur - Vérifiez votre connexion");
-							builder.setCancelable(false);
-							builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog, int which) {
-									AjouterAdminA.this.finish();
-								}
-							});
-
-							AlertDialog error = builder.create();
-							error.show();
-						}});
-
-					return null;
-				}
-			} catch (ClientProtocolException e) { 
-				return null;
-			} catch (IOException e) { 
-				return null;
-			} 
-
-			contenuPage = contenuPage.replaceAll(" ", "");	
-			
-			if(contenuPage.equals("ok")) {
-				toast.setText("Administrateur nommé avec succès.");
-				toast.show();
-				
-				finish();
-			} else if (contenuPage.equals("error")) {
-				toast.setText("Erreur. Vous n'avez pas les droits nécessaires.");
-				toast.show();	
-			} else {
-				toast.setText("Erreur. Veuillez réessayer.");
-				toast.show();	
-			} 
+		    try {
+		        HttpResponse response = httpclient.execute(httppost);
+		        
+		        if (response.getStatusLine().getStatusCode() == 200) {
+		        	toast.setText("Le compte a été nommé avec succès.");
+		        	toast.show();
+		        	
+		        	finish();
+		        } else if (response.getStatusLine().getStatusCode() == 401) {
+		        	finish();
+		        	
+		        	toast.setText("Session expirée.");	
+					toast.show();
+		        } else if (response.getStatusLine().getStatusCode() == 500) {
+		        	toast.setText("Une erreur est survenue au niveau de la BDD.");	
+					toast.show();
+		        } else {
+		        	toast.setText("Erreur inconnue. Veuillez réessayer.");	
+					toast.show();
+		        }
+		    } catch (ClientProtocolException e) {
+		    	Logger.getLogger(ConnexionA.class.getName()).log(Level.SEVERE, null, e);
+		    } catch (IOException e) {
+		    	Logger.getLogger(ConnexionA.class.getName()).log(Level.SEVERE, null, e);
+		    }
 
 			return null;
 		}

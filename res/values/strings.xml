@@ -119,6 +119,8 @@
     <string name="admin_inscr_password">Mot de passe</string>
     <string name="admin_inscr_password_retype">Retapez votre mot de passe</string>
     <string name="admin_inscr_email">Email</string>
+    <string name="admin_inscr_nom">Nom</string>
+    <string name="admin_inscr_prenom">Prénom</string>
     
     <string name="admin_connex_pseudo">Pseudo</string>
     <string name="admin_connex_mdp">Mot de passe</string>
