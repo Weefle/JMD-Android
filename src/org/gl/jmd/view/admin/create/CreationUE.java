@@ -4,10 +4,16 @@ import java.io.*;
 import java.net.URLEncoder;
 import java.util.regex.*;
 
+import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.gl.jmd.Constantes;
 import org.gl.jmd.R;
 import org.gl.jmd.model.UE;
 import org.gl.jmd.utils.*;
+import org.gl.jmd.view.Accueil;
 
 import android.app.*;
 import android.content.*;
@@ -26,8 +32,6 @@ public class CreationUE extends Activity {
 	private Activity activity;
 
 	private Toast toast;
-	
-	private String contenuPage = "";
 	
 	private Intent lastIntent;
 	
@@ -75,46 +79,13 @@ public class CreationUE extends Activity {
 			UE ue = new UE();
 			ue.setNom(NOM.getText().toString());
 			
-			File repCache = new File(Environment.getExternalStorageDirectory().getPath() + "/cacheJMD/");
-			File fileLogin = new File(repCache.getPath() + "/logins.jmd");
-			
-			String idAdmin = FileUtils.lireFichier(fileLogin);
-			
-			if (idAdmin.length() == 0) {
-				fileLogin.delete();
-				
-				AlertDialog.Builder errorDia = new AlertDialog.Builder(activity);
-				errorDia.setTitle("Erreur");
-				errorDia.setMessage("Erreur - Veuillez relancer l'application.");
-				errorDia.setCancelable(false);
-				errorDia.setPositiveButton("Ok", new AlertDialog.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-						CreationUE.this.finish();
-						android.os.Process.killProcess(android.os.Process.myPid());
-					}
-				});
-				
-				errorDia.show();
-			} else {
-				if (idAdmin.matches("[+-]?\\d*(\\.\\d+)?") == false){
-					fileLogin.delete();
-					
-					AlertDialog.Builder errorDia = new AlertDialog.Builder(activity);
-					errorDia.setTitle("Erreur");
-					errorDia.setMessage("Erreur - Veuillez relancer l'application.");
-					errorDia.setCancelable(false);
-					errorDia.setPositiveButton("Ok", new AlertDialog.OnClickListener() {
-						public void onClick(DialogInterface dialog, int id) {
-							CreationUE.this.finish();
-							android.os.Process.killProcess(android.os.Process.myPid());
-						}
-					});
-					
-					errorDia.show();
-				}
-			}
-			
-			String URL = "http://www.jordi-charpentier.com/jmd/mobile/create.php?idAdmin=" + idAdmin + "&type=ue&nom=" + URLEncoder.encode(ue.getNom()) + "&idAnnee=" + idAnnee + "&yearType=" + decoupage;
+			String URL = Constantes.URL_SERVER + "ue" +
+					"?nom=" + URLEncoder.encode(ue.getNom()) +
+					"&yearType=" + decoupage +
+					"&idAnnee=" + idAnnee +
+					"&token=" + FileUtils.lireFichier("/sdcard/cacheJMD/token.jmd") + 
+					"&pseudo=" + FileUtils.lireFichier("/sdcard/cacheJMD/pseudo.jmd") +
+					"&timestamp=" + new java.util.Date().getTime();	
 			
 			ProgressDialog progress = new ProgressDialog(activity);
 			progress.setMessage("Chargement...");
@@ -150,50 +121,76 @@ public class CreationUE extends Activity {
 		}
 
 		protected Void doInBackground(Void... arg0) {
-			try {
-				if((contenuPage = WebUtils.getPage(pathUrl)) != "-1");
+			HttpClient httpclient = new DefaultHttpClient();
+		    HttpPut httppost = new HttpPut(pathUrl);
 
-				else {
-					CreationUE.this.runOnUiThread(new Runnable() {
-						public void run() {
-							AlertDialog.Builder builder = new AlertDialog.Builder(CreationUE.this);
-							builder.setMessage("Erreur - Vérifiez votre connexion");
-							builder.setCancelable(false);
-							builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog, int which) {
-									CreationUE.this.finish();
-								}
-							});
+		    try {
+		        HttpResponse response = httpclient.execute(httppost);
+		        
+		        if (response.getStatusLine().getStatusCode() == 200) {
+		        	toast.setText("UE créée.");
+		        	toast.show();
+		        	
+		        	finish();
+		        } else if (response.getStatusLine().getStatusCode() == 401) {
+					File filePseudo = new File("/sdcard/cacheJMD/pseudo.jmd");
+					File fileToken = new File("/sdcard/cacheJMD/token.jmd");
+					
+					filePseudo.delete();
+					fileToken.delete();
+		        	
+					finishAllActivities();
+		        	startActivity(new Intent(CreationUE.this, Accueil.class));	
+		        	
+		        	toast.setText("Session expirée.");	
+					toast.show();
+		        } else if (response.getStatusLine().getStatusCode() == 500) {
+		        	toast.setText("Une erreur est survenue au niveau de la BDD.");	
+					toast.show();
+		        } else {
+		        	toast.setText("Erreur inconnue. Veuillez réessayer.");	
+					toast.show();
+		        }
+		    } catch (ClientProtocolException e) {
+		    	CreationUE.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(CreationUE.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								CreationUE.this.finish();
+							}
+						});
 
-							AlertDialog error = builder.create();
-							error.show();
-						}});
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+		    } catch (IOException e) {
+		    	CreationUE.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(CreationUE.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								CreationUE.this.finish();
+							}
+						});
 
-					return null;
-				}
-			} catch (ClientProtocolException e) { 
-				return null;
-			} catch (IOException e) { 
-				return null;
-			} 
-			
-			contenuPage = contenuPage.replaceAll(" ", "");
-
-			if(contenuPage.equals("ok")) {
-				toast.setText("UE créée.");
-				toast.show();
-				
-				finish();
-			} else if (contenuPage.equals("error")) {
-				toast.setText("Erreur. Veuillez réessayer.");
-				toast.show();	
-			} else {
-				toast.setText("Erreur. Veuillez réessayer.");
-				toast.show();	
-			} 
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+		    } 
 
 			return null;
 		}
+	}
+	
+	public void finishAllActivities(){
+		this.finishAffinity();
 	}
 	
 	/* Méthodes héritées de la classe Activity. */

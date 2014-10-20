@@ -1,5 +1,6 @@
 package org.gl.jmd.view.menu.admin;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
@@ -125,9 +126,12 @@ public class ConnexionA extends Activity {
 		        if (response.getStatusLine().getStatusCode() == 200) {
 		        	String responseBody = EntityUtils.toString(response.getEntity());
 		        	
-		        	FileUtils.ecrireTexteFichier(responseBody, Environment.getExternalStorageDirectory().getPath() + "/cacheJMD/token.jmd");
-		        	FileUtils.ecrireTexteFichier(a.getPseudo(), Environment.getExternalStorageDirectory().getPath() + "/cacheJMD/pseudo.jmd");
+		        	String urlTokenFile = "/sdcard/cacheJMD/token.jmd";
+		        	String urlPseudoFile = "/sdcard/cacheJMD/pseudo.jmd";
 		        	
+		        	FileUtils.ecrireTexteFichier(responseBody, urlTokenFile);
+		        	FileUtils.ecrireTexteFichier(a.getPseudo(), urlPseudoFile);
+		    		
 		        	finish();
 					startActivity(intent);
 		        } else if (response.getStatusLine().getStatusCode() == 401) {

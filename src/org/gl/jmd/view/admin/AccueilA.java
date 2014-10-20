@@ -6,15 +6,13 @@ import org.gl.jmd.R;
 import org.gl.jmd.view.*;
 import org.gl.jmd.view.admin.create.*;
 import org.gl.jmd.view.admin.listing.*;
-import org.gl.jmd.view.menu.admin.AjouterAdminA;
-import org.gl.jmd.view.menu.admin.ConnexionA;
+import org.gl.jmd.view.menu.admin.*;
 
 import android.app.*;
 import android.content.*;
 import android.content.res.Configuration;
 import android.graphics.*;
 import android.os.Bundle;
-import android.os.Environment;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
 import android.view.*;
@@ -164,9 +162,8 @@ public class AccueilA extends TabActivity {
 			return true;
 
 		case R.id.menu_deconnexion:
-			File repCache = new File(Environment.getExternalStorageDirectory().getPath() + "/cacheJMD/");
-			File filePseudo = new File(repCache.getPath() + "/pseudo.jmd");
-			File fileToken = new File(repCache.getPath() + "/token.jmd");
+			File filePseudo = new File("/sdcard/cacheJMD/pseudo.jmd");
+			File fileToken = new File("/sdcard/cacheJMD/token.jmd");
 			
 			filePseudo.delete();
 			fileToken.delete();

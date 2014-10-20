@@ -58,9 +58,8 @@ public class InitApp extends Activity {
 		
 		finish();
 		
-		File repCache = new File(Environment.getExternalStorageDirectory().getPath() + "/cacheJMD/");
-		File filePseudo = new File(repCache.getPath() + "/pseudo.jmd");
-		File fileToken = new File(repCache.getPath() + "/token.jmd");
+		File filePseudo = new File("/sdcard/cacheJMD/pseudo.jmd");
+		File fileToken = new File("/sdcard/cacheJMD/token.jmd");
 		
 		if (filePseudo.exists() && fileToken.exists()) {
 			startActivity(new Intent(InitApp.this, AccueilA.class));

@@ -1,6 +1,6 @@
 package org.gl.jmd.view.menu.admin;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 import org.apache.http.HttpResponse;
@@ -10,12 +10,11 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.gl.jmd.*;
 import org.gl.jmd.model.user.Admin;
 import org.gl.jmd.utils.FileUtils;
-import org.gl.jmd.view.InitApp;
+import org.gl.jmd.view.Accueil;
 import org.json.*;
 
 import android.app.*;
-import android.content.DialogInterface;
-import android.content.Intent;
+import android.content.*;
 import android.content.res.Configuration;
 import android.os.*;
 import android.view.View;
@@ -79,8 +78,8 @@ public class AjouterAdminA extends Activity {
 							progress.setMessage("Chargement...");
 							new NommerAdmin(progress, Constantes.URL_SERVER + "admin/nominateAdmin" +
 									"?pseudoToNominate=" + listeAdmins.get(position).getPseudo() +
-									"&token=" + FileUtils.lireFichier(Environment.getExternalStorageDirectory().getPath() + "/cacheJMD/token.jmd") + 
-									"&pseudo=" + FileUtils.lireFichier(Environment.getExternalStorageDirectory().getPath() + "/cacheJMD/pseudo.jmd") +
+									"&token=" + FileUtils.lireFichier("/sdcard/cacheJMD/token.jmd") + 
+									"&pseudo=" + FileUtils.lireFichier("/sdcard/cacheJMD/pseudo.jmd") +
 									"&timestamp=" + new java.util.Date().getTime()
 							).execute();	
 						}
@@ -192,12 +191,14 @@ public class AjouterAdminA extends Activity {
 		        	
 		        	finish();
 		        } else if (response.getStatusLine().getStatusCode() == 401) {
-		        	android.os.Process.killProcess(android.os.Process.myPid());
+		        	File filePseudo = new File("/sdcard/cacheJMD/pseudo.jmd");
+					File fileToken = new File("/sdcard/cacheJMD/token.jmd");
+					
+					filePseudo.delete();
+					fileToken.delete();
 		        	
-		        	startActivity(new Intent(AjouterAdminA.this, InitApp.class));	
-		        	
-		        	toast.setText("Session expirée.");	
-					toast.show();
+					finishAllActivities();
+		        	startActivity(new Intent(AjouterAdminA.this, Accueil.class));	
 		        } else if (response.getStatusLine().getStatusCode() == 500) {
 		        	toast.setText("Une erreur est survenue au niveau de la BDD.");	
 					toast.show();
@@ -241,6 +242,10 @@ public class AjouterAdminA extends Activity {
 
 			return null;
 		}
+	}
+	
+	public void finishAllActivities(){
+		this.finishAffinity();
 	}
 	
 	/* Méthode héritée de la classe Activity. */

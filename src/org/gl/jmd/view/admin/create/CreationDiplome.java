@@ -5,14 +5,13 @@ import java.net.URLEncoder;
 import java.util.regex.*;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
+import org.apache.http.client.*;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.gl.jmd.*;
 import org.gl.jmd.model.Diplome;
 import org.gl.jmd.utils.*;
-import org.gl.jmd.view.InitApp;
+import org.gl.jmd.view.Accueil;
 
 import android.app.*;
 import android.content.*;
@@ -71,8 +70,8 @@ public class CreationDiplome extends Activity {
 			
 			String URL = Constantes.URL_SERVER + "diplome" +
 									"?nom=" + URLEncoder.encode(d.getNom()) +
-									"&token=" + FileUtils.lireFichier(Environment.getExternalStorageDirectory().getPath() + "/cacheJMD/token.jmd") + 
-									"&pseudo=" + FileUtils.lireFichier(Environment.getExternalStorageDirectory().getPath() + "/cacheJMD/pseudo.jmd") +
+									"&token=" + FileUtils.lireFichier("/sdcard/cacheJMD/token.jmd") + 
+									"&pseudo=" + FileUtils.lireFichier("/sdcard/cacheJMD/pseudo.jmd") +
 									"&timestamp=" + new java.util.Date().getTime();			
 			
 			ProgressDialog progress = new ProgressDialog(activity);
@@ -124,9 +123,14 @@ public class CreationDiplome extends Activity {
 		        	toast.setText("Un diplôme avec ce nom existe déjà.");
 		        	toast.show();
 		        } else if (response.getStatusLine().getStatusCode() == 401) {
-		        	android.os.Process.killProcess(android.os.Process.myPid());
+					File filePseudo = new File("/sdcard/cacheJMD/pseudo.jmd");
+					File fileToken = new File("/sdcard/cacheJMD/token.jmd");
+					
+					filePseudo.delete();
+					fileToken.delete();
 		        	
-		        	startActivity(new Intent(CreationDiplome.this, InitApp.class));	
+					finishAllActivities();
+		        	startActivity(new Intent(CreationDiplome.this, Accueil.class));	
 		        	
 		        	toast.setText("Session expirée.");	
 					toast.show();
@@ -173,6 +177,10 @@ public class CreationDiplome extends Activity {
 
 			return null;
 		}
+	}
+	
+	public void finishAllActivities(){
+		this.finishAffinity();
 	}
 	
 	/* Méthodes héritées de la classe Activity. */
