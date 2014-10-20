@@ -2,21 +2,20 @@ package org.gl.jmd.view.menu.admin;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.logging.*;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.*;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.gl.jmd.Constantes;
-import org.gl.jmd.R;
-import org.gl.jmd.ServiceHandler;
+import org.gl.jmd.*;
 import org.gl.jmd.model.user.Admin;
 import org.gl.jmd.utils.FileUtils;
+import org.gl.jmd.view.InitApp;
 import org.json.*;
 
 import android.app.*;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.*;
 import android.view.View;
@@ -193,7 +192,9 @@ public class AjouterAdminA extends Activity {
 		        	
 		        	finish();
 		        } else if (response.getStatusLine().getStatusCode() == 401) {
-		        	finish();
+		        	android.os.Process.killProcess(android.os.Process.myPid());
+		        	
+		        	startActivity(new Intent(AjouterAdminA.this, InitApp.class));	
 		        	
 		        	toast.setText("Session expirée.");	
 					toast.show();
@@ -205,9 +206,37 @@ public class AjouterAdminA extends Activity {
 					toast.show();
 		        }
 		    } catch (ClientProtocolException e) {
-		    	Logger.getLogger(ConnexionA.class.getName()).log(Level.SEVERE, null, e);
+		    	AjouterAdminA.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(AjouterAdminA.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								AjouterAdminA.this.finish();
+							}
+						});
+
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
 		    } catch (IOException e) {
-		    	Logger.getLogger(ConnexionA.class.getName()).log(Level.SEVERE, null, e);
+		    	AjouterAdminA.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(AjouterAdminA.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								AjouterAdminA.this.finish();
+							}
+						});
+
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
 		    }
 
 			return null;

@@ -1,12 +1,10 @@
 package org.gl.jmd.view.menu.admin;
 
 import java.io.*;
-import java.util.logging.*;
 import java.util.regex.*;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
+import org.apache.http.client.*;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.gl.jmd.Constantes;
@@ -14,6 +12,7 @@ import org.gl.jmd.R;
 import org.gl.jmd.utils.*;
 
 import android.app.*;
+import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.os.*;
 import android.view.View;
@@ -78,7 +77,11 @@ public class InscriptionA extends Activity {
 				if (validate(EMAIL.getText().toString())) {					
 					String URL = Constantes.URL_SERVER + 
 								 "admin/subscription" + 
-								 "?nom=" + NOM.getText().toString() + "&prenom=" + PRENOM.getText().toString() + "&pseudo=" + PSEUDO.getText().toString() + "&password=" + SecurityUtils.sha256(PASSWORD.getText().toString()) + "&email=" + EMAIL.getText().toString();
+								 "?nom=" + NOM.getText().toString() + 
+								 "&prenom=" + PRENOM.getText().toString() + 
+								 "&pseudo=" + PSEUDO.getText().toString() + 
+								 "&password=" + SecurityUtils.sha256(PASSWORD.getText().toString()) + 
+								 "&email=" + EMAIL.getText().toString();
 
 					ProgressDialog progress = new ProgressDialog(activity);
 					progress.setMessage("Chargement...");
@@ -240,9 +243,37 @@ public class InscriptionA extends Activity {
 					toast.show();
 		        }
 		    } catch (ClientProtocolException e) {
-		    	Logger.getLogger(ConnexionA.class.getName()).log(Level.SEVERE, null, e);
+		    	InscriptionA.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(InscriptionA.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								InscriptionA.this.finish();
+							}
+						});
+
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
 		    } catch (IOException e) {
-		    	Logger.getLogger(ConnexionA.class.getName()).log(Level.SEVERE, null, e);
+		    	InscriptionA.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(InscriptionA.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								InscriptionA.this.finish();
+							}
+						});
+
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
 		    }
 
 			return null;

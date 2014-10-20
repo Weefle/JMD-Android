@@ -4,20 +4,25 @@ import java.io.*;
 import java.net.URLEncoder;
 import java.util.regex.*;
 
+import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
-import org.gl.jmd.R;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.gl.jmd.*;
 import org.gl.jmd.model.Diplome;
 import org.gl.jmd.utils.*;
+import org.gl.jmd.view.InitApp;
 
 import android.app.*;
-import android.content.DialogInterface;
+import android.content.*;
 import android.content.res.Configuration;
 import android.os.*;
 import android.view.View;
 import android.widget.*;
 
 /**
- * Activité correspondant à la vue de création d'une année d'un diplôme.
+ * Activité correspondant à la vue de création d'un diplôme.
  * 
  * @author Jordi CHARPENTIER & Yoann VANHOESERLANDE
  */
@@ -26,8 +31,6 @@ public class CreationDiplome extends Activity {
 	private Activity activity;
 
 	private Toast toast;
-	
-	private String contenuPage = "";
 	
 	private EditText NOM;
 	
@@ -66,46 +69,11 @@ public class CreationDiplome extends Activity {
 			Diplome d = new Diplome();
 			d.setNom(NOM.getText().toString());
 			
-			File repCache = new File(Environment.getExternalStorageDirectory().getPath() + "/cacheJMD/");
-			File fileLogin = new File(repCache.getPath() + "/logins.jmd");
-			
-			String idAdmin = FileUtils.lireFichier(fileLogin);
-			
-			if (idAdmin.length() == 0) {
-				fileLogin.delete();
-				
-				AlertDialog.Builder errorDia = new AlertDialog.Builder(activity);
-				errorDia.setTitle("Erreur");
-				errorDia.setMessage("Erreur - Veuillez relancer l'application.");
-				errorDia.setCancelable(false);
-				errorDia.setPositiveButton("Ok", new AlertDialog.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-						CreationDiplome.this.finish();
-						android.os.Process.killProcess(android.os.Process.myPid());
-					}
-				});
-				
-				errorDia.show();
-			} else {
-				if (idAdmin.matches("[+-]?\\d*(\\.\\d+)?") == false){
-					fileLogin.delete();
-					
-					AlertDialog.Builder errorDia = new AlertDialog.Builder(activity);
-					errorDia.setTitle("Erreur");
-					errorDia.setMessage("Erreur - Veuillez relancer l'application.");
-					errorDia.setCancelable(false);
-					errorDia.setPositiveButton("Ok", new AlertDialog.OnClickListener() {
-						public void onClick(DialogInterface dialog, int id) {
-							CreationDiplome.this.finish();
-							android.os.Process.killProcess(android.os.Process.myPid());
-						}
-					});
-					
-					errorDia.show();
-				}
-			}
-			
-			String URL = "http://www.jordi-charpentier.com/jmd/mobile/create.php?idAdmin=" + idAdmin + "&type=diplome&nom=" + URLEncoder.encode(d.getNom());			
+			String URL = Constantes.URL_SERVER + "diplome" +
+									"?nom=" + URLEncoder.encode(d.getNom()) +
+									"&token=" + FileUtils.lireFichier(Environment.getExternalStorageDirectory().getPath() + "/cacheJMD/token.jmd") + 
+									"&pseudo=" + FileUtils.lireFichier(Environment.getExternalStorageDirectory().getPath() + "/cacheJMD/pseudo.jmd") +
+									"&timestamp=" + new java.util.Date().getTime();			
 			
 			ProgressDialog progress = new ProgressDialog(activity);
 			progress.setMessage("Chargement...");
@@ -141,50 +109,67 @@ public class CreationDiplome extends Activity {
 		}
 
 		protected Void doInBackground(Void... arg0) {
-			try {
-				if((contenuPage = WebUtils.getPage(pathUrl)) != "-1");
+			HttpClient httpclient = new DefaultHttpClient();
+		    HttpPut httppost = new HttpPut(pathUrl);
 
-				else {
-					CreationDiplome.this.runOnUiThread(new Runnable() {
-						public void run() {
-							AlertDialog.Builder builder = new AlertDialog.Builder(CreationDiplome.this);
-							builder.setMessage("Erreur - Vérifiez votre connexion");
-							builder.setCancelable(false);
-							builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog, int which) {
-									CreationDiplome.this.finish();
-								}
-							});
+		    try {
+		        HttpResponse response = httpclient.execute(httppost);
+		        
+		        if (response.getStatusLine().getStatusCode() == 200) {
+		        	toast.setText("Diplôme créé.");
+		        	toast.show();
+		        	
+		        	finish();
+		        } else if (response.getStatusLine().getStatusCode() == 403) {
+		        	toast.setText("Un diplôme avec ce nom existe déjà.");
+		        	toast.show();
+		        } else if (response.getStatusLine().getStatusCode() == 401) {
+		        	android.os.Process.killProcess(android.os.Process.myPid());
+		        	
+		        	startActivity(new Intent(CreationDiplome.this, InitApp.class));	
+		        	
+		        	toast.setText("Session expirée.");	
+					toast.show();
+		        } else if (response.getStatusLine().getStatusCode() == 500) {
+		        	toast.setText("Une erreur est survenue au niveau de la BDD.");	
+					toast.show();
+		        } else {
+		        	toast.setText("Erreur inconnue. Veuillez réessayer.");	
+					toast.show();
+		        }
+		    } catch (ClientProtocolException e) {
+		    	CreationDiplome.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(CreationDiplome.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								CreationDiplome.this.finish();
+							}
+						});
 
-							AlertDialog error = builder.create();
-							error.show();
-						}});
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+		    } catch (IOException e) {
+		    	CreationDiplome.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(CreationDiplome.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								CreationDiplome.this.finish();
+							}
+						});
 
-					return null;
-				}
-			} catch (ClientProtocolException e) { 
-				return null;
-			} catch (IOException e) { 
-				return null;
-			} 
-			
-			contenuPage = contenuPage.replaceAll(" ", "");
-
-			if(contenuPage.equals("ok")) {
-				toast.setText("Diplôme créé.");
-				toast.show();
-				
-				finish();
-			} else if (contenuPage.equals("error")) {
-				toast.setText("Erreur. Veuillez réessayer.");
-				toast.show();	
-			} else if (contenuPage.equals("error")) {
-				toast.setText("Un diplôme avec ce nom existe déjà.");
-				toast.show();	
-			}else {
-				toast.setText("Erreur. Veuillez réessayer.");
-				toast.show();	
-			} 
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+		    }
 
 			return null;
 		}

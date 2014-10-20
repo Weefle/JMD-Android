@@ -164,8 +164,12 @@ public class AccueilA extends TabActivity {
 			return true;
 
 		case R.id.menu_deconnexion:
-			File logins = new File(Environment.getExternalStorageDirectory().getPath() + "/cacheJMD/logins.jmd");
-			logins.delete();
+			File repCache = new File(Environment.getExternalStorageDirectory().getPath() + "/cacheJMD/");
+			File filePseudo = new File(repCache.getPath() + "/pseudo.jmd");
+			File fileToken = new File(repCache.getPath() + "/token.jmd");
+			
+			filePseudo.delete();
+			fileToken.delete();
 
 			finish();
 			startActivity(new Intent(AccueilA.this, ConnexionA.class));				

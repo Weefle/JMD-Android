@@ -2,7 +2,6 @@ package org.gl.jmd.view.menu.admin;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.logging.*;
 
 import org.apache.http.*;
 import org.apache.http.client.*;
@@ -11,11 +10,9 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import org.gl.jmd.Constantes;
-import org.gl.jmd.R;
+import org.gl.jmd.*;
 import org.gl.jmd.model.user.Admin;
-import org.gl.jmd.utils.FileUtils;
-import org.gl.jmd.utils.SecurityUtils;
+import org.gl.jmd.utils.*;
 import org.gl.jmd.view.InitApp;
 import org.gl.jmd.view.admin.*;
 
@@ -147,9 +144,37 @@ public class ConnexionA extends Activity {
 					toast.show();
 		        }
 		    } catch (ClientProtocolException e) {
-		    	Logger.getLogger(ConnexionA.class.getName()).log(Level.SEVERE, null, e);
+		    	ConnexionA.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(ConnexionA.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								ConnexionA.this.finish();
+							}
+						});
+
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
 		    } catch (IOException e) {
-		    	Logger.getLogger(ConnexionA.class.getName()).log(Level.SEVERE, null, e);
+		    	ConnexionA.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(ConnexionA.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								ConnexionA.this.finish();
+							}
+						});
+
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
 		    }
 
 			return null;

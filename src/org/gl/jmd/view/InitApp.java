@@ -6,7 +6,6 @@ import org.gl.jmd.R;
 import org.gl.jmd.dao.ParametreDAO;
 import org.gl.jmd.model.*;
 import org.gl.jmd.model.enumeration.ParamType;
-import org.gl.jmd.utils.FileUtils;
 import org.gl.jmd.view.admin.*;
 import org.gl.jmd.view.etudiant.AccueilE;
 import org.gl.jmd.view.menu.admin.ConnexionA;
@@ -60,14 +59,13 @@ public class InitApp extends Activity {
 		finish();
 		
 		File repCache = new File(Environment.getExternalStorageDirectory().getPath() + "/cacheJMD/");
-		File fileLogin = new File(repCache.getPath() + "/logins.jmd");
+		File filePseudo = new File(repCache.getPath() + "/pseudo.jmd");
+		File fileToken = new File(repCache.getPath() + "/token.jmd");
 		
-		String idAdmin = FileUtils.lireFichier(fileLogin);
-		
-		if (idAdmin.length() == 0) {
-			startActivity(new Intent(InitApp.this, ConnexionA.class));
-		} else {
+		if (filePseudo.exists() && fileToken.exists()) {
 			startActivity(new Intent(InitApp.this, AccueilA.class));
+		} else {
+			startActivity(new Intent(InitApp.this, ConnexionA.class));
 		}
 	}
 	

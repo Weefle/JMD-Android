@@ -37,7 +37,7 @@ public class Accueil extends Activity {
 		
 		File repCache = new File(Environment.getExternalStorageDirectory().getPath() + "/cacheJMD/");
 		File filePseudo = new File(repCache.getPath() + "/pseudo.jmd");
-		File fileToken = new File(repCache.getPath() + "/pseudo.jmd");
+		File fileToken = new File(repCache.getPath() + "/token.jmd");
 		
 		if (!repCache.exists()) {
 			repCache.mkdir();

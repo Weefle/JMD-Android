@@ -2,13 +2,16 @@ package org.gl.jmd.view.admin;
 
 import java.io.*;
 
-import org.apache.http.client.ClientProtocolException;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.*;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.gl.jmd.Constantes;
 import org.gl.jmd.R;
 import org.gl.jmd.model.user.Admin;
-import org.gl.jmd.utils.*;
 
 import android.app.*;
-import android.content.*;
+import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.os.*;
 import android.view.View;
@@ -24,8 +27,6 @@ public class RecupMDPA extends Activity {
 	private Activity activity;
 	
 	private Toast toast;
-	
-	private String contenuPage = "";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +50,9 @@ public class RecupMDPA extends Activity {
 		if (PSEUDO.getText().toString().length() != 0) {
 			Admin a = new Admin();
 			a.setPseudo(PSEUDO.getText().toString());
-
-			String URL = "http://www.jordi-charpentier.com/jmd/mobile/recupMDP.php?pseudo=" + a.getPseudo();
+			
+			String URL = Constantes.URL_SERVER + "admin/passwordOublie" +
+						 "?pseudo=" + a.getPseudo();
 
 			ProgressDialog progress = new ProgressDialog(activity);
 			progress.setMessage("Chargement...");
@@ -84,47 +86,60 @@ public class RecupMDPA extends Activity {
 		}
 
 		protected Void doInBackground(Void... arg0) {
-			try {
-				if((contenuPage = WebUtils.getPage(pathUrl)) != "-1");
+			HttpClient httpclient = new DefaultHttpClient();
+		    HttpGet httpGet = new HttpGet(pathUrl);
 
-				else {
-					RecupMDPA.this.runOnUiThread(new Runnable() {
-						public void run() {
-							AlertDialog.Builder builder = new AlertDialog.Builder(RecupMDPA.this);
-							builder.setMessage("Erreur - Vérifiez votre connexion");
-							builder.setCancelable(false);
-							builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog, int which) {
-									RecupMDPA.this.finish();
-								}
-							});
+		    try {
+		        HttpResponse response = httpclient.execute(httpGet);
+		        
+		        if (response.getStatusLine().getStatusCode() == 200) {
+		        	toast.setText("Les instructions vous ont été envoyées par mail.");
+		        	toast.show();
+		        	
+		        	finish();
+		        } else if (response.getStatusLine().getStatusCode() == 404) {
+		        	toast.setText("Le pseudo spécifié n'existe pas.");	
+					toast.show();
+		        } else if (response.getStatusLine().getStatusCode() == 500) {
+		        	toast.setText("Une erreur est survenue au niveau de la BDD.");	
+					toast.show();
+		        } else {
+		        	toast.setText("Erreur inconnue. Veuillez réessayer.");	
+					toast.show();
+		        }
+		    } catch (ClientProtocolException e) {
+		    	RecupMDPA.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(RecupMDPA.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								RecupMDPA.this.finish();
+							}
+						});
 
-							AlertDialog error = builder.create();
-							error.show();
-						}});
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+		    } catch (IOException e) {
+		    	RecupMDPA.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(RecupMDPA.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								RecupMDPA.this.finish();
+							}
+						});
 
-					return null;
-				}
-			} catch (ClientProtocolException e) { 
-				return null;
-			} catch (IOException e) { 
-				return null;
-			} 
-			
-			contenuPage = contenuPage.replaceAll(" ", "");				
-
-			if (contenuPage.equals("error")) {
-				toast.setText("Erreur. Veuillez réessayer.");
-				toast.show();	
-			} else if (contenuPage.equals("false")) {
-				toast.setText("Le pseudo spécifié n'existe pas.");
-				toast.show();
-			} else {
-				toast.setText("Les instructions vous ont été envoyées par mail.");
-				toast.show();
-				
-				finish();
-			} 
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+		    }				
 
 			return null;
 		}
