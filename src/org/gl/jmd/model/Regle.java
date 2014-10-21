@@ -8,15 +8,17 @@ public class Regle implements Serializable {
 
 	private int id;
 	
-	private String regle;
+	private int regle;
 	
-	private String operateur;
+	private int operateur;
 	
-	private String valeur;
+	private int valeur;
 	
 	private int idUE;
 	
 	private int idAnnee;
+	
+	private int idMatiere;
 	
 	/**
 	 * Constructeur par défaut de la classe.
@@ -41,15 +43,15 @@ public class Regle implements Serializable {
 		return this.id;
 	}
 
-	public String getRegle() {
+	public int getRegle() {
 		return this.regle;
 	}
 
-	public String getOperateur() {
+	public int getOperateur() {
 		return this.operateur;
 	}
 
-	public String getValeur() {
+	public int getValeur() {
 		return this.valeur;
 	}
 	
@@ -61,21 +63,25 @@ public class Regle implements Serializable {
 		return this.idAnnee;
 	}
 	
+	public int getIdMatiere() {
+		return this.idMatiere;
+	}
+	
 	/* Setters. */
 
 	public void setId(int id) {
 		this.id = id;
 	}
 
-	public void setRegle(String regle) {
+	public void setRegle(int regle) {
 		this.regle = regle;
 	}
 
-	public void setOperateur(String operateur) {
+	public void setOperateur(int operateur) {
 		this.operateur = operateur;
 	}
 
-	public void setValeur(String valeur) {
+	public void setValeur(int valeur) {
 		this.valeur = valeur;
 	}
 
@@ -85,5 +91,9 @@ public class Regle implements Serializable {
 
 	public void setIdAnnee(int idAnnee) {
 		this.idAnnee = idAnnee;
+	}
+	
+	public void setIdMatiere(int idMatiere) {
+		this.idMatiere = idMatiere;
 	}
 }

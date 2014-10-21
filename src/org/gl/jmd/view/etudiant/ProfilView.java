@@ -1,4 +1,4 @@
-package org.gl.jmd.view.menu.etudiant;
+package org.gl.jmd.view.etudiant;
 
 import java.io.File;
 

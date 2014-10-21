@@ -4,10 +4,17 @@ import java.io.*;
 import java.util.*;
 
 import org.apache.http.client.ClientProtocolException;
+import org.gl.jmd.Constantes;
 import org.gl.jmd.R;
+import org.gl.jmd.ServiceHandler;
+import org.gl.jmd.model.Annee;
+import org.gl.jmd.model.Etablissement;
 import org.gl.jmd.model.enumeration.DecoupageType;
 import org.gl.jmd.utils.*;
 import org.gl.jmd.view.admin.create.CreationAnnee;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.app.*;
 import android.content.*;
@@ -53,40 +60,27 @@ public class ListeAnneeA extends Activity {
 		tvTitre.setText(nomDiplome);
 	}
 	
-	public void actualiserListe() {
-		String URL = "http://www.jordi-charpentier.com/jmd/mobile/getInfos.php?type=annee&idDiplome=" + idDiplome;
-		
+	public void actualiserListe() {		
 		ProgressDialog progress = new ProgressDialog(this);
 		progress.setMessage("Chargement...");
-		new ListerAnnees(progress, URL).execute();	
+		new ListerAnnees(progress, Constantes.URL_SERVER + "annee/getAnneesByDiplome?idDiplome=" + idDiplome).execute();	
 	}
 	
-	public void initListe() {
-		StringTokenizer chaineEclate = new StringTokenizer(contenuPage, ";");
-		
-		final String[] temp = new String[chaineEclate.countTokens()];
+	public void initListe(final ArrayList<Annee> listeAnnees) {
 		final ListView liste = (ListView) findViewById(android.R.id.list);
 		
-		if (temp.length != 1) {
-			int i = 0;
-
-			while(chaineEclate.hasMoreTokens()) {
-				temp[i++] = chaineEclate.nextToken();	
-			}
-
+		if (listeAnnees.size() > 0) {
 			final ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
 			HashMap<String, String> map;
 
-			for(int s = 0; s < temp.length;) {
+			for(int s = 0; s < listeAnnees.size(); s++) {
 				map = new HashMap<String, String>();
 
-				map.put("id", temp[s].replaceAll(" ", ""));
-				map.put("titre", temp[s + 1]);
-				map.put("decoupage", temp[s + 2]);
-				map.put("description", temp[s + 4] + " - " + temp[s + 5]);
-				map.put("isLastYear", temp[s + 3]);
-				
-				s = s + 6;
+				map.put("id", "" + listeAnnees.get(s).getId());
+				map.put("titre", listeAnnees.get(s).getNom());
+				map.put("decoupage", listeAnnees.get(s).getDecoupage().name());
+				map.put("description", listeAnnees.get(s).getEtablissement().getNom() + " - " + listeAnnees.get(s).getEtablissement().getVille());
+				map.put("isLastYear", "" + listeAnnees.get(s).isLast());
 
 				listItem.add(map);		
 			}
@@ -231,45 +225,47 @@ public class ListeAnneeA extends Activity {
 		}
 
 		protected Void doInBackground(Void... arg0) {			
-			try {
-				if((contenuPage = WebUtils.getPage(pathUrl)) != "-1");
+			ServiceHandler sh = new ServiceHandler();
+            String jsonStr = sh.makeServiceCall(pathUrl, ServiceHandler.GET);
+            
+            final ArrayList<Annee> listeAnnees = new ArrayList<Annee>();
+            Annee a = null;
+            
+            if (jsonStr != null) {            	
+                try {
+                    JSONArray annees = new JSONArray(jsonStr);
+ 
+                    for (int i = 0; i < annees.length(); i++) {
+                    	JSONObject c = annees.getJSONObject(i);
+                        
+                        a = new Annee();
+                        a.setId(c.getInt("idAnnee"));
+                        a.setNom(c.getString("nom"));
+                        a.setIsLast(c.getBoolean("isLastYear"));
+                        a.setDecoupage(DecoupageType.valueOf(c.getString("decoupage")));
+                        
+                        JSONObject etaFromAnnee = c.getJSONObject("etablissement");
+                        Etablissement e = new Etablissement();
+                        e.setId(etaFromAnnee.getInt("idEtablissement"));
+                        e.setNom(etaFromAnnee.getString("nom"));
+                        e.setVille(etaFromAnnee.getString("ville"));
+                        
+                        a.setEtablissement(e);
+                        
+                        listeAnnees.add(a);
+                    }
+                    
+                    ListeAnneeA.this.runOnUiThread(new Runnable() {
+    					public void run() {    						
+    						initListe(listeAnnees);
 
-				else {
-					ListeAnneeA.this.runOnUiThread(new Runnable() {
-						public void run() {
-							AlertDialog.Builder builder = new AlertDialog.Builder(ListeAnneeA.this);
-							builder.setMessage("Erreur - Vérifiez votre connexion");
-							builder.setCancelable(false);
-							builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog, int which) {
-									ListeAnneeA.this.finish();
-								}
-							});
-
-							AlertDialog error = builder.create();
-							error.show();
-						}});
-
-					return null;
-				}
-			} catch (ClientProtocolException e) { 
-				return null;
-			} catch (IOException e) { 
-				return null;
-			} 	
-			
-			if (contenuPage.equals("error")) {
-				toast.setText("Erreur. Veuillez réessayer.");
-				toast.show();	
-			} else {
-				ListeAnneeA.this.runOnUiThread(new Runnable() {
-					public void run() {
-						initListe();
-						
-						return;
-					}
-				});
-			} 
+    						return;
+    					}
+    				});
+                } catch (JSONException ex) {
+                    ex.printStackTrace();
+                }
+            } 
 
 			return null;
 		}

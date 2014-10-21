@@ -39,21 +39,21 @@ public class ListeTrimestreA extends Activity {
 
 		map = new HashMap<String, String>();
 		map.put("titre", "Trimestre 1");
-		map.put("idAnnee", "" + idAnnee);
+		map.put("idAnnee", idAnnee);
 		map.put("decoupage", "TRI1");
 		
 		listItem.add(map);	
 		
 		map = new HashMap<String, String>();
 		map.put("titre", "Trimestre 2");
-		map.put("idAnnee", "" + idAnnee);
+		map.put("idAnnee", idAnnee);
 		map.put("decoupage", "TRI2");
 		
 		listItem.add(map);		
 		
 		map = new HashMap<String, String>();
 		map.put("titre", "Trimestre 3");
-		map.put("idAnnee", "" + idAnnee);
+		map.put("idAnnee", idAnnee);
 		map.put("decoupage", "TRI3");
 		
 		listItem.add(map);	

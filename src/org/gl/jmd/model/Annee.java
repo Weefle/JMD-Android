@@ -283,7 +283,7 @@ public class Annee implements Serializable {
 		
 		for (int i = 0; i < this.listeRegles.size(); i++) {
 			if (this.listeRegles.get(i).equals(RegleType.NOTE_MINIMALE)) {
-				if (moyenne < Double.parseDouble(this.listeRegles.get(i).getValeur())) {
+				if (moyenne < this.listeRegles.get(i).getValeur()) {
 					result = false;
 				}
 			}

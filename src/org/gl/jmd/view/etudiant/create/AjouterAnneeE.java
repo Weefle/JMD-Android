@@ -216,9 +216,9 @@ public class AjouterAnneeE extends Activity {
 											for(int s = 0; s < temp.length;) {
 												r = new Regle();
 												r.setId(Integer.parseInt(temp[s].replaceAll(" ", "")));
-												r.setRegle(temp[s+1].replaceAll(" ", ""));
-												r.setOperateur(temp[s+2].replaceAll(" ", ""));
-												r.setValeur(temp[s+3].replaceAll(" ", ""));
+												r.setRegle(Integer.parseInt(temp[s+1].replaceAll(" ", "")));
+												r.setOperateur(Integer.parseInt(temp[s+2].replaceAll(" ", "")));
+												r.setValeur(Integer.parseInt(temp[s+3].replaceAll(" ", "")));
 													
 												listeRegles.add(r);
 												
@@ -372,9 +372,9 @@ public class AjouterAnneeE extends Activity {
 																for(int s = 0; s < temp.length;) {
 																	r = new Regle();
 																	r.setId(Integer.parseInt(temp[s].replaceAll(" ", "")));
-																	r.setRegle(temp[s+1].replaceAll(" ", ""));
-																	r.setOperateur(temp[s+2].replaceAll(" ", ""));
-																	r.setValeur(temp[s+3].replaceAll(" ", ""));
+																	r.setRegle(Integer.parseInt(temp[s+1].replaceAll(" ", "")));
+																	r.setOperateur(Integer.parseInt(temp[s+2].replaceAll(" ", "")));
+																	r.setValeur(Integer.parseInt(temp[s+3].replaceAll(" ", "")));
 																		
 																	listeReglesUE.add(r);
 																	
@@ -485,9 +485,9 @@ public class AjouterAnneeE extends Activity {
 																for(int s = 0; s < temp.length;) {
 																	r = new Regle();
 																	r.setId(Integer.parseInt(temp[s].replaceAll(" ", "")));
-																	r.setRegle(temp[s+1].replaceAll(" ", ""));
-																	r.setOperateur(temp[s+2].replaceAll(" ", ""));
-																	r.setValeur(temp[s+3].replaceAll(" ", ""));
+																	r.setRegle(Integer.parseInt(temp[s+1].replaceAll(" ", "")));
+																	r.setOperateur(Integer.parseInt(temp[s+2].replaceAll(" ", "")));
+																	r.setValeur(Integer.parseInt(temp[s+3].replaceAll(" ", "")));
 																		
 																	listeReglesMat.add(r);
 																	

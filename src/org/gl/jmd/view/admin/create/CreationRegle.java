@@ -1,18 +1,20 @@
 package org.gl.jmd.view.admin.create;
 
 import java.io.*;
-import java.net.URLEncoder;
 import java.util.*;
 
-import org.apache.http.client.ClientProtocolException;
-import org.gl.jmd.R;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.*;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.gl.jmd.*;
 import org.gl.jmd.model.Regle;
 import org.gl.jmd.model.enumeration.*;
 import org.gl.jmd.utils.*;
+import org.gl.jmd.view.Accueil;
 
 import android.app.*;
-import android.content.DialogInterface;
-import android.content.Intent;
+import android.content.*;
 import android.content.res.Configuration;
 import android.os.*;
 import android.util.Log;
@@ -87,68 +89,36 @@ public class CreationRegle extends Activity {
 			Regle r = new Regle();
 
 			if (selectedTypeRegle == RegleType.NB_OPT_MINI) {
-				r.setRegle("1");
+				r.setRegle(1);
 			} else if (selectedTypeRegle == RegleType.NOTE_MINIMALE) {
-				r.setRegle("2");
+				r.setRegle(2);
 			}
 
 			if (selectedOperateur == OperateurType.SUPERIEUR) {
-				r.setOperateur("0");
+				r.setOperateur(0);
 			} else if (selectedOperateur == OperateurType.SUPERIEUR_EGAL) {
-				r.setOperateur("1");
+				r.setOperateur(1);
 			} else if (selectedOperateur == OperateurType.EGAL) {
-				r.setOperateur("2");
+				r.setOperateur(2);
 			} else if (selectedOperateur == OperateurType.INFERIEUR) {
-				r.setOperateur("3");
+				r.setOperateur(3);
 			} else if (selectedOperateur == OperateurType.INFERIEUR_EGAL) {
-				r.setOperateur("4");
+				r.setOperateur(4);
 			}
 
-			r.setValeur(VALUE.getText().toString());
-
-			File repCache = new File(Environment.getExternalStorageDirectory().getPath() + "/cacheJMD/");
-			File fileLogin = new File(repCache.getPath() + "/logins.jmd");
-
-			String idAdmin = FileUtils.lireFichier(fileLogin);
-
-			if (idAdmin.length() == 0) {
-				fileLogin.delete();
-
-				AlertDialog.Builder errorDia = new AlertDialog.Builder(activity);
-				errorDia.setTitle("Erreur");
-				errorDia.setMessage("Erreur - Veuillez relancer l'application.");
-				errorDia.setCancelable(false);
-				errorDia.setPositiveButton("Ok", new AlertDialog.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-						CreationRegle.this.finish();
-						android.os.Process.killProcess(android.os.Process.myPid());
-					}
-				});
-
-				errorDia.show();
-			} else {
-				if (idAdmin.matches("[+-]?\\d*(\\.\\d+)?") == false){
-					fileLogin.delete();
-
-					AlertDialog.Builder errorDia = new AlertDialog.Builder(activity);
-					errorDia.setTitle("Erreur");
-					errorDia.setMessage("Erreur - Veuillez relancer l'application.");
-					errorDia.setCancelable(false);
-					errorDia.setPositiveButton("Ok", new AlertDialog.OnClickListener() {
-						public void onClick(DialogInterface dialog, int id) {
-							CreationRegle.this.finish();
-							android.os.Process.killProcess(android.os.Process.myPid());
-						}
-					});
-
-					errorDia.show();
-				}
-			}
-
-			String URL = "http://www.jordi-charpentier.com/jmd/mobile/create.php?idAdmin=" + idAdmin + "&type=regle&regle=" + URLEncoder.encode(r.getRegle()) + "&operateur=" + r.getOperateur() + "&value=" + VALUE.getText().toString() + "&idAnnee=" + idAnnee + "&idUE=" + selectedUE_ID + "&idMatiere=" + selectedMatiere_ID;
-
-			Log.i("CreationRegle", URL);
+			r.setValeur(Integer.parseInt(VALUE.getText().toString()));
 			
+			String URL = Constantes.URL_SERVER + "regle" +
+					"?regle=" + r.getRegle() +
+					"&operateur=" + r.getOperateur() +
+					"&valeur=" + r.getValeur() +
+					"&idAnnee=" + idAnnee +
+					"&idUE=" + selectedUE_ID +
+					"&idMatiere=" + selectedMatiere_ID +
+					"&token=" + FileUtils.lireFichier("/sdcard/cacheJMD/token.jmd") + 
+					"&pseudo=" + FileUtils.lireFichier("/sdcard/cacheJMD/pseudo.jmd") +
+					"&timestamp=" + new java.util.Date().getTime();	
+
 			ProgressDialog progress = new ProgressDialog(activity);
 			progress.setMessage("Chargement...");
 			new CreerRegle(progress, URL).execute();	
@@ -247,52 +217,76 @@ public class CreationRegle extends Activity {
 		}
 
 		protected Void doInBackground(Void... arg0) {
-			try {
-				if((contenuPage = WebUtils.getPage(pathUrl)) != "-1");
+			HttpClient httpclient = new DefaultHttpClient();
+		    HttpPut httppost = new HttpPut(pathUrl);
 
-				else {
-					CreationRegle.this.runOnUiThread(new Runnable() {
-						public void run() {
-							AlertDialog.Builder builder = new AlertDialog.Builder(CreationRegle.this);
-							builder.setMessage("Erreur - Vérifiez votre connexion");
-							builder.setCancelable(false);
-							builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog, int which) {
-									CreationRegle.this.finish();
-								}
-							});
+		    try {
+		        HttpResponse response = httpclient.execute(httppost);
+		        
+		        if (response.getStatusLine().getStatusCode() == 200) {
+		        	toast.setText("Règle créée.");
+		        	toast.show();
+		        	
+		        	finish();
+		        } else if (response.getStatusLine().getStatusCode() == 401) {
+					File filePseudo = new File("/sdcard/cacheJMD/pseudo.jmd");
+					File fileToken = new File("/sdcard/cacheJMD/token.jmd");
+					
+					filePseudo.delete();
+					fileToken.delete();
+		        	
+					finishAllActivities();
+		        	startActivity(new Intent(CreationRegle.this, Accueil.class));	
+		        	
+		        	toast.setText("Session expirée.");	
+					toast.show();
+		        } else if (response.getStatusLine().getStatusCode() == 500) {
+		        	toast.setText("Une erreur est survenue au niveau de la BDD.");	
+					toast.show();
+		        } else {
+		        	toast.setText("Erreur inconnue. Veuillez réessayer.");	
+					toast.show();
+		        }
+		    } catch (ClientProtocolException e) {
+		    	CreationRegle.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(CreationRegle.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								CreationRegle.this.finish();
+							}
+						});
 
-							AlertDialog error = builder.create();
-							error.show();
-						}});
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+		    } catch (IOException e) {
+		    	CreationRegle.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(CreationRegle.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								CreationRegle.this.finish();
+							}
+						});
 
-					return null;
-				}
-			} catch (ClientProtocolException e) { 
-				return null;
-			} catch (IOException e) { 
-				return null;
-			} 
-
-			contenuPage = contenuPage.replaceAll(" ", "");
-
-			Log.i("CreationRegle", contenuPage);
-			
-			if(contenuPage.equals("ok")) {
-				toast.setText("Règle créée.");
-				toast.show(); 
-
-				finish();
-			} else if (contenuPage.equals("error")) {
-				toast.setText("Erreur. Veuillez réessayer.");
-				toast.show();	
-			} else {
-				toast.setText("Erreur. Veuillez réessayer.");
-				toast.show();	
-			} 
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+		    }
 
 			return null;
 		}
+	}
+	
+	public void finishAllActivities(){
+		this.finishAffinity();
 	}
 	
 	/**

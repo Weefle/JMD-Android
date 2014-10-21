@@ -1,12 +1,13 @@
 package org.gl.jmd.view.admin.listing;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 import org.apache.http.client.ClientProtocolException;
-import org.gl.jmd.R;
+import org.gl.jmd.*;
+import org.gl.jmd.model.Etablissement;
 import org.gl.jmd.utils.*;
+import org.json.*;
 
 import android.app.*;
 import android.content.DialogInterface;
@@ -45,37 +46,24 @@ public class ListeEtablissementA extends Activity {
 	}
 
 	public void actualiserListe() {
-		String URL = "http://www.jordi-charpentier.com/jmd/mobile/getInfos.php?type=etablissement";
-
 		ProgressDialog progress = new ProgressDialog(this);
 		progress.setMessage("Chargement...");
-		new ListerEtablissements(progress, URL).execute();	
+		new ListerEtablissements(progress, Constantes.URL_SERVER + "etablissement/getAll").execute();	
 	}
 
-	public void initListe() {
-		StringTokenizer chaineEclate = new StringTokenizer(contenuPage, ";");
-
-		final String[] temp = new String[chaineEclate.countTokens()];
+	public void initListe(final ArrayList<Etablissement> listeEtablissements) {
 		final ListView liste = (ListView) findViewById(android.R.id.list);
 
-		if (temp.length != 1) {
-			int i = 0;
-
-			while(chaineEclate.hasMoreTokens()) {
-				temp[i++] = chaineEclate.nextToken();	
-			}
-
+		if (listeEtablissements.size() > 0) {
 			final ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
 			HashMap<String, String> map;
 
-			for(int s = 0; s < temp.length;) {
+			for(int s = 0; s < listeEtablissements.size(); s++) {
 				map = new HashMap<String, String>();
 
-				map.put("id", temp[s].replaceAll(" ", ""));
-				map.put("titre", temp[s + 1]);
-				map.put("description", temp[s + 2]);
-
-				s = s + 3;
+				map.put("id", "" + listeEtablissements.get(s).getId());
+				map.put("titre", listeEtablissements.get(s).getNom());
+				map.put("description", listeEtablissements.get(s).getVille());
 
 				listItem.add(map);		
 			}
@@ -187,45 +175,38 @@ public class ListeEtablissementA extends Activity {
 		}
 
 		protected Void doInBackground(Void... arg0) {			
-			try {
-				if((contenuPage = WebUtils.getPage(pathUrl)) != "-1");
+			ServiceHandler sh = new ServiceHandler();
+            String jsonStr = sh.makeServiceCall(pathUrl, ServiceHandler.GET);
+            
+            final ArrayList<Etablissement> listeEtablissements = new ArrayList<Etablissement>();
+            Etablissement e = null;
+            
+            if (jsonStr != null) {            	
+                try {
+                    JSONArray diplomes = new JSONArray(jsonStr);
+ 
+                    for (int i = 0; i < diplomes.length(); i++) {
+                    	JSONObject c = diplomes.getJSONObject(i);
+                        
+                        e = new Etablissement();
+                        e.setId(c.getInt("idEtablissement"));
+                        e.setNom(c.getString("nom"));
+                        e.setVille(c.getString("ville"));
+                        
+                        listeEtablissements.add(e);
+                    }
+                    
+                    ListeEtablissementA.this.runOnUiThread(new Runnable() {
+    					public void run() {    						
+    						initListe(listeEtablissements);
 
-				else {
-					ListeEtablissementA.this.runOnUiThread(new Runnable() {
-						public void run() {
-							AlertDialog.Builder builder = new AlertDialog.Builder(ListeEtablissementA.this);
-							builder.setMessage("Erreur - Vérifiez votre connexion");
-							builder.setCancelable(false);
-							builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog, int which) {
-									ListeEtablissementA.this.finish();
-								}
-							});
-
-							AlertDialog error = builder.create();
-							error.show();
-						}});
-
-					return null;
-				}
-			} catch (ClientProtocolException e) { 
-				return null;
-			} catch (IOException e) { 
-				return null;
-			} 	
-
-			if (contenuPage.equals("error")) {
-				toast.setText("Erreur. Veuillez réessayer.");
-				toast.show();	
-			} else {
-				ListeEtablissementA.this.runOnUiThread(new Runnable() {
-					public void run() {
-						initListe();
-
-						return;
-					}
-				});
-			} 
+    						return;
+    					}
+    				});
+                } catch (JSONException ex) {
+                    ex.printStackTrace();
+                }
+            } 
 
 			return null;
 		}

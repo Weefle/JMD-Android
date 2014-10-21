@@ -1,8 +1,14 @@
 package org.gl.jmd.view.admin;
 
-import java.io.File;
+import java.io.*;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.*;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.gl.jmd.Constantes;
 import org.gl.jmd.R;
+import org.gl.jmd.utils.FileUtils;
 import org.gl.jmd.view.*;
 import org.gl.jmd.view.admin.create.*;
 import org.gl.jmd.view.admin.listing.*;
@@ -12,9 +18,10 @@ import android.app.*;
 import android.content.*;
 import android.content.res.Configuration;
 import android.graphics.*;
-import android.os.Bundle;
+import android.os.*;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
+import android.util.Log;
 import android.view.*;
 import android.widget.*;
 import android.widget.TabHost.*;
@@ -29,6 +36,10 @@ public class AccueilA extends TabActivity {
 	private TabHost tabHost;
 
 	private int currentTab = 0;
+	
+	private Activity activity;
+	
+	private Toast toast;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -94,7 +105,11 @@ public class AccueilA extends TabActivity {
 					tv2.setTextColor(Color.parseColor("#FF5E3A"));
 					tv2.setText(spanString2);
 				}
-			}});
+			}}
+		);
+		
+		activity = this;
+		toast = Toast.makeText(activity, "", Toast.LENGTH_SHORT);
 	}
 	
     private void setupTab(String name, String tag, Intent intent) {
@@ -130,6 +145,99 @@ public class AccueilA extends TabActivity {
 			startActivity(new Intent(AccueilA.this, CreationDiplome.class));	
 		}
 	}
+	
+	private class SeDeco extends AsyncTask<Void, Void, Void> {
+		private ProgressDialog progress;
+		private String pathUrl;
+
+		public SeDeco(ProgressDialog progress, String pathUrl) {
+			this.progress = progress;
+			this.pathUrl = pathUrl;
+		}
+
+		public void onPreExecute() {
+			progress.show();
+		}
+
+		public void onPostExecute(Void unused) {
+			progress.dismiss();
+		}
+
+		protected Void doInBackground(Void... arg0) {
+			HttpClient httpclient = new DefaultHttpClient();
+		    HttpGet httppost = new HttpGet(pathUrl);
+
+		    try {
+		        HttpResponse response = httpclient.execute(httppost);
+		        
+		        if (response.getStatusLine().getStatusCode() == 200) {
+		        	File filePseudo = new File("/sdcard/cacheJMD/pseudo.jmd");
+					File fileToken = new File("/sdcard/cacheJMD/token.jmd");
+					
+					filePseudo.delete();
+					fileToken.delete();
+
+					finish();
+					startActivity(new Intent(AccueilA.this, ConnexionA.class));		
+		        	
+		        	toast.setText("Déconnecté.");
+		        	toast.show();
+		        } else if (response.getStatusLine().getStatusCode() == 401) {
+					finishAllActivities();
+		        	startActivity(new Intent(AccueilA.this, Accueil.class));	
+		        	
+		        	toast.setText("Erreur. Redirection vers l'accueil.");	
+					toast.show();
+		        } else if (response.getStatusLine().getStatusCode() == 500) {
+		        	toast.setText("Une erreur est survenue au niveau de la BDD.");	
+					toast.show();
+		        } else {
+		        	toast.setText("Erreur inconnue. Veuillez réessayer.");	
+					toast.show();
+		        }
+		        
+		        Log.e("AccueilA", "" +response.getStatusLine().getStatusCode());
+		    } catch (ClientProtocolException e) {
+		    	AccueilA.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(AccueilA.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								AccueilA.this.finish();
+							}
+						});
+
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+		    } catch (IOException e) {
+		    	AccueilA.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(AccueilA.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								AccueilA.this.finish();
+							}
+						});
+
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+		    }
+
+			return null;
+		}
+	}
+	
+	public void finishAllActivities(){
+		this.finishAffinity();
+	}
 
 	/* Méthodes héritées de la classe Activity. */
 
@@ -162,14 +270,14 @@ public class AccueilA extends TabActivity {
 			return true;
 
 		case R.id.menu_deconnexion:
-			File filePseudo = new File("/sdcard/cacheJMD/pseudo.jmd");
-			File fileToken = new File("/sdcard/cacheJMD/token.jmd");
-			
-			filePseudo.delete();
-			fileToken.delete();
+			String URL = Constantes.URL_SERVER + "admin/logout" +
+					"?token=" + FileUtils.lireFichier("/sdcard/cacheJMD/token.jmd") + 
+					"&pseudo=" + FileUtils.lireFichier("/sdcard/cacheJMD/pseudo.jmd") +
+					"&timestamp=" + new java.util.Date().getTime();			
 
-			finish();
-			startActivity(new Intent(AccueilA.this, ConnexionA.class));				
+			ProgressDialog progress = new ProgressDialog(activity);
+			progress.setMessage("Chargement...");
+			new SeDeco(progress, URL).execute();			
 
 			return true;
 

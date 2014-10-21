@@ -1,13 +1,11 @@
 package org.gl.jmd.view.admin.listing;
 
 import org.gl.jmd.R;
-import org.gl.jmd.view.admin.create.CreationRegle;
-import org.gl.jmd.view.admin.create.CreationUE;
+import org.gl.jmd.view.admin.create.*;
 
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
-import android.util.Log;
 import android.view.*;
 import android.widget.*;
 import android.widget.TabHost.OnTabChangeListener;
@@ -134,8 +132,6 @@ public class ListeUERegleA extends TabActivity {
 			Intent intent = new Intent(ListeUERegleA.this, CreationUE.class);
 			intent.putExtra("idAnnee", idAnnee);
 			intent.putExtra("decoupage", decoupage);
-			
-			Log.i("ListeUERegleA", decoupage);
 			
 			startActivity(intent);	
 		} else if (currentTab == 1) {

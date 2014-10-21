@@ -9,7 +9,6 @@ import org.gl.jmd.model.user.Etudiant;
 import org.gl.jmd.view.*;
 import org.gl.jmd.view.etudiant.create.AjouterDiplomeE;
 import org.gl.jmd.view.etudiant.listing.ListeAnneesE;
-import org.gl.jmd.view.menu.etudiant.*;
 
 import android.os.Bundle;
 import android.view.*;

@@ -4,8 +4,12 @@ import java.io.*;
 import java.util.*;
 
 import org.apache.http.client.ClientProtocolException;
+import org.gl.jmd.Constantes;
 import org.gl.jmd.R;
+import org.gl.jmd.ServiceHandler;
+import org.gl.jmd.model.Diplome;
 import org.gl.jmd.utils.*;
+import org.json.*;
 
 import android.app.*;
 import android.content.*;
@@ -43,36 +47,23 @@ public class ListeDiplomeA extends Activity {
 	}
 
 	public void actualiserListe() {
-		String URL = "http://www.jordi-charpentier.com/jmd/mobile/getInfos.php?type=diplome";
-
-		ProgressDialog progress = new ProgressDialog(this);
+		ProgressDialog progress = new ProgressDialog(activity);
 		progress.setMessage("Chargement...");
-		new ListerDiplomes(progress, URL).execute();	
+		new ListerDiplomes(progress, Constantes.URL_SERVER + "diplome/getAll").execute();	
 	}
 
-	public void initListe() {
-		StringTokenizer chaineEclate = new StringTokenizer(contenuPage, ";");
-
-		final String[] temp = new String[chaineEclate.countTokens()];
+	public void initListe(final ArrayList<Diplome> listeDiplomes) {
 		final ListView liste = (ListView) findViewById(android.R.id.list);
 
-		if (temp.length != 1) {
-			int i = 0;
-
-			while(chaineEclate.hasMoreTokens()) {
-				temp[i++] = chaineEclate.nextToken();	
-			}
-
+		if (listeDiplomes.size() > 0) {
 			final ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
 			HashMap<String, String> map;
 
-			for(int s = 0; s < temp.length;) {
+			for(int s = 0; s < listeDiplomes.size(); s++) {
 				map = new HashMap<String, String>();
 
-				map.put("id", temp[s].replaceAll(" ", ""));
-				map.put("titre", temp[s + 1]);
-
-				s = s + 2;
+				map.put("id", "" + listeDiplomes.get(s).getId());
+				map.put("titre", listeDiplomes.get(s).getNom());
 
 				listItem.add(map);		
 			}
@@ -195,45 +186,37 @@ public class ListeDiplomeA extends Activity {
 		}
 
 		protected Void doInBackground(Void... arg0) {			
-			try {
-				if((contenuPage = WebUtils.getPage(pathUrl)) != "-1");
+			ServiceHandler sh = new ServiceHandler();
+            String jsonStr = sh.makeServiceCall(pathUrl, ServiceHandler.GET);
+            
+            final ArrayList<Diplome> listeDiplomes = new ArrayList<Diplome>();
+            Diplome d = null;
+            
+            if (jsonStr != null) {            	
+                try {
+                    JSONArray diplomes = new JSONArray(jsonStr);
+ 
+                    for (int i = 0; i < diplomes.length(); i++) {
+                    	JSONObject c = diplomes.getJSONObject(i);
+                        
+                        d = new Diplome();
+                        d.setId(c.getInt("idDiplome"));
+                        d.setNom(c.getString("nom"));
+                        
+                        listeDiplomes.add(d);
+                    }
+                    
+                    ListeDiplomeA.this.runOnUiThread(new Runnable() {
+    					public void run() {    						
+    						initListe(listeDiplomes);
 
-				else {
-					ListeDiplomeA.this.runOnUiThread(new Runnable() {
-						public void run() {
-							AlertDialog.Builder builder = new AlertDialog.Builder(ListeDiplomeA.this);
-							builder.setMessage("Erreur - Vérifiez votre connexion");
-							builder.setCancelable(false);
-							builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog, int which) {
-									ListeDiplomeA.this.finish();
-								}
-							});
-
-							AlertDialog error = builder.create();
-							error.show();
-						}});
-
-					return null;
-				}
-			} catch (ClientProtocolException e) { 
-				return null;
-			} catch (IOException e) { 
-				return null;
-			} 	
-
-			if (contenuPage.equals("error")) {
-				toast.setText("Erreur. Veuillez réessayer.");
-				toast.show();	
-			} else {
-				ListeDiplomeA.this.runOnUiThread(new Runnable() {
-					public void run() {
-						initListe();
-
-						return;
-					}
-				});
-			} 
+    						return;
+    					}
+    				});
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            } 
 
 			return null;
 		}
