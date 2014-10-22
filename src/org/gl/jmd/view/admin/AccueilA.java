@@ -166,6 +166,8 @@ public class AccueilA extends TabActivity {
 		protected Void doInBackground(Void... arg0) {
 			HttpClient httpclient = new DefaultHttpClient();
 		    HttpGet httppost = new HttpGet(pathUrl);
+		    
+		    Log.e("AccueilA", pathUrl);
 
 		    try {
 		        HttpResponse response = httpclient.execute(httppost);
@@ -277,7 +279,7 @@ public class AccueilA extends TabActivity {
 
 			ProgressDialog progress = new ProgressDialog(activity);
 			progress.setMessage("Chargement...");
-			new SeDeco(progress, URL).execute();			
+			new SeDeco(progress, URL).execute(); 
 
 			return true;
 

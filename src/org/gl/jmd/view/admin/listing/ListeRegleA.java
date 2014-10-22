@@ -6,7 +6,6 @@ import java.util.*;
 import org.apache.http.client.ClientProtocolException;
 import org.gl.jmd.R;
 import org.gl.jmd.model.enumeration.OperateurType;
-import org.gl.jmd.model.enumeration.RegleType;
 import org.gl.jmd.utils.*;
 
 import android.app.*;
