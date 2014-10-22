@@ -28,7 +28,7 @@ public class Matiere implements Serializable {
 	/**
 	 * Le coefficient de la matière.
 	 */
-	private int coefficient;
+	private float coefficient;
 	
 	/**
 	 * Booléen permettant de savoir si la matière est une option, ou non.
@@ -82,7 +82,7 @@ public class Matiere implements Serializable {
 	 * 
 	 * @return Le coefficient de la matière.
 	 */
-	public int getCoefficient() {
+	public double getCoefficient() {
 		return this.coefficient;
 	}
 	
@@ -148,7 +148,7 @@ public class Matiere implements Serializable {
 	 * 
 	 * @param coefficient Le nouveau coefficient de la matière.
 	 */
-	public void setCoefficient(int coefficient) {
+	public void setCoefficient(float coefficient) {
 		this.coefficient = coefficient;
 	}
 	

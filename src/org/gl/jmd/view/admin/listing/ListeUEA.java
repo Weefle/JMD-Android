@@ -4,8 +4,11 @@ import java.io.*;
 import java.util.*;
 
 import org.apache.http.client.ClientProtocolException;
-import org.gl.jmd.R;
+import org.gl.jmd.*;
+import org.gl.jmd.model.UE;
+import org.gl.jmd.model.enumeration.DecoupageYearType;
 import org.gl.jmd.utils.*;
+import org.json.*;
 
 import android.app.*;
 import android.content.*;
@@ -52,36 +55,23 @@ public class ListeUEA extends Activity {
 	}
 	
 	public void actualiserListe() {
-		String URL = "http://www.jordi-charpentier.com/jmd/mobile/getInfos.php?type=ue&idAnnee=" + idAnnee + "&yearType=" + decoupage;
-		
 		ProgressDialog progress = new ProgressDialog(this);
 		progress.setMessage("Chargement...");
-		new ListerUE(progress, URL).execute();
+		new ListerUE(progress, Constantes.URL_SERVER + "ue/getAllUEOfAnneeByYearType?idAnnee=" + idAnnee + "&yearType=" + decoupage).execute();
 	}
 	
-	public void initListe() {
-		StringTokenizer chaineEclate = new StringTokenizer(contenuPage, ";");
-		
-		final String[] temp = new String[chaineEclate.countTokens()];
+	public void initListe(final ArrayList<UE> listeUE) {
 		final ListView liste = (ListView) findViewById(android.R.id.list);
 		
-		if (temp.length != 1) {
-			int i = 0;
-
-			while(chaineEclate.hasMoreTokens()) {
-				temp[i++] = chaineEclate.nextToken();	
-			}
-
+		if (listeUE.size() > 0) {
 			final ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
 			HashMap<String, String> map;	
 
-			for(int s = 0; s < temp.length;) {
+			for(int s = 0; s < listeUE.size(); s++) {
 				map = new HashMap<String, String>();
 
-				map.put("id", temp[s].replaceAll(" ", ""));
-				map.put("titre", temp[s + 1]);
-
-				s = s + 3;
+				map.put("id", "" + listeUE.get(s).getId());
+				map.put("titre", listeUE.get(s).getNom());
 
 				listItem.add(map);		
 			}
@@ -207,45 +197,38 @@ public class ListeUEA extends Activity {
 		}
 
 		protected Void doInBackground(Void... arg0) {			
-			try {
-				if((contenuPage = WebUtils.getPage(pathUrl)) != "-1");
+			ServiceHandler sh = new ServiceHandler();
+            String jsonStr = sh.makeServiceCall(pathUrl, ServiceHandler.GET);
+            
+            final ArrayList<UE> listeUE = new ArrayList<UE>();
+            UE ue = null;
+            
+            if (jsonStr != null) {            	
+                try {
+                    JSONArray ues = new JSONArray(jsonStr);
+ 
+                    for (int i = 0; i < ues.length(); i++) {
+                    	JSONObject c = ues.getJSONObject(i);
+                        
+                        ue = new UE();
+                        ue.setId(c.getInt("idUE"));
+                        ue.setNom(c.getString("nom"));
+                        ue.setDecoupage(DecoupageYearType.valueOf(c.getString("yearType")));
+                        
+                        listeUE.add(ue);
+                    }
+                    
+                    ListeUEA.this.runOnUiThread(new Runnable() {
+    					public void run() {    						
+    						initListe(listeUE);
 
-				else {
-					ListeUEA.this.runOnUiThread(new Runnable() {
-						public void run() {
-							AlertDialog.Builder builder = new AlertDialog.Builder(ListeUEA.this);
-							builder.setMessage("Erreur - Vérifiez votre connexion");
-							builder.setCancelable(false);
-							builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog, int which) {
-									ListeUEA.this.finish();
-								}
-							});
-
-							AlertDialog error = builder.create();
-							error.show();
-						}});
-
-					return null;
-				}
-			} catch (ClientProtocolException e) { 
-				return null;
-			} catch (IOException e) { 
-				return null;
-			} 	
-			
-			if (contenuPage.equals("error")) {
-				toast.setText("Erreur. Veuillez réessayer.");
-				toast.show();	
-			} else {
-				ListeUEA.this.runOnUiThread(new Runnable() {
-					public void run() {
-						initListe();
-						
-						return;
-					}
-				});
-			} 
+    						return;
+    					}
+    				});
+                } catch (JSONException ex) {
+                    ex.printStackTrace();
+                }
+            } 
 
 			return null;
 		}

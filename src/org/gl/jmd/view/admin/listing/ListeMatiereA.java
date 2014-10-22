@@ -5,9 +5,11 @@ import java.io.IOException;
 import java.util.*;
 
 import org.apache.http.client.ClientProtocolException;
-import org.gl.jmd.R;
+import org.gl.jmd.*;
+import org.gl.jmd.model.Matiere;
 import org.gl.jmd.utils.*;
 import org.gl.jmd.view.admin.create.CreationMatiere;
+import org.json.*;
 
 import android.app.*;
 import android.content.*;
@@ -57,37 +59,26 @@ public class ListeMatiereA extends Activity {
 		tvTitre.setText(nomUE);
 	}
 	
-	public void actualiserListe() {
-		String URL = "http://www.jordi-charpentier.com/jmd/mobile/getInfos.php?type=matiere&idUE=" + selectedUE;
-		
+	public void actualiserListe() {	
 		ProgressDialog progress = new ProgressDialog(this);
 		progress.setMessage("Chargement...");
-		new ListerMatieres(progress, URL).execute();
+		new ListerMatieres(progress, Constantes.URL_SERVER + "matiere/getAllMatieretOfUE?idUE=" + selectedUE).execute();
 	}
 	
-	public void initListe() {
-		StringTokenizer chaineEclate = new StringTokenizer(contenuPage, ";");
-		
-		final String[] temp = new String[chaineEclate.countTokens()];
+	public void initListe(final ArrayList<Matiere> listeMatieres) {
 		final ListView liste = (ListView) findViewById(android.R.id.list);
 		
-		if (temp.length != 1) {
-			int i = 0;
-
-			while(chaineEclate.hasMoreTokens()) {
-				temp[i++] = chaineEclate.nextToken();	
-			}
-
+		if (listeMatieres.size() > 0) {
 			final ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
 			HashMap<String, String> map;
 
-			for(int s = 0; s < temp.length;) {
+			for(int s = 0; s < listeMatieres.size(); s++) {
 				map = new HashMap<String, String>();
 
-				map.put("id", temp[s].replaceAll(" ", ""));
-				map.put("titre", ((temp[s + 1].length() > 20) ? temp[s + 1].substring(0, 20) + "..." : temp[s+1]));
-				map.put("isOption", (temp[s + 3].equals("1") ? "Option" : "Obligatoire"));
-				map.put("description", "Coefficient : " + temp[s + 2]);
+				map.put("id", "" + listeMatieres.get(s).getId());
+				map.put("titre", ((listeMatieres.get(s).getNom().length() > 20) ? listeMatieres.get(s).getNom().substring(0, 20) + "..." : listeMatieres.get(s).getNom()));
+				map.put("isOption", (listeMatieres.get(s).isOption() ? "Option" : "Obligatoire"));
+				map.put("description", "Coefficient : " + listeMatieres.get(s).getCoefficient());
 				map.put("img", null);
 
 				s = s + 4;
@@ -211,45 +202,39 @@ public class ListeMatiereA extends Activity {
 		}
 
 		protected Void doInBackground(Void... arg0) {			
-			try {
-				if((contenuPage = WebUtils.getPage(pathUrl)) != "-1");
+			ServiceHandler sh = new ServiceHandler();
+            String jsonStr = sh.makeServiceCall(pathUrl, ServiceHandler.GET);
+            
+            final ArrayList<Matiere> listeMatieres = new ArrayList<Matiere>();
+            Matiere matiere = null;
+            
+            if (jsonStr != null) {            	
+                try {
+                    JSONArray matieres = new JSONArray(jsonStr);
+ 
+                    for (int i = 0; i < matieres.length(); i++) {
+                    	JSONObject c = matieres.getJSONObject(i);
+                        
+                        matiere = new Matiere();
+                        matiere.setCoefficient(c.getLong("coefficient"));
+                        matiere.setId(c.getInt("idMatiere"));
+                        matiere.setIsOption(c.getBoolean("isOption"));
+                        matiere.setNom(c.getString("nom"));
+                        
+                        listeMatieres.add(matiere);
+                    }
+                    
+                    ListeMatiereA.this.runOnUiThread(new Runnable() {
+    					public void run() {    						
+    						initListe(listeMatieres);
 
-				else {
-					ListeMatiereA.this.runOnUiThread(new Runnable() {
-						public void run() {
-							AlertDialog.Builder builder = new AlertDialog.Builder(ListeMatiereA.this);
-							builder.setMessage("Erreur - Vérifiez votre connexion");
-							builder.setCancelable(false);
-							builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog, int which) {
-									ListeMatiereA.this.finish();
-								}
-							});
-
-							AlertDialog error = builder.create();
-							error.show();
-						}});
-
-					return null;
-				}
-			} catch (ClientProtocolException e) { 
-				return null;
-			} catch (IOException e) { 
-				return null;
-			} 
-			
-			if (contenuPage.equals("error")) {
-				toast.setText("Erreur. Veuillez réessayer.");
-				toast.show();	
-			} else {
-				ListeMatiereA.this.runOnUiThread(new Runnable() {
-					public void run() {
-						initListe();
-						
-						return;
-					}
-				});
-			} 
+    						return;
+    					}
+    				});
+                } catch (JSONException ex) {
+                    ex.printStackTrace();
+                }
+            } 
 
 			return null;
 		}
