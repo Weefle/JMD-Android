@@ -3,17 +3,20 @@ package org.gl.jmd.view.admin.listing;
 import java.io.*;
 import java.util.*;
 
-import org.apache.http.client.ClientProtocolException;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.*;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.gl.jmd.*;
 import org.gl.jmd.model.Etablissement;
 import org.gl.jmd.utils.*;
+import org.gl.jmd.view.Accueil;
 import org.json.*;
 
 import android.app.*;
-import android.content.DialogInterface;
+import android.content.*;
 import android.content.res.Configuration;
 import android.os.*;
-import android.util.Log;
 import android.view.View;
 import android.widget.*;
 
@@ -27,8 +30,6 @@ public class ListeEtablissementA extends Activity {
 	private Activity activity;
 
 	private Toast toast;
-
-	private String contenuPage = "";
 	
 	private long back_pressed;
 
@@ -80,46 +81,11 @@ public class ListeEtablissementA extends Activity {
 					confirmQuitter.setCancelable(false);
 					confirmQuitter.setPositiveButton("Oui", new AlertDialog.OnClickListener() {
 						public void onClick(DialogInterface dialog, int id) {
-							File repCache = new File(Environment.getExternalStorageDirectory().getPath() + "/cacheJMD/");
-							File fileLogin = new File(repCache.getPath() + "/logins.jmd");
-
-							String idAdmin = FileUtils.lireFichier(fileLogin);
-
-							if (idAdmin.length() == 0) {
-								fileLogin.delete();
-
-								AlertDialog.Builder errorDia = new AlertDialog.Builder(activity);
-								errorDia.setTitle("Erreur");
-								errorDia.setMessage("Erreur - Veuillez relancer l'application.");
-								errorDia.setCancelable(false);
-								errorDia.setPositiveButton("Ok", new AlertDialog.OnClickListener() {
-									public void onClick(DialogInterface dialog, int id) {
-										ListeEtablissementA.this.finish();
-										android.os.Process.killProcess(android.os.Process.myPid());
-									}
-								});
-
-								errorDia.show();
-							} else {
-								if (idAdmin.matches("[+-]?\\d*(\\.\\d+)?") == false){
-									fileLogin.delete();
-
-									AlertDialog.Builder errorDia = new AlertDialog.Builder(activity);
-									errorDia.setTitle("Erreur");
-									errorDia.setMessage("Erreur - Veuillez relancer l'application.");
-									errorDia.setCancelable(false);
-									errorDia.setPositiveButton("Ok", new AlertDialog.OnClickListener() {
-										public void onClick(DialogInterface dialog, int id) {
-											ListeEtablissementA.this.finish();
-											android.os.Process.killProcess(android.os.Process.myPid());
-										}
-									});
-
-									errorDia.show();
-								}
-							}
-
-							String URL = "http://www.jordi-charpentier.com/jmd/mobile/delete.php?idAdmin=" + idAdmin + "&type=etablissement&idEtablissement=" + listItem.get(arg2).get("id");	
+							String URL = Constantes.URL_SERVER + "etablissement" +
+									"?id=" + listItem.get(arg2).get("id") +
+									"&token=" + FileUtils.lireFichier("/sdcard/cacheJMD/token.jmd") + 
+									"&pseudo=" + FileUtils.lireFichier("/sdcard/cacheJMD/pseudo.jmd") +
+									"&timestamp=" + new java.util.Date().getTime();	
 							
 							ProgressDialog progress = new ProgressDialog(activity);
 							progress.setMessage("Chargement...");
@@ -235,50 +201,80 @@ public class ListeEtablissementA extends Activity {
 		}
 
 		protected Void doInBackground(Void... arg0) {
-			try {
-				if((contenuPage = WebUtils.getPage(pathUrl)) != "-1");
+			HttpClient httpclient = new DefaultHttpClient();
+		    HttpDelete httpDelete = new HttpDelete(pathUrl);
 
-				else {
-					ListeEtablissementA.this.runOnUiThread(new Runnable() {
-						public void run() {
-							AlertDialog.Builder builder = new AlertDialog.Builder(ListeEtablissementA.this);
-							builder.setMessage("Erreur - Vérifiez votre connexion");
-							builder.setCancelable(false);
-							builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog, int which) {
-									ListeEtablissementA.this.finish();
-								}
-							});
+		    try {
+		        final HttpResponse response = httpclient.execute(httpDelete);
 
-							AlertDialog error = builder.create();
-							error.show();
-						}});
+		        ListeEtablissementA.this.runOnUiThread(new Runnable() {
+					public void run() {    			
+				        if (response.getStatusLine().getStatusCode() == 200) {
+				        	toast.setText("Etablissement supprimé.");
+				        	toast.show();
+				        } else if (response.getStatusLine().getStatusCode() == 401) {
+							File filePseudo = new File("/sdcard/cacheJMD/pseudo.jmd");
+							File fileToken = new File("/sdcard/cacheJMD/token.jmd");
+							
+							filePseudo.delete();
+							fileToken.delete();
+				        	
+							finishAllActivities();
+				        	startActivity(new Intent(ListeEtablissementA.this, Accueil.class));	
+				        	
+				        	toast.setText("Session expirée.");	
+							toast.show();
+				        } else if (response.getStatusLine().getStatusCode() == 500) {
+				        	toast.setText("Une erreur est survenue au niveau de la BDD.");	
+							toast.show();
+				        } else {
+				        	toast.setText("Erreur inconnue. Veuillez réessayer.");	
+							toast.show();
+				        }
+				        
+				        return;
+					}
+				});
+		    } catch (ClientProtocolException e) {
+		    	ListeEtablissementA.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(ListeEtablissementA.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								ListeEtablissementA.this.finish();
+							}
+						});
 
-					return null;
-				}
-			} catch (ClientProtocolException e) { 
-				return null;
-			} catch (IOException e) { 
-				return null;
-			} 	
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+		    } catch (IOException e) {
+		    	ListeEtablissementA.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(ListeEtablissementA.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								ListeEtablissementA.this.finish();
+							}
+						});
 
-			contenuPage = contenuPage.replaceAll(" ", "");
-
-			Log.i("ListeEtablissementA", contenuPage);
-			
-			if (contenuPage.equals("ok")) {
-				toast.setText("Etablissement supprimé.");
-				toast.show();	
-			} else if (contenuPage.equals("error")) {
-				toast.setText("Erreur. Veuillez réessayer.");
-				toast.show();	
-			} else {
-				toast.setText("Erreur. Veuillez réessayer.");
-				toast.show();	
-			}
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+		    }
 
 			return null;
 		}
+	}
+	
+	public void finishAllActivities(){
+		this.finishAffinity();
 	}
 
 	/* Méthodes héritées de la classe Activity. */
