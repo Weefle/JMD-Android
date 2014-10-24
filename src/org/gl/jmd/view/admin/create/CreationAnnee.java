@@ -6,8 +6,7 @@ import java.util.*;
 import java.util.regex.*;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
+import org.apache.http.client.*;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.gl.jmd.Constantes;
@@ -16,6 +15,7 @@ import org.gl.jmd.model.*;
 import org.gl.jmd.model.enumeration.DecoupageType;
 import org.gl.jmd.utils.*;
 import org.gl.jmd.view.Accueil;
+import org.json.*;
 
 import android.app.*;
 import android.content.*;
@@ -36,13 +36,7 @@ public class CreationAnnee extends Activity {
 
 	private Toast toast;
 	
-	private String contenuPage = "";
-	
 	private int idDiplome = 0;
-	
-	private String[] listeEtablissements = null;
-	
-	private ArrayList<String> idList = new ArrayList<String>();
 	
 	private String selectedId = "";
 	
@@ -75,11 +69,9 @@ public class CreationAnnee extends Activity {
 	}
 	
 	private void initListeEtablissement() {
-		String url = "http://www.jordi-charpentier.com/jmd/mobile/getInfos.php?type=etablissement";
-		
 		ProgressDialog progress = new ProgressDialog(activity);
 		progress.setMessage("Chargement...");
-		new InitEtablissement(progress, url).execute();	
+		new InitEtablissement(progress, Constantes.URL_SERVER + "etablissement/getAll").execute();	
 	}
 	
 	private void initListeDecoupage() {
@@ -126,25 +118,6 @@ public class CreationAnnee extends Activity {
 				return;
 			} else {
 				NOM.setBackgroundResource(R.drawable.border_edittext);
-			}
-			
-			boolean isInList = false;
-			
-			for (int i = 0; i < listeEtablissements.length; i++) {
-				if (listeEtablissements[i].equals(ETA.getText().toString())) {
-					isInList = true;
-				}
-			}
-			
-			if (!isInList) {
-				ETA.setBackgroundResource(R.drawable.border_edittext_error);
-				
-				toast.setText("L'établissement entré n'est pas valide.");
-				toast.show();
-				
-				return;
-			} else {
-				ETA.setBackgroundResource(R.drawable.border_edittext);
 			}
 			
 			Annee a = new Annee();
@@ -233,68 +206,48 @@ public class CreationAnnee extends Activity {
 		}
 
 		protected Void doInBackground(Void... arg0) {
-			try {
-				if((contenuPage = WebUtils.getPage(pathUrl)) != "-1");
-
-				else {
-					CreationAnnee.this.runOnUiThread(new Runnable() {
-						public void run() {
-							AlertDialog.Builder builder = new AlertDialog.Builder(CreationAnnee.this);
-							builder.setMessage("Erreur - Vérifiez votre connexion");
-							builder.setCancelable(false);
-							builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog, int which) {
-									CreationAnnee.this.finish();
-								}
-							});
-
-							AlertDialog error = builder.create();
-							error.show();
-						}});
-
-					return null;
-				}
-			} catch (ClientProtocolException e) { 
-				return null;
-			} catch (IOException e) { 
-				return null;
-			} 
-
+			ServiceHandler sh = new ServiceHandler();
+            String jsonStr = sh.makeServiceCall(pathUrl, ServiceHandler.GET);
+            
+            final ArrayList<Etablissement> listeEtablissements = new ArrayList<Etablissement>();
+            Etablissement e = null;
+            
+            if (jsonStr != null) {            	
+                try {
+                    JSONArray diplomes = new JSONArray(jsonStr);
+ 
+                    for (int i = 0; i < diplomes.length(); i++) {
+                    	JSONObject c = diplomes.getJSONObject(i);
+                        
+                        e = new Etablissement();
+                        e.setId(c.getInt("idEtablissement"));
+                        e.setNom(c.getString("nom"));
+                        e.setVille(c.getString("ville"));
+                        
+                        listeEtablissements.add(e);
+                    }
+                } catch (JSONException ex) {
+                    ex.printStackTrace();
+                }
+            } 
+			
 			CreationAnnee.this.runOnUiThread(new Runnable() {
 				public void run() {
 					AutoCompleteTextView textView = (AutoCompleteTextView) findViewById(R.id.admin_creation_annee_nom_eta_auto_complete);
-					
-					StringTokenizer chaineEclate = new StringTokenizer(contenuPage, ";");
-					final String[] temp = new String[chaineEclate.countTokens()];
 
-					if (temp.length != 0) {
-						int i = 0;
-
-						while(chaineEclate.hasMoreTokens()) {
-							temp[i++] = chaineEclate.nextToken();	
-						}
-
-						listeEtablissements = new String[temp.length / 3];
-						int a = 0;
-
-						for(int s = 0; s < temp.length; s = s + 3) {							
-							listeEtablissements[a++] = temp[s+1] + " - " + temp[s+2];
-							
-							idList.add(temp[s]);
-						}
-						
-						ArrayAdapter<String> adapter = new ArrayAdapter<String>(activity, R.xml.suggestion_liste, listeEtablissements);
-						textView.setAdapter(adapter);
+					if (listeEtablissements.size() > 0) {
+						/* ArraylAdapter<String> adapter = new ArrayAdapter<String>(activity, R.xml.suggestion_liste, listeEtablissements);
+						textView.setAdapter();
 						
 						textView.setOnItemClickListener(new OnItemClickListener() {
 							@Override
 					        public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
 								selectedId = idList.get(position);
 					        }
-					    });
+					    }); */
 						
 						TextView textViewNoAdmin = (TextView) findViewById(R.id.admin_choix_annee_no_etablissement);
-						textViewNoAdmin.setText("Il y a " + listeEtablissements.length + " établissement" + ((listeEtablissements.length > 1) ? "s" : "") + " en base.");
+						textViewNoAdmin.setText("Il y a " + listeEtablissements.size() + " établissement" + ((listeEtablissements.size() > 1) ? "s" : "") + " en base.");
 					} else {
 						textView.setInputType(0);
 						

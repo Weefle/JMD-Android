@@ -1,4 +1,4 @@
-package org.gl.jmd;
+package org.gl.jmd.utils;
 
 import java.io.*;
 import java.util.List;

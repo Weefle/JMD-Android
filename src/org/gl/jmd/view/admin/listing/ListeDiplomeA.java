@@ -10,7 +10,6 @@ import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.gl.jmd.Constantes;
 import org.gl.jmd.R;
-import org.gl.jmd.ServiceHandler;
 import org.gl.jmd.model.Diplome;
 import org.gl.jmd.utils.*;
 import org.gl.jmd.view.Accueil;
@@ -20,7 +19,6 @@ import android.app.*;
 import android.content.*;
 import android.content.res.Configuration;
 import android.os.*;
-import android.util.Log;
 import android.view.View;
 import android.widget.*;
 
@@ -105,8 +103,6 @@ public class ListeDiplomeA extends Activity {
 							new DeleteDiplome(progress, URL).execute();
 
 							actualiserListe();
-
-							liste.setSelection(arg2);
 						}
 					});
 					

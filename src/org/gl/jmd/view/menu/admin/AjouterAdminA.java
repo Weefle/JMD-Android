@@ -10,6 +10,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.gl.jmd.*;
 import org.gl.jmd.model.user.Admin;
 import org.gl.jmd.utils.FileUtils;
+import org.gl.jmd.utils.ServiceHandler;
 import org.gl.jmd.view.Accueil;
 import org.json.*;
 
