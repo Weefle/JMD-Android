@@ -4,8 +4,7 @@ import java.io.*;
 import java.util.*;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
+import org.apache.http.client.*;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.gl.jmd.*;
@@ -14,9 +13,7 @@ import org.gl.jmd.model.enumeration.DecoupageType;
 import org.gl.jmd.utils.*;
 import org.gl.jmd.view.Accueil;
 import org.gl.jmd.view.admin.create.CreationAnnee;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.json.*;
 
 import android.app.*;
 import android.content.*;
@@ -34,9 +31,7 @@ public class ListeAnneeA extends Activity {
 	
 	private Activity activity;
 	
-	private String idDiplome = "";
-	
-	private String nomDiplome = "";
+	private Diplome d = null;
 	
 	private Toast toast;
 	
@@ -47,26 +42,26 @@ public class ListeAnneeA extends Activity {
 		setContentView(R.layout.administrateur_liste_annee);
 		overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
 		
-		idDiplome = getIntent().getExtras().getString("idDiplome");
-		nomDiplome = getIntent().getExtras().getString("nomDiplome");
-		
+		d = (Diplome) getIntent().getExtras().getSerializable("diplome");
 		activity = this;
 		toast = Toast.makeText(getBaseContext(), "", Toast.LENGTH_SHORT);
 		
+		initTextView();
 		actualiserListe();
-		
-		// On donne comme titre à la vue le nom du diplôme choisi.
-		TextView tvTitre = (TextView) findViewById(R.id.admin_liste_annee_titre);
-		tvTitre.setText(nomDiplome);
 	}
 	
-	public void actualiserListe() {		
+	private void initTextView() {
+		TextView tvTitre = (TextView) findViewById(R.id.admin_liste_annee_titre);
+		tvTitre.setText(d.getNom());
+	}
+	
+	private void actualiserListe() {		
 		ProgressDialog progress = new ProgressDialog(this);
 		progress.setMessage("Chargement...");
-		new ListerAnnees(progress, Constantes.URL_SERVER + "annee/getAnneesByDiplome?idDiplome=" + idDiplome).execute();	
+		new ListerAnnees(progress, Constantes.URL_SERVER + "annee/getAnneesByDiplome?idDiplome=" + d.getId()).execute();	
 	}
 	
-	public void initListe(final ArrayList<Annee> listeAnnees) {
+	private void initListe(final ArrayList<Annee> listeAnnees) {
 		final ListView liste = (ListView) findViewById(android.R.id.list);
 		
 		if (listeAnnees.size() > 0) {
@@ -122,29 +117,25 @@ public class ListeAnneeA extends Activity {
 						confirmSuppr.setCancelable(false);
 						confirmSuppr.setPositiveButton("Oui", new AlertDialog.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
-								String URL = Constantes.URL_SERVER + "annee" +
-										"?id=" + listItem.get(arg2).get("id") +
-										"&token=" + FileUtils.lireFichier("/sdcard/cacheJMD/token.jmd") + 
-										"&pseudo=" + FileUtils.lireFichier("/sdcard/cacheJMD/pseudo.jmd") +
-										"&timestamp=" + new java.util.Date().getTime();	
-
 								ProgressDialog progress = new ProgressDialog(activity);
 								progress.setMessage("Chargement...");
-								new DeleteAnnee(progress, URL).execute();
-								
-								actualiserListe();
+								new DeleteAnnee(progress, Constantes.URL_SERVER + "annee" +
+											"?id=" + listItem.get(arg2).get("id") +
+											"&token=" + FileUtils.lireFichier("/sdcard/cacheJMD/token.jmd") + 
+											"&pseudo=" + FileUtils.lireFichier("/sdcard/cacheJMD/pseudo.jmd") +
+											"&timestamp=" + new java.util.Date().getTime()).execute();
 							}
 						});
+						
 						confirmSuppr.setNegativeButton("Non", null);
 						confirmSuppr.show();
 					}
 	    			
 					return true;
 				}
-				
 			}); 
 		} else {
-			final ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
+			ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
 			HashMap<String, String> map;
 			
 			map = new HashMap<String, String>();
@@ -160,16 +151,13 @@ public class ListeAnneeA extends Activity {
 	
 	public void creerAnnee(View view) {
 		Intent newIntent = new Intent(ListeAnneeA.this, CreationAnnee.class);
-		newIntent.putExtra("idDiplome", Integer.parseInt(idDiplome));
+		newIntent.putExtra("idDiplome", d.getId());
 	
 		startActivity(newIntent);
 	}
 	
-	/**
-	 * Classe interne représentant une tâche asynchrone (lister les années d'un diplôme présents en base) qui sera effectuée en fond pendant un rond de chargement.
-	 * 
-	 * @author Jordi CHARPENTIER & Yoann VANHOESERLANDE
-	 */
+	/* Classes internes. */
+
 	private class ListerAnnees extends AsyncTask<Void, Void, Void> {
 		private ProgressDialog progress;
 		private String pathUrl;
@@ -221,8 +209,6 @@ public class ListeAnneeA extends Activity {
                     ListeAnneeA.this.runOnUiThread(new Runnable() {
     					public void run() {    						
     						initListe(listeAnnees);
-
-    						return;
     					}
     				});
                 } catch (JSONException ex) {
@@ -234,11 +220,6 @@ public class ListeAnneeA extends Activity {
 		}
 	}
 	
-	/**
-	 * Classe interne représentant une tâche asynchrone (suppression d'une année) qui sera effectuée en fond pendant un rond de chargement.
-	 * 
-	 * @author Jordi CHARPENTIER & Yoann VANHOESERLANDE
-	 */
 	private class DeleteAnnee extends AsyncTask<Void, Void, Void> {
 		private ProgressDialog progress;
 		private String pathUrl;
@@ -266,6 +247,12 @@ public class ListeAnneeA extends Activity {
 		        ListeAnneeA.this.runOnUiThread(new Runnable() {
 					public void run() {    			
 				        if (response.getStatusLine().getStatusCode() == 200) {
+				        	ListeAnneeA.this.runOnUiThread(new Runnable() {
+		    					public void run() {    						
+		    						actualiserListe();
+		    					}
+		    				});
+				        	
 				        	toast.setText("Année supprimée.");
 				        	toast.show();
 				        } else if (response.getStatusLine().getStatusCode() == 401) {
@@ -275,7 +262,7 @@ public class ListeAnneeA extends Activity {
 							filePseudo.delete();
 							fileToken.delete();
 				        	
-							finishAllActivities();
+							activity.finishAffinity();
 				        	startActivity(new Intent(ListeAnneeA.this, Accueil.class));	
 				        	
 				        	toast.setText("Session expirée.");	
@@ -327,10 +314,6 @@ public class ListeAnneeA extends Activity {
 
 			return null;
 		}
-	}
-	
-	public void finishAllActivities(){
-		this.finishAffinity();
 	}
 	
 	/* Méthodes héritées de la classe Activity. */

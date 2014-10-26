@@ -38,7 +38,7 @@ public class InitApp extends Activity {
 			if (p.get(ParamType.IS_ADMIN) != null) {
 				checkbox.setChecked(true);
 			}
-		}
+		} 
 	}
 	
 	/**

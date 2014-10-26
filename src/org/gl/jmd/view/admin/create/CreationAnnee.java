@@ -9,8 +9,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.*;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.gl.jmd.Constantes;
-import org.gl.jmd.R;
+import org.gl.jmd.*;
 import org.gl.jmd.model.*;
 import org.gl.jmd.model.enumeration.DecoupageType;
 import org.gl.jmd.utils.*;
@@ -38,7 +37,7 @@ public class CreationAnnee extends Activity {
 	
 	private int idDiplome = 0;
 	
-	private String selectedId = "";
+	private Etablissement selectedEta = null;
 	
 	private CheckBox LAST_YEAR;
 	
@@ -60,18 +59,11 @@ public class CreationAnnee extends Activity {
 		
 		LAST_YEAR = (CheckBox) findViewById(R.id.admin_creation_annee_is_last_year);		
 		NOM = (EditText) findViewById(R.id.admin_creation_annee_nom);		
-		ETA = (EditText) findViewById(R.id.admin_creation_annee_nom_eta_auto_complete);
+		ETA = (EditText) findViewById(R.id.admin_creation_annee_nom_eta);
 		
 		idDiplome = getIntent().getExtras().getInt("idDiplome");
 		
-		initListeEtablissement();
 		initListeDecoupage();
-	}
-	
-	private void initListeEtablissement() {
-		ProgressDialog progress = new ProgressDialog(activity);
-		progress.setMessage("Chargement...");
-		new InitEtablissement(progress, Constantes.URL_SERVER + "etablissement/getAll").execute();	
 	}
 	
 	private void initListeDecoupage() {
@@ -97,6 +89,12 @@ public class CreationAnnee extends Activity {
         		// Empty
         	}
 		});
+	}
+	
+	public void openListEta(View view) {
+		ProgressDialog progress = new ProgressDialog(activity);
+		progress.setMessage("Chargement...");
+		new InitEtablissement(progress, Constantes.URL_SERVER + "etablissement/getAll").execute();	
 	}
 	
 	/**
@@ -125,14 +123,9 @@ public class CreationAnnee extends Activity {
 			a.setDecoupage(decoupage);
 			a.setIsLast(LAST_YEAR.isChecked());
 			
-			Etablissement etablissement = new Etablissement();
+			Etablissement etablissement = selectedEta;
 			
-			try {
-				etablissement.setId(Integer.parseInt(selectedId));
-				a.setEtablissement(etablissement);
-				
-				ETA.setBackgroundResource(R.drawable.border_edittext);
-			} catch (Exception e) {
+			if (etablissement == null) {
 				ETA.setBackgroundResource(R.drawable.border_edittext_error);
 				
 				toast.setText("L'établissement entré n'est pas valide.");
@@ -140,8 +133,10 @@ public class CreationAnnee extends Activity {
 				
 				return;
 			}
+			
+			a.setEtablissement(etablissement);
 
-			String URL = Constantes.URL_SERVER + "diplome" +
+			String URL = Constantes.URL_SERVER + "annee" +
 					"?nom=" + URLEncoder.encode(a.getNom()) +
 					"&idEtablissement=" + a.getEtablissement().getId() +
 					"&idDiplome=" +  idDiplome +
@@ -210,6 +205,7 @@ public class CreationAnnee extends Activity {
             String jsonStr = sh.makeServiceCall(pathUrl, ServiceHandler.GET);
             
             final ArrayList<Etablissement> listeEtablissements = new ArrayList<Etablissement>();
+            final ArrayList<String> listeEtablissementsString = new ArrayList<String>();
             Etablissement e = null;
             
             if (jsonStr != null) {            	
@@ -224,6 +220,7 @@ public class CreationAnnee extends Activity {
                         e.setNom(c.getString("nom"));
                         e.setVille(c.getString("ville"));
                         
+                        listeEtablissementsString.add(e.getNom());
                         listeEtablissements.add(e);
                     }
                 } catch (JSONException ex) {
@@ -233,29 +230,28 @@ public class CreationAnnee extends Activity {
 			
 			CreationAnnee.this.runOnUiThread(new Runnable() {
 				public void run() {
-					AutoCompleteTextView textView = (AutoCompleteTextView) findViewById(R.id.admin_creation_annee_nom_eta_auto_complete);
-
 					if (listeEtablissements.size() > 0) {
-						/* ArraylAdapter<String> adapter = new ArrayAdapter<String>(activity, R.xml.suggestion_liste, listeEtablissements);
-						textView.setAdapter();
-						
-						textView.setOnItemClickListener(new OnItemClickListener() {
-							@Override
-					        public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
-								selectedId = idList.get(position);
-					        }
-					    }); */
-						
-						TextView textViewNoAdmin = (TextView) findViewById(R.id.admin_choix_annee_no_etablissement);
-						textViewNoAdmin.setText("Il y a " + listeEtablissements.size() + " établissement" + ((listeEtablissements.size() > 1) ? "s" : "") + " en base.");
-					} else {
-						textView.setInputType(0);
-						
+						final Dialog dialog = new Dialog(activity);
+					    dialog.setTitle("Liste des établissements");
+					    dialog.setCancelable(true);
+					    
+					    ListView listView = new ListView(activity);
+					    listView.setAdapter(new ArrayAdapter<String>(activity, android.R.layout.simple_list_item_1, listeEtablissementsString));
+					    
+					    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+					    	public void onItemClick(AdapterView<?> arg0, View arg1, final int position, long arg3) {
+								ETA.setText(listeEtablissementsString.get(position));
+								selectedEta = listeEtablissements.get(position);
+								dialog.hide();
+							}
+
+						});
+					    
+					    dialog.setContentView(listView);
+					    dialog.show();
+					} else {						
 						Button button = (Button) findViewById(R.id.crea_annee_bout_creer);
 						button.setEnabled(false);
-						
-						TextView textViewNoAdmin = (TextView) findViewById(R.id.admin_choix_annee_no_etablissement);
-						textViewNoAdmin.setText("Aucun établissement n'est enregistré en base.");
 					}
 				}
 			});

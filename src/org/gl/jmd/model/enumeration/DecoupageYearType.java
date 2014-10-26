@@ -2,11 +2,11 @@ package org.gl.jmd.model.enumeration;
 
 public enum DecoupageYearType {
 
-	TR1,
+	TRI1,
 	
-	TR2,
+	TRI2,
 	
-	TR3,
+	TRI3,
 	
 	SEM1,
 	

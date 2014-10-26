@@ -36,9 +36,9 @@ public class Matiere implements Serializable {
 	private boolean isOption;
 	
 	/**
-	 * Le coefficient du contrôle continu de la matière.
+	 * Le coefficient du partiel.
 	 */
-	private Fraction coeffCC;
+	private int coeffPartiel = 0;
 	
 	/**
 	 * Les notes de la matière.
@@ -97,12 +97,12 @@ public class Matiere implements Serializable {
 	}
 	
 	/**
-	 * Méthode retournant le coefficient du contrôle continu de la matière.
+	 * Méthode retournant le coefficient du partiel de la matière.
 	 * 
-	 * @return Le coefficient du contrôle continu de la matière.
+	 * @return Le coefficient du partiel de la matière.
 	 */
-	public Fraction getCoefficientControleContinu() {
-		return this.coeffCC;
+	public int getCoeffPartiel() {
+		return this.coeffPartiel;
 	}
 
 	/**
@@ -162,12 +162,12 @@ public class Matiere implements Serializable {
 	}
 	
 	/**
-	 * Méthode permettant de modifier le coefficient du contrôle continu de la matière.
+	 * Méthode permettant de modifier le coefficient du partiel de la matière.
 	 * 
-	 * @param coeffCC Le nouveau coefficient du contrôle continu de la matière.
+	 * @param coeffPartiel Le nouveau coefficient du partiel de la matière.
 	 */
-	public void setCoefficientControleContinu(Fraction coeffCC) {
-		this.coeffCC = coeffCC;
+	public void setCoefficientControleContinu(int coeffPartiel) {
+		this.coeffPartiel = coeffPartiel;
 	}
 
 	/**
@@ -226,11 +226,11 @@ public class Matiere implements Serializable {
 				
 				for (int i = 0; i < this.listeNotes.size(); i++) {
 					if (this.listeNotes.get(i).getNoteType() == NoteType.CONTROLE_CONTINU) {
-						moyenneCC += this.listeNotes.get(i).getCoefficient().multiplyByNote(this.listeNotes.get(i).getNote());
+						// moyenneCC += this.listeNotes.get(i).getCoefficient().multiplyByNote(this.listeNotes.get(i).getNote());
 					}
 				}
 				
-				res = coeffCC.multiplyByNote(moyenneCC) + coeffCC.getOppose().multiplyByNote(note);
+				// res = coeffCC.multiplyByNote(moyenneCC) + coeffCC.getOppose().multiplyByNote(note);
 			} else {
 				res = note;
 			}

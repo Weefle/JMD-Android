@@ -193,11 +193,11 @@ public class Annee implements Serializable {
 			
 			for (int i = 0; i < this.listeUE.size(); i++) {
 				for (int j = 0; j < this.listeUE.get(i).getListeMatieres().size(); j++) {
-					if (this.listeUE.get(i).getDecoupage() == DecoupageYearType.TR1) {
+					if (this.listeUE.get(i).getDecoupage() == DecoupageYearType.TRI1) {
 						coeffGlobalUET1 += this.listeUE.get(i).getListeMatieres().get(j).getCoefficient();
-					} else if (this.listeUE.get(i).getDecoupage() == DecoupageYearType.TR2) {
+					} else if (this.listeUE.get(i).getDecoupage() == DecoupageYearType.TRI2) {
 						coeffGlobalUET2 += this.listeUE.get(i).getListeMatieres().get(j).getCoefficient();
-					} else if (this.listeUE.get(i).getDecoupage() == DecoupageYearType.TR3) {
+					} else if (this.listeUE.get(i).getDecoupage() == DecoupageYearType.TRI3) {
 						coeffGlobalUET3 += this.listeUE.get(i).getListeMatieres().get(j).getCoefficient();
 					} else {
 						res = -1;
@@ -220,7 +220,7 @@ public class Annee implements Serializable {
 					int coeffUE = 0;
 					
 					for (int j = 0; j < this.listeUE.get(i).getListeMatieres().size(); j++) {
-						if (this.listeUE.get(i).getDecoupage() == DecoupageYearType.TR1) {
+						if (this.listeUE.get(i).getDecoupage() == DecoupageYearType.TRI1) {
 							coeffUE += this.listeUE.get(i).getListeMatieres().get(j).getCoefficient();
 						}
 					}
@@ -239,7 +239,7 @@ public class Annee implements Serializable {
 					int coeffUE = 0;
 					
 					for (int j = 0; j < this.listeUE.get(i).getListeMatieres().size(); j++) {
-						if (this.listeUE.get(i).getDecoupage() == DecoupageYearType.TR2) {
+						if (this.listeUE.get(i).getDecoupage() == DecoupageYearType.TRI2) {
 							coeffUE += this.listeUE.get(i).getListeMatieres().get(j).getCoefficient();
 						}
 					}
@@ -258,7 +258,7 @@ public class Annee implements Serializable {
 					int coeffUE = 0;
 					
 					for (int j = 0; j < this.listeUE.get(i).getListeMatieres().size(); j++) {
-						if (this.listeUE.get(i).getDecoupage() == DecoupageYearType.TR3) {
+						if (this.listeUE.get(i).getDecoupage() == DecoupageYearType.TRI3) {
 							coeffUE += this.listeUE.get(i).getListeMatieres().get(j).getCoefficient();
 						}
 					}

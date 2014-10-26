@@ -21,41 +21,51 @@
             android:text="@string/etudiant_saisie_note_titre_txt"
             android:textColor="#FFFFFF"
             android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/etudiant_saisie_note_btn_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
+            android:layout_marginRight="30dp"
+            android:clickable="true"
+            android:onClick="save"
+            android:text="OK"
+            android:textColor="@drawable/button_color_selector" 
+            android:textSize="18dp" />
     </RelativeLayout>
 
     <ListView
         android:id="@android:id/list"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp" >
     </ListView>
 
     <Button
-        android:id="@+id/etudiant_saisie_bout_ajouter_note_cc"
-        android:layout_width="60dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginBottom="10dp"
-        android:layout_marginTop="10dp"
-        android:padding="10dp"
-        android:background="@drawable/button_style"
-        android:text="@string/btn_txt_plus"
-        android:textColor="@drawable/button_color_selector" />
-
-    <ListView
-        android:id="@+id/list2"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
-    </ListView>
-
-    <Button
-        android:id="@+id/etudiant_saisie_bout_ajouter"
+        android:id="@+id/etudiant_saisie_note_btn_add"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="20dp"
+        android:background="@android:color/transparent"
+        android:drawableLeft="@drawable/ajouter"
         android:padding="10dp"
-        android:text="@string/btn_creer_note_txt"
-        android:background="@drawable/button_style"
-        android:textColor="@drawable/button_color_selector" />
+        android:text="Ajouter une note" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_marginTop="10dp"
+        android:fillViewport="true"
+        android:gravity="center" >
+
+        <ListView
+            android:id="@+id/list2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+        </ListView>
+    </ScrollView>
 
 </LinearLayout>

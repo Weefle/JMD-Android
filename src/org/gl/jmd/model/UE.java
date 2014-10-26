@@ -30,6 +30,8 @@ public class UE implements Serializable {
 	 */
 	private DecoupageYearType decoupageYearType;
 	
+	private int idAnnee;
+	
 	/**
 	 * La liste des matières de l'UE.
 	 */
@@ -113,6 +115,10 @@ public class UE implements Serializable {
 		return this.listeMatieres;
 	}
 	
+	public int getIdAnnee() {
+		return this.idAnnee;
+	}
+	
 	/**
 	 * Méthode retournant les règles de la matière.
 	 * 
@@ -149,6 +155,10 @@ public class UE implements Serializable {
 	 */
 	public void setDecoupage(DecoupageYearType decoupageYearType) {
 		this.decoupageYearType = decoupageYearType;
+	}
+	
+	public void setIdAnnee(int idAnnee) {
+		this.idAnnee = idAnnee;
 	}
 	
 	/**

@@ -31,7 +31,7 @@ public class ListeTrimestreA extends Activity {
 		initListe();
 	}
 	
-	public void initListe() {
+	private void initListe() {
 		final ListView liste = (ListView) findViewById(android.R.id.list);
 
 		final ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
@@ -39,21 +39,18 @@ public class ListeTrimestreA extends Activity {
 
 		map = new HashMap<String, String>();
 		map.put("titre", "Trimestre 1");
-		map.put("idAnnee", idAnnee);
 		map.put("decoupage", "TRI1");
 		
 		listItem.add(map);	
 		
 		map = new HashMap<String, String>();
 		map.put("titre", "Trimestre 2");
-		map.put("idAnnee", idAnnee);
 		map.put("decoupage", "TRI2");
 		
 		listItem.add(map);		
 		
 		map = new HashMap<String, String>();
 		map.put("titre", "Trimestre 3");
-		map.put("idAnnee", idAnnee);
 		map.put("decoupage", "TRI3");
 		
 		listItem.add(map);	
@@ -66,7 +63,7 @@ public class ListeTrimestreA extends Activity {
 			public void onItemClick(AdapterView<?> arg0, View arg1, final int position, long arg3) {
 				Intent newIntent = new Intent(ListeTrimestreA.this, ListeUERegleA.class);
 
-				newIntent.putExtra("idAnnee", listItem.get(position).get("idAnnee"));
+				newIntent.putExtra("idAnnee", idAnnee);
 				newIntent.putExtra("decoupage", listItem.get(position).get("decoupage"));
 				
 				startActivity(newIntent);

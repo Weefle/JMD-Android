@@ -4,8 +4,7 @@ import java.io.*;
 import java.util.*;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
+import org.apache.http.client.*;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.gl.jmd.*;
@@ -57,13 +56,15 @@ public class ListeUEA extends Activity {
 		actualiserListe();
 	}
 	
-	public void actualiserListe() {
+	private void actualiserListe() {		
 		ProgressDialog progress = new ProgressDialog(this);
 		progress.setMessage("Chargement...");
-		new ListerUE(progress, Constantes.URL_SERVER + "ue/getAllUEOfAnneeByYearType?idAnnee=" + idAnnee + "&yearType=" + decoupage).execute();
+		new ListerUE(progress, Constantes.URL_SERVER + "ue/getAllUEOfAnneeByYearType" +
+				"?idAnnee=" + idAnnee + 
+				"&yearType=" + decoupage).execute();
 	}
 	
-	public void initListe(final ArrayList<UE> listeUE) {
+	private void initListe(final ArrayList<UE> listeUE) {
 		final ListView liste = (ListView) findViewById(android.R.id.list);
 		
 		if (listeUE.size() > 0) {
@@ -86,9 +87,7 @@ public class ListeUEA extends Activity {
 			liste.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 				public void onItemClick(AdapterView<?> arg0, View arg1, final int position, long arg3) {
 					Intent newIntent = new Intent(ListeUEA.this, ListeMatiereA.class);
-					newIntent.putExtra("idAnnee", idAnnee);
-					newIntent.putExtra("idUE", "" + listItem.get(position).get("id"));
-					newIntent.putExtra("nom", "" + listItem.get(position).get("titre"));
+					newIntent.putExtra("ue", listeUE.get(position));
 					
 					startActivity(newIntent);
 				}
@@ -101,18 +100,14 @@ public class ListeUEA extends Activity {
 					confirmSuppr.setMessage("Voulez-vous vraiment supprimer cet élément ?");
 					confirmSuppr.setCancelable(false);
 					confirmSuppr.setPositiveButton("Oui", new AlertDialog.OnClickListener() {
-						public void onClick(DialogInterface dialog, int id) {
-							String URL = Constantes.URL_SERVER + "ue" +
+						public void onClick(DialogInterface dialog, int id) {	
+							ProgressDialog progress = new ProgressDialog(activity);
+							progress.setMessage("Chargement...");
+							new DeleteUE(progress, Constantes.URL_SERVER + "ue" +
 									"?id=" + listItem.get(arg2).get("id") +
 									"&token=" + FileUtils.lireFichier("/sdcard/cacheJMD/token.jmd") + 
 									"&pseudo=" + FileUtils.lireFichier("/sdcard/cacheJMD/pseudo.jmd") +
-									"&timestamp=" + new java.util.Date().getTime();	
-							
-							ProgressDialog progress = new ProgressDialog(activity);
-							progress.setMessage("Chargement...");
-							new DeleteUE(progress, URL).execute();
-								
-							actualiserListe();
+									"&timestamp=" + new java.util.Date().getTime()).execute();
 						}
 					});
 						
@@ -138,11 +133,8 @@ public class ListeUEA extends Activity {
 		}
 	}
 	
-	/**
-	 * Classe interne représentant une tâche asynchrone (lister les UE d'une année en base) qui sera effectuée en fond pendant un rond de chargement.
-	 * 
-	 * @author Jordi CHARPENTIER & Yoann VANHOESERLANDE
-	 */
+	/* Classes internes. */
+	
 	private class ListerUE extends AsyncTask<Void, Void, Void> {
 		private ProgressDialog progress;
 		private String pathUrl;
@@ -173,10 +165,11 @@ public class ListeUEA extends Activity {
  
                     for (int i = 0; i < ues.length(); i++) {
                     	JSONObject c = ues.getJSONObject(i);
-                        
+                    	
                         ue = new UE();
                         ue.setId(c.getInt("idUE"));
                         ue.setNom(c.getString("nom"));
+                        ue.setIdAnnee(c.getInt("idAnnee"));
                         ue.setDecoupage(DecoupageYearType.valueOf(c.getString("yearType")));
                         
                         listeUE.add(ue);
@@ -185,8 +178,6 @@ public class ListeUEA extends Activity {
                     ListeUEA.this.runOnUiThread(new Runnable() {
     					public void run() {    						
     						initListe(listeUE);
-
-    						return;
     					}
     				});
                 } catch (JSONException ex) {
@@ -197,12 +188,7 @@ public class ListeUEA extends Activity {
 			return null;
 		}
 	}
-	
-	/**
-	 * Classe interne représentant une tâche asynchrone (suppression d'une UE) qui sera effectuée en fond pendant un rond de chargement.
-	 * 
-	 * @author Jordi CHARPENTIER & Yoann VANHOESERLANDE
-	 */
+
 	private class DeleteUE extends AsyncTask<Void, Void, Void> {
 		private ProgressDialog progress;
 		private String pathUrl;
@@ -232,15 +218,24 @@ public class ListeUEA extends Activity {
 				        if (response.getStatusLine().getStatusCode() == 200) {
 				        	toast.setText("UE supprimée.");
 				        	toast.show();
+				        	
+				        	ListeUEA.this.runOnUiThread(new Runnable() {
+		    					public void run() {    						
+		    						actualiserListe();
+		    					}
+		    				});
 				        } else if (response.getStatusLine().getStatusCode() == 401) {
 							File filePseudo = new File("/sdcard/cacheJMD/pseudo.jmd");
 							File fileToken = new File("/sdcard/cacheJMD/token.jmd");
 							
 							filePseudo.delete();
 							fileToken.delete();
+							
+							finish();
 				        	
-							finishAllActivities();
-				        	startActivity(new Intent(ListeUEA.this, Accueil.class));	
+							Intent i = new Intent(ListeUEA.this, Accueil.class);
+							i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+				        	startActivity(i);	
 				        	
 				        	toast.setText("Session expirée.");	
 							toast.show();
@@ -291,10 +286,6 @@ public class ListeUEA extends Activity {
 
 			return null;
 		}
-	}
-	
-	public void finishAllActivities(){
-		this.finishAffinity();
 	}
 	
 	/* Méthode héritée de la classe Activity. */

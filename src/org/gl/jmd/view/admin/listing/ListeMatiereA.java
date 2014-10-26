@@ -11,6 +11,7 @@ import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.gl.jmd.*;
 import org.gl.jmd.model.Matiere;
+import org.gl.jmd.model.UE;
 import org.gl.jmd.utils.*;
 import org.gl.jmd.view.Accueil;
 import org.gl.jmd.view.admin.create.CreationMatiere;
@@ -34,11 +35,7 @@ public class ListeMatiereA extends Activity {
 	
 	private Toast toast;
 	
-	private String selectedUE = "";
-	
-	private String nomUE;
-	
-	private Intent lastIntent;
+	private UE ue = null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -47,28 +44,28 @@ public class ListeMatiereA extends Activity {
 		setContentView(R.layout.administrateur_liste_matiere);
 		overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
 		
-		lastIntent = getIntent();
-		
-		selectedUE = lastIntent.getExtras().getString("idUE");
-		nomUE = lastIntent.getExtras().getString("nom");
+		ue = (UE) getIntent().getExtras().getSerializable("ue");
 		
 		activity = this;
 		toast = Toast.makeText(getBaseContext(), "", Toast.LENGTH_SHORT);
 		
+		initTextView();
 		actualiserListe();
-		
+	}
+	
+	private void initTextView() {
 		// On donne comme titre à la vue le nom de l'UE choisie.
 		TextView tvTitre = (TextView) findViewById(R.id.admin_liste_matier_titre);
-		tvTitre.setText(nomUE);
+		tvTitre.setText(ue.getNom());
 	}
 	
-	public void actualiserListe() {	
+	private void actualiserListe() {	
 		ProgressDialog progress = new ProgressDialog(this);
 		progress.setMessage("Chargement...");
-		new ListerMatieres(progress, Constantes.URL_SERVER + "matiere/getAllMatieretOfUE?idUE=" + selectedUE).execute();
+		new ListerMatieres(progress, Constantes.URL_SERVER + "matiere/getAllMatieretOfUE?idUE=" + ue.getId()).execute();
 	}
 	
-	public void initListe(final ArrayList<Matiere> listeMatieres) {
+	private void initListe(final ArrayList<Matiere> listeMatieres) {
 		final ListView liste = (ListView) findViewById(android.R.id.list);
 		
 		if (listeMatieres.size() > 0) {
@@ -82,8 +79,6 @@ public class ListeMatiereA extends Activity {
 				map.put("titre", ((listeMatieres.get(s).getNom().length() > 20) ? listeMatieres.get(s).getNom().substring(0, 20) + "..." : listeMatieres.get(s).getNom()));
 				map.put("isOption", (listeMatieres.get(s).isOption() ? "Option" : "Obligatoire"));
 				map.put("description", "Coefficient : " + listeMatieres.get(s).getCoefficient());
-
-				s = s + 4;
 
 				listItem.add(map);		
 			}
@@ -99,18 +94,14 @@ public class ListeMatiereA extends Activity {
 						confirmQuitter.setMessage("Voulez-vous vraiment supprimer cet élément ?");
 						confirmQuitter.setCancelable(false);
 						confirmQuitter.setPositiveButton("Oui", new AlertDialog.OnClickListener() {
-							public void onClick(DialogInterface dialog, int id) {
-								String URL = Constantes.URL_SERVER + "matiere" +
+							public void onClick(DialogInterface dialog, int id) {								
+								ProgressDialog progress = new ProgressDialog(activity);
+								progress.setMessage("Chargement...");
+								new DeleteMatiere(progress, Constantes.URL_SERVER + "matiere" +
 										"?id=" + listItem.get(arg2).get("id") +
 										"&token=" + FileUtils.lireFichier("/sdcard/cacheJMD/token.jmd") + 
 										"&pseudo=" + FileUtils.lireFichier("/sdcard/cacheJMD/pseudo.jmd") +
-										"&timestamp=" + new java.util.Date().getTime();	
-								
-								ProgressDialog progress = new ProgressDialog(activity);
-								progress.setMessage("Chargement...");
-								new DeleteMatiere(progress, URL).execute();
-								
-								actualiserListe(); 
+										"&timestamp=" + new java.util.Date().getTime()).execute();
 							}
 						});
 						
@@ -137,16 +128,13 @@ public class ListeMatiereA extends Activity {
 	
 	public void creerMatiere(View view) {
 		Intent newIntent = new Intent(ListeMatiereA.this, CreationMatiere.class);
-		newIntent.putExtra("idUE", Integer.parseInt(selectedUE));
+		newIntent.putExtra("idUE", ue.getId());
 	
 		startActivity(newIntent);
 	}
 	
-	/**
-	 * Classe interne représentant une tâche asynchrone (lister les matières d'une UE en base) qui sera effectuée en fond pendant un rond de chargement.
-	 * 
-	 * @author Jordi CHARPENTIER & Yoann VANHOESERLANDE
-	 */
+	/* Classes internes. */
+	
 	private class ListerMatieres extends AsyncTask<Void, Void, Void> {
 		private ProgressDialog progress;
 		private String pathUrl;
@@ -190,8 +178,6 @@ public class ListeMatiereA extends Activity {
                     ListeMatiereA.this.runOnUiThread(new Runnable() {
     					public void run() {    						
     						initListe(listeMatieres);
-
-    						return;
     					}
     				});
                 } catch (JSONException ex) {
@@ -203,11 +189,6 @@ public class ListeMatiereA extends Activity {
 		}
 	}
 	
-	/**
-	 * Classe interne représentant une tâche asynchrone (suppression d'une matière) qui sera effectuée en fond pendant un rond de chargement.
-	 * 
-	 * @author Jordi CHARPENTIER & Yoann VANHOESERLANDE
-	 */
 	private class DeleteMatiere extends AsyncTask<Void, Void, Void> {
 		private ProgressDialog progress;
 		private String pathUrl;
@@ -235,6 +216,12 @@ public class ListeMatiereA extends Activity {
 		        ListeMatiereA.this.runOnUiThread(new Runnable() {
 					public void run() {    			
 				        if (response.getStatusLine().getStatusCode() == 200) {
+				        	ListeMatiereA.this.runOnUiThread(new Runnable() {
+		    					public void run() {    						
+		    						actualiserListe();
+		    					}
+		    				});
+				        	
 				        	toast.setText("Matière supprimée.");
 				        	toast.show();
 				        } else if (response.getStatusLine().getStatusCode() == 401) {
@@ -244,7 +231,7 @@ public class ListeMatiereA extends Activity {
 							filePseudo.delete();
 							fileToken.delete();
 				        	
-							finishAllActivities();
+							activity.finishAffinity();
 				        	startActivity(new Intent(ListeMatiereA.this, Accueil.class));	
 				        	
 				        	toast.setText("Session expirée.");	
@@ -296,10 +283,6 @@ public class ListeMatiereA extends Activity {
 
 			return null;
 		}
-	}
-	
-	public void finishAllActivities(){
-		this.finishAffinity();
 	}
 	
 	/* Méthodes héritées de la classe Activity. */

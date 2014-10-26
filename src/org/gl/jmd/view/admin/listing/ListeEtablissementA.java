@@ -46,13 +46,13 @@ public class ListeEtablissementA extends Activity {
 		actualiserListe();
 	}
 
-	public void actualiserListe() {
+	private void actualiserListe() {
 		ProgressDialog progress = new ProgressDialog(this);
 		progress.setMessage("Chargement...");
 		new ListerEtablissements(progress, Constantes.URL_SERVER + "etablissement/getAll").execute();	
 	}
 
-	public void initListe(final ArrayList<Etablissement> listeEtablissements) {
+	private void initListe(final ArrayList<Etablissement> listeEtablissements) {
 		final ListView liste = (ListView) findViewById(android.R.id.list);
 
 		if (listeEtablissements.size() > 0) {
@@ -90,10 +90,6 @@ public class ListeEtablissementA extends Activity {
 							ProgressDialog progress = new ProgressDialog(activity);
 							progress.setMessage("Chargement...");
 							new DeleteEtablissement(progress, URL).execute();
-
-							actualiserListe();
-
-							liste.setSelection(arg2);
 						}
 					});
 					confirmQuitter.setNegativeButton("Non", null);
@@ -118,11 +114,8 @@ public class ListeEtablissementA extends Activity {
 		}
 	}
 
-	/**
-	 * Classe interne représentant une tâche asynchrone (lister les établissements présents en base) qui sera effectuée en fond pendant un rond de chargement.
-	 * 
-	 * @author Jordi CHARPENTIER & Yoann VANHOESERLANDE
-	 */
+	/* Classes internes. */
+	
 	private class ListerEtablissements extends AsyncTask<Void, Void, Void> {
 		private ProgressDialog progress;
 		private String pathUrl;
@@ -165,8 +158,6 @@ public class ListeEtablissementA extends Activity {
                     ListeEtablissementA.this.runOnUiThread(new Runnable() {
     					public void run() {    						
     						initListe(listeEtablissements);
-
-    						return;
     					}
     				});
                 } catch (JSONException ex) {
@@ -178,11 +169,6 @@ public class ListeEtablissementA extends Activity {
 		}
 	}
 
-	/**
-	 * Classe interne représentant une tâche asynchrone (suppression d'un établissement) qui sera effectuée en fond pendant un rond de chargement.
-	 * 
-	 * @author Jordi CHARPENTIER & Yoann VANHOESERLANDE
-	 */
 	private class DeleteEtablissement extends AsyncTask<Void, Void, Void> {
 		private ProgressDialog progress;
 		private String pathUrl;
@@ -212,6 +198,12 @@ public class ListeEtablissementA extends Activity {
 				        if (response.getStatusLine().getStatusCode() == 200) {
 				        	toast.setText("Etablissement supprimé.");
 				        	toast.show();
+				        	
+				        	ListeEtablissementA.this.runOnUiThread(new Runnable() {
+		    					public void run() {    						
+		    						actualiserListe();
+		    					}
+		    				});
 				        } else if (response.getStatusLine().getStatusCode() == 401) {
 							File filePseudo = new File("/sdcard/cacheJMD/pseudo.jmd");
 							File fileToken = new File("/sdcard/cacheJMD/token.jmd");
@@ -219,7 +211,7 @@ public class ListeEtablissementA extends Activity {
 							filePseudo.delete();
 							fileToken.delete();
 				        	
-							finishAllActivities();
+							finish();
 				        	startActivity(new Intent(ListeEtablissementA.this, Accueil.class));	
 				        	
 				        	toast.setText("Session expirée.");	
@@ -271,10 +263,6 @@ public class ListeEtablissementA extends Activity {
 
 			return null;
 		}
-	}
-	
-	public void finishAllActivities(){
-		this.finishAffinity();
 	}
 
 	/* Méthodes héritées de la classe Activity. */

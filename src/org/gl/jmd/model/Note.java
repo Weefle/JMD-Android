@@ -19,6 +19,11 @@ public class Note implements Serializable {
 	private int id;
 	
 	/**
+	 * Le nom de l'épreuve associée à la note.
+	 */
+	private String nom;
+	
+	/**
 	 * Le type (1ère session, 2ème session, contrôle continu) de la note.
 	 */
 	private NoteType type;
@@ -31,7 +36,7 @@ public class Note implements Serializable {
 	/**
 	 * Le coefficient de la note SI elle est de type "Contrôle Continu".
 	 */
-	private Fraction coefficient;
+	private int coefficient;
 	
 	/**
 	 * Constructeur par défaut de la classe.
@@ -49,6 +54,15 @@ public class Note implements Serializable {
 	 */
 	public int getId() {
 		return this.id;
+	}
+	
+	/**
+	 * Méthode retournant le nom de l'épreuve associée à la note.
+	 * 
+	 * @return Le nom de l'épreuve associée à la note.
+	 */
+	public String getNom() {
+		return this.nom;
 	}
 	
 	/**
@@ -74,7 +88,7 @@ public class Note implements Serializable {
 	 * 
 	 * @return Le coefficient de la note SI elle est de type "Contrôle Continu".
 	 */
-	public Fraction getCoefficient() {
+	public int getCoefficient() {
 		return this.coefficient;
 	}
 	
@@ -87,6 +101,15 @@ public class Note implements Serializable {
 	 */
 	public void setId(int id) {
 		this.id = id;
+	}
+	
+	/**
+	 * Méthode permettant de modifier le nom de l'épreuve associée à la note.
+	 * 
+	 * @param nom Le nouveau nom de l'épreuve associée à la note.
+	 */
+	public void setNom(String nom) {
+		this.nom = nom;
 	}
 	
 	/**
@@ -112,7 +135,7 @@ public class Note implements Serializable {
 	 * 
 	 * @param coefficient Le nouveau coefficient de la note SI elle est de type "Contrôle Continu".
 	 */
-	public void setCoefficient(Fraction coefficient) {
+	public void setCoefficient(int coefficient) {
 		this.coefficient = coefficient;
 	}
 }

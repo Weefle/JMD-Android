@@ -17,7 +17,6 @@ import android.app.*;
 import android.content.*;
 import android.content.res.Configuration;
 import android.os.*;
-import android.util.Log;
 import android.view.View;
 import android.widget.*;
 import android.widget.AdapterView.OnItemSelectedListener;

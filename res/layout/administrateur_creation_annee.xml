@@ -33,21 +33,33 @@
         android:inputType="text"
         android:singleLine="true" />
 
-    <AutoCompleteTextView
-        android:id="@+id/admin_creation_annee_nom_eta_auto_complete"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="20dp"
-        android:hint="@string/admin_crea_annee_hint_etablissement"
-        android:singleLine="true" />
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
 
-    <TextView
-        android:id="@+id/admin_choix_annee_no_etablissement"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:gravity="center" />
+        <EditText
+            android:id="@+id/admin_creation_annee_nom_eta"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_weight="1"
+            android:enabled="false"
+            android:hint="@string/admin_crea_annee_hint_etablissement"
+            android:singleLine="true" />
+
+        <Button
+            android:id="@+id/crea_annee_bout_choisir_eta"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/button_style"
+            android:onClick="openListEta"
+            android:padding="10dp"
+            android:text="Choisir"
+            android:textColor="@drawable/button_color_selector" />
+    </LinearLayout>
 
     <Spinner
         android:id="@+id/admin_creation_annee_spinner"
@@ -56,7 +68,7 @@
         android:layout_marginTop="20dp"
         android:gravity="center"
         android:prompt="@string/crea_annee_decoupage" />
-    
+
     <CheckBox
         android:id="@+id/admin_creation_annee_is_last_year"
         android:layout_width="fill_parent"

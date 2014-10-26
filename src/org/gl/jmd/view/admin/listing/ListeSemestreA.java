@@ -18,8 +18,6 @@ import android.widget.*;
  */
 public class ListeSemestreA extends Activity {
 	
-	private Intent lastIntent;
-	
 	private String idAnnee = "";
 	
 	@Override
@@ -29,14 +27,12 @@ public class ListeSemestreA extends Activity {
 		setContentView(R.layout.administrateur_liste_semestre);
 		overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
 		
-		lastIntent = getIntent();
-		
-		idAnnee = lastIntent.getExtras().getString("idAnnee");
+		idAnnee = getIntent().getExtras().getString("idAnnee");
 		
 		initListe();
 	}
 	
-	public void initListe() {
+	private void initListe() {
 		final ListView liste = (ListView) findViewById(android.R.id.list);
 
 		final ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
@@ -44,14 +40,12 @@ public class ListeSemestreA extends Activity {
 
 		map = new HashMap<String, String>();
 		map.put("titre", "Semestre 1");
-		map.put("idAnnee", "" + idAnnee);
 		map.put("decoupage", "SEM1");
 		
 		listItem.add(map);	
 		
 		map = new HashMap<String, String>();
 		map.put("titre", "Semestre 2");
-		map.put("idAnnee", "" + idAnnee);
 		map.put("decoupage", "SEM2");
 		
 		listItem.add(map);		
@@ -64,7 +58,7 @@ public class ListeSemestreA extends Activity {
 			public void onItemClick(AdapterView<?> arg0, View arg1, final int position, long arg3) {
 				Intent newIntent = new Intent(ListeSemestreA.this, ListeUERegleA.class);
 
-				newIntent.putExtra("idAnnee", listItem.get(position).get("idAnnee"));
+				newIntent.putExtra("idAnnee", idAnnee);
 				newIntent.putExtra("decoupage", listItem.get(position).get("decoupage"));
 				
 				startActivity(newIntent);

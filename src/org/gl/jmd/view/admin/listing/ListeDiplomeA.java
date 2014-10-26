@@ -48,13 +48,13 @@ public class ListeDiplomeA extends Activity {
 		actualiserListe();
 	}
 
-	public void actualiserListe() {
+	private void actualiserListe() {
 		ProgressDialog progress = new ProgressDialog(activity);
 		progress.setMessage("Chargement...");
 		new ListerDiplomes(progress, Constantes.URL_SERVER + "diplome/getAll").execute();	
 	}
 
-	public void initListe(final ArrayList<Diplome> listeDiplomes) {
+	private void initListe(final ArrayList<Diplome> listeDiplomes) {
 		final ListView liste = (ListView) findViewById(android.R.id.list);
 
 		if (listeDiplomes.size() > 0) {
@@ -77,8 +77,7 @@ public class ListeDiplomeA extends Activity {
 			liste.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 				public void onItemClick(AdapterView<?> arg0, View arg1, final int position, long arg3) {
 					Intent newIntent = new Intent(ListeDiplomeA.this, ListeAnneeA.class);
-					newIntent.putExtra("idDiplome", listItem.get(position).get("id"));
-					newIntent.putExtra("nomDiplome", listItem.get(position).get("titre"));
+					newIntent.putExtra("diplome", listeDiplomes.get(position));
 					
 					startActivity(newIntent);				
 				}
@@ -101,8 +100,6 @@ public class ListeDiplomeA extends Activity {
 							ProgressDialog progress = new ProgressDialog(activity);
 							progress.setMessage("Chargement...");
 							new DeleteDiplome(progress, URL).execute();
-
-							actualiserListe();
 						}
 					});
 					
@@ -174,8 +171,6 @@ public class ListeDiplomeA extends Activity {
                     ListeDiplomeA.this.runOnUiThread(new Runnable() {
     					public void run() {    						
     						initListe(listeDiplomes);
-
-    						return;
     					}
     				});
                 } catch (JSONException e) {
@@ -215,35 +210,36 @@ public class ListeDiplomeA extends Activity {
 
 		    try {
 		        final HttpResponse response = httpclient.execute(httpDelete);
+	
+		        if (response.getStatusLine().getStatusCode() == 200) {
+		        	ListeDiplomeA.this.runOnUiThread(new Runnable() {
+						@Override
+						public void run() {
+							actualiserListe();
+						}
+					});
+		        	
+		        	toast.setText("Diplôme supprimé.");
+		        	toast.show();
+		        } else if (response.getStatusLine().getStatusCode() == 401) {
+		        	File filePseudo = new File("/sdcard/cacheJMD/pseudo.jmd");
+		        	File fileToken = new File("/sdcard/cacheJMD/token.jmd");
 
-		        ListeDiplomeA.this.runOnUiThread(new Runnable() {
-					public void run() {    			
-				        if (response.getStatusLine().getStatusCode() == 200) {
-				        	toast.setText("Diplôme supprimé.");
-				        	toast.show();
-				        } else if (response.getStatusLine().getStatusCode() == 401) {
-							File filePseudo = new File("/sdcard/cacheJMD/pseudo.jmd");
-							File fileToken = new File("/sdcard/cacheJMD/token.jmd");
-							
-							filePseudo.delete();
-							fileToken.delete();
-				        	
-							finishAllActivities();
-				        	startActivity(new Intent(ListeDiplomeA.this, Accueil.class));	
-				        	
-				        	toast.setText("Session expirée.");	
-							toast.show();
-				        } else if (response.getStatusLine().getStatusCode() == 500) {				        	
-				        	toast.setText("Une erreur est survenue au niveau de la BDD.");	
-							toast.show();
-				        } else {
-				        	toast.setText("Erreur inconnue. Veuillez réessayer.");	
-							toast.show();
-				        }
-				        
-				        return;
-					}
-				});
+		        	filePseudo.delete();
+		        	fileToken.delete();
+
+		        	finish();
+		        	startActivity(new Intent(ListeDiplomeA.this, Accueil.class));	
+
+		        	toast.setText("Session expirée.");	
+		        	toast.show();
+		        } else if (response.getStatusLine().getStatusCode() == 500) {				        	
+		        	toast.setText("Une erreur est survenue au niveau de la BDD.");	
+		        	toast.show();
+		        } else {
+		        	toast.setText("Erreur inconnue. Veuillez réessayer.");	
+		        	toast.show();
+		        }
 		    } catch (ClientProtocolException e) {
 		    	ListeDiplomeA.this.runOnUiThread(new Runnable() {
 					public void run() {
