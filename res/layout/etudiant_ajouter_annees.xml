@@ -10,38 +10,46 @@
         android:layout_height="60dp"
         android:background="#FF5E3A"
         android:orientation="horizontal" >
-        
-        <ImageView
-            android:id="@+id/etudiant_ajouter_annees_img"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_marginLeft="10dp"
-			android:layout_centerInParent="true"
-            android:contentDescription="@string/desc_img"
-            android:src="@drawable/loupe" />
 
-        <EditText
-            android:id="@+id/etudiant_ajouter_annees_zone_recherche"
+        <TextView
+            android:id="@+id/etudiant_ajout_annee_titre"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="60dp"
-            android:hint="@string/etudiant_ajout_annees_hint_nom_annee_txt"
-            android:inputType="text"
-            android:layout_marginRight="50dp"
-            android:layout_centerInParent="true" />
-        
-        <Button
-            android:id="@+id/etudiant_ajouter_annees_bout_ok"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentLeft="true"
             android:layout_centerInParent="true"
-            android:layout_marginRight="10dp"
-            android:onClick="recherche"
-            android:text="@string/bout_ok_txt" />
-
+            android:layout_marginLeft="30dp"
+            android:text="Ajouter une année"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp" />
     </RelativeLayout>
+    
+    <LinearLayout
+        android:id="@+id/linearLayoutAA"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <EditText
+            android:id="@+id/etudiant_ajout_annee_zone_eta"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_weight="1"
+            android:enabled="false"
+            android:hint="Etablissement"
+            android:singleLine="true" />
+
+        <Button
+            android:id="@+id/etudiant_ajout_annee_zone_eta_bout_choix"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/button_style"
+            android:onClick="openListEta"
+            android:padding="10dp"
+            android:text="Choisir"
+            android:textColor="@drawable/button_color_selector" />
+    </LinearLayout>
     
     <ListView
         android:id="@android:id/list"

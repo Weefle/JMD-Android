@@ -1,22 +1,20 @@
 package org.gl.jmd.view.etudiant.create;
 
-import java.io.IOException;
 import java.util.*;
 
-import org.apache.http.client.ClientProtocolException;
-import org.gl.jmd.R;
+import org.gl.jmd.*;
 import org.gl.jmd.dao.EtudiantDAO;
 import org.gl.jmd.model.*;
 import org.gl.jmd.model.enumeration.*;
 import org.gl.jmd.model.user.Etudiant;
-import org.gl.jmd.utils.WebUtils;
+import org.gl.jmd.utils.ServiceHandler;
+import org.json.*;
 
 import android.os.*;
 import android.util.Log;
 import android.view.View;
 import android.widget.*;
 import android.app.*;
-import android.content.*;
 import android.content.res.Configuration;
 
 /**
@@ -30,48 +28,285 @@ public class AjouterAnneeE extends Activity {
 
 	private Activity activity;
 
-	private String contenuPage = "";
-
 	private int idDiplome = 0;
 
 	private Etudiant etud = EtudiantDAO.load();
 
-	private Intent lastIntent;
+	private Etablissement selectedEta = null;
 
-	private ArrayList<UE> listeUE = new ArrayList<UE>();
-
-	private ArrayList<Matiere> listeMatiere = new ArrayList<Matiere>();
+	private EditText ETA;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		setContentView(R.layout.etudiant_ajouter_annees);
 		overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
 
 		activity = this;
 		toast = Toast.makeText(activity, "", Toast.LENGTH_SHORT);
 
-		lastIntent = getIntent();
-		idDiplome = lastIntent.getExtras().getInt("idDiplome");
+		ETA = (EditText) findViewById(R.id.etudiant_ajout_annee_zone_eta);
+		idDiplome = getIntent().getExtras().getInt("idDiplome");
 	}
 
-	public void recherche(View view) {
-		final EditText et_dip = (EditText) findViewById(R.id.etudiant_ajouter_annees_zone_recherche);
-		String nomAnnee = (et_dip.getText().toString().length() > 0) ? et_dip.getText().toString() : "empty";
-		
-		String url = "http://www.jordi-charpentier.com/jmd/mobile/getInfos.php?type=annee&nom=" + nomAnnee + "&idDiplome=" + idDiplome;
-		
+	public void openListEta(View view) {
 		ProgressDialog progress = new ProgressDialog(activity);
 		progress.setMessage("Chargement...");
-		new RechercherAnnees(progress, url).execute();	
+		new InitEtablissement(progress, Constantes.URL_SERVER + "etablissement/getAll").execute();	
 	}
 
-	/**
-	 * Classe interne représentant une tâche asynchrone qui sera effectuée en fond pendant un rond de chargement.
-	 * 
-	 * @author Jordi CHARPENTIER & Yoann VANHOESERLANDE
-	 */
+	private void initListe(final ArrayList<Annee> listeAnnees) {
+		final ListView liste = (ListView) findViewById(android.R.id.list);
+
+		if (listeAnnees.size() > 0) {
+			final ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
+			HashMap<String, String> map;
+
+			for(int s = 0; s < listeAnnees.size(); s++) {
+				map = new HashMap<String, String>();
+
+				map.put("id", "" + listeAnnees.get(s).getId());
+				map.put("titre", listeAnnees.get(s).getNom());
+
+				listItem.add(map);		
+			}
+
+			final SimpleAdapter mSchedule = new SimpleAdapter (getBaseContext(), listItem, R.layout.etudiant_ajouter_annees_list, new String[] {"titre"}, new int[] {R.id.titre});
+
+			liste.setAdapter(mSchedule); 
+
+			liste.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+				public void onItemClick(AdapterView<?> arg0, View arg1, final int position, long arg3) {
+					Log.e("AjouterAnneeE", Constantes.URL_SERVER + "annee/getCompleteYear" +
+							"?idAnnee" + listItem.get(position).get("id"));
+					
+					ProgressDialog progress = new ProgressDialog(activity);
+					progress.setMessage("Chargement...");
+					new AjouterAnnee(progress, Constantes.URL_SERVER + "annee/getCompleteYear" +
+							"?idAnnee=" + listItem.get(position).get("id")).execute();	
+				}
+			});
+		} else {
+			ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
+			HashMap<String, String> map;
+
+			map = new HashMap<String, String>();
+			map.put("titre", "Aucune année.");
+
+			listItem.add(map);
+
+			SimpleAdapter mSchedule = new SimpleAdapter (getBaseContext(), listItem, R.layout.etudiant_ajouter_annees_empty_list, new String[] {"titre"}, new int[] {R.id.titre});
+
+			liste.setAdapter(mSchedule); 
+		}
+	}
+
+	/* Classes internes. */
+
+	private class InitEtablissement extends AsyncTask<Void, Void, Void> {
+		private ProgressDialog progress;
+		private String pathUrl;
+
+		public InitEtablissement(ProgressDialog progress, String pathUrl) {
+			this.progress = progress;
+			this.pathUrl = pathUrl;
+		}
+
+		public void onPreExecute() {
+			progress.show();
+		}
+
+		public void onPostExecute(Void unused) {
+			progress.dismiss();
+		}
+
+		protected Void doInBackground(Void... arg0) {
+			ServiceHandler sh = new ServiceHandler();
+			String jsonStr = sh.makeServiceCall(pathUrl, ServiceHandler.GET);
+
+			final ArrayList<Etablissement> listeEtablissements = new ArrayList<Etablissement>();
+			final ArrayList<String> listeEtablissementsString = new ArrayList<String>();
+			Etablissement e = null;
+
+			if (jsonStr != null) {            	
+				try {
+					JSONArray diplomes = new JSONArray(jsonStr);
+
+					for (int i = 0; i < diplomes.length(); i++) {
+						JSONObject c = diplomes.getJSONObject(i);
+
+						e = new Etablissement();
+						e.setId(c.getInt("idEtablissement"));
+						e.setNom(c.getString("nom"));
+						e.setVille(c.getString("ville"));
+
+						listeEtablissementsString.add(e.getNom());
+						listeEtablissements.add(e);
+					}
+				} catch (JSONException ex) {
+					ex.printStackTrace();
+				}
+			} 
+
+			AjouterAnneeE.this.runOnUiThread(new Runnable() {
+				public void run() {
+					if (listeEtablissements.size() > 0) {
+						final Dialog dialog = new Dialog(activity);
+						dialog.setTitle("Liste des établissements");
+						dialog.setCancelable(true);
+
+						ListView listView = new ListView(activity);
+						listView.setAdapter(new ArrayAdapter<String>(activity, android.R.layout.simple_list_item_1, listeEtablissementsString));
+
+						listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+							public void onItemClick(AdapterView<?> arg0, View arg1, final int position, long arg3) {					    		
+								ETA.setText(listeEtablissementsString.get(position));
+								selectedEta = listeEtablissements.get(position);
+
+								ProgressDialog progress = new ProgressDialog(activity);
+								progress.setMessage("Chargement...");
+								new RechercherAnnees(progress, Constantes.URL_SERVER + "annee/getAnnees" +
+										"?idDiplome=" + idDiplome +
+										"&idEtablissement=" + selectedEta.getId()).execute();
+
+								dialog.hide();
+							}
+
+						});
+
+						dialog.setContentView(listView);
+						dialog.show();
+					} else {						
+						Button button = (Button) findViewById(R.id.crea_annee_bout_creer);
+						button.setEnabled(false);
+					}
+				}
+			});
+
+			return null;
+		}
+	}
+
+	private class AjouterAnnee extends AsyncTask<Void, Void, Void> {
+		private ProgressDialog progress;
+		private String pathUrl;
+
+		public AjouterAnnee(ProgressDialog progress, String pathUrl) {
+			this.progress = progress;
+			this.pathUrl = pathUrl;
+		}
+
+		public void onPreExecute() {
+			progress.show();
+		}
+
+		public void onPostExecute(Void unused) {
+			progress.dismiss();
+		}
+
+		protected Void doInBackground(Void... arg0) {
+			ServiceHandler sh = new ServiceHandler();
+			String jsonStr = sh.makeServiceCall(pathUrl, ServiceHandler.GET);
+
+			Annee a = new Annee();
+
+			if (jsonStr != null) {            	
+				try {
+					JSONObject anneeJSON = new JSONObject(jsonStr);
+
+					a.setId(anneeJSON.getInt("idAnnee"));
+					a.setNom(anneeJSON.getString("nom"));
+					a.setDecoupage(DecoupageType.valueOf(anneeJSON.getString("decoupage")));
+					
+					Etablissement e = new Etablissement();
+					e.setId(anneeJSON.getInt("idEtablissement"));
+					e.setNom(anneeJSON.getString("nomEtablissement"));
+
+					a.setEtablissement(e);
+
+					Diplome d = new Diplome();
+					d.setId(anneeJSON.getInt("idDiplome"));
+					d.setNom(anneeJSON.getString("nomDiplome"));
+
+					a.setDiplome(d);
+					
+					// Liste des UE.
+					JSONArray uesJSON = anneeJSON.getJSONArray("ues");
+					ArrayList<UE> listeUE = new ArrayList<UE>();
+					UE ue = null;
+					
+                    for (int i = 0; i < uesJSON.length(); i++) {
+                    	JSONObject ueJSON = uesJSON.getJSONObject(i);
+                        
+                        ue = new UE();
+                        ue.setId(ueJSON.getInt("idUE"));
+                        ue.setNom(ueJSON.getString("nom"));
+                        ue.setDecoupage(DecoupageYearType.valueOf(ueJSON.getString("yearType")));
+                        
+                        ArrayList<Matiere> listeMatieres = new ArrayList<Matiere>();
+                        Matiere m = null;
+                        JSONArray matieresJSON = ueJSON.getJSONArray("matieres");
+                        
+                        for (int j = 0; j < matieresJSON.length(); j++) {
+                        	JSONObject matiereJSON = matieresJSON.getJSONObject(j);
+                        	
+                        	m = new Matiere();
+                        	m.setId(matiereJSON.getInt("idMatiere"));
+                        	m.setCoefficient(matiereJSON.getLong("coefficient"));
+                        	m.setNom(matiereJSON.getString("nom"));
+                        	m.setIsOption(matiereJSON.getBoolean("isOption"));
+                        	
+                        	listeMatieres.add(m);
+                        }
+                        
+                        ue.setListeMatieres(listeMatieres);
+                        listeUE.add(ue);
+                    }
+                    
+                    a.setListeUE(listeUE);
+
+					// Sauvegarde de l'année.
+					
+					int indexDiplome = 0;
+					boolean exists = false;
+					
+					for (int i = 0; i < etud.getListeDiplomes().size(); i++) {
+						if (etud.getListeDiplomes().get(i).getId() == idDiplome) {
+							indexDiplome = i;
+						}
+					}
+					
+					for (int i = 0; i < etud.getListeDiplomes().size(); i++) {
+						for (int j = 0; j < etud.getListeDiplomes().get(i).getListeAnnees().size(); j++) {
+							if (etud.getListeDiplomes().get(i).getListeAnnees().get(j).getId() == a.getId()) {
+								exists = true;
+							}
+						}
+					}
+
+					if (!exists) {
+						etud.getListeDiplomes().get(indexDiplome).getListeAnnees().add(a);
+						
+						if (EtudiantDAO.save(etud)) {
+							finish();
+						} else {
+							toast.setText("Erreur lors de la sauvegarde du diplôme.");
+							toast.show();
+						}									
+					} else {
+						toast.setText("L'année est déjà ajoutée.");
+						toast.show();
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+
+			return null;
+		}
+	}
+
 	private class RechercherAnnees extends AsyncTask<Void, Void, Void> {
 		private ProgressDialog progress;
 		private String pathUrl;
@@ -90,505 +325,46 @@ public class AjouterAnneeE extends Activity {
 		}
 
 		protected Void doInBackground(Void... arg0) {
-			try {
-				if((contenuPage = WebUtils.getPage(pathUrl)) != "-1");
+			ServiceHandler sh = new ServiceHandler();
+			String jsonStr = sh.makeServiceCall(pathUrl, ServiceHandler.GET);
 
-				else {
-					AjouterAnneeE.this.runOnUiThread(new Runnable() {
-						public void run() {
-							AlertDialog.Builder builder = new AlertDialog.Builder(AjouterAnneeE.this);
-							builder.setMessage("Erreur - Vérifiez votre connexion");
-							builder.setCancelable(false);
-							builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog, int which) {
-									AjouterAnneeE.this.finish();
-								}
-							});
+			final ArrayList<Annee> listeAnnees = new ArrayList<Annee>();
+			Annee a = null;
 
-							AlertDialog error = builder.create();
-							error.show();
-						}});
+			if (jsonStr != null) {            	
+				try {
+					JSONArray annees = new JSONArray(jsonStr);
 
-					return null;
-				}
-			} catch (ClientProtocolException e) { 
-				return null;
-			} catch (IOException e) { 
-				return null;
-			} 
-			
-			AjouterAnneeE.this.runOnUiThread(new Runnable() {
-				public void run() {
-					StringTokenizer chaineEclate = new StringTokenizer(contenuPage, ";");
+					for (int i = 0; i < annees.length(); i++) {
+						JSONObject c = annees.getJSONObject(i);
 
-					final String[] temp = new String[chaineEclate.countTokens()];
-					final ListView liste = (ListView) findViewById(android.R.id.list);
+						a = new Annee();
+						a.setId(c.getInt("idAnnee"));
+						a.setNom(c.getString("nom"));
+						a.setIsLast(c.getBoolean("isLastYear"));
 
-					if (temp.length != 1) {
-						int i = 0;
+						Etablissement e = new Etablissement();
+						e.setId(c.getInt("idEtablissement"));
 
-						while(chaineEclate.hasMoreTokens()) {
-							temp[i++] = chaineEclate.nextToken();	
-						}
+						a.setEtablissement(e);
 
-						final ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
-						HashMap<String, String> map;
+						Diplome d = new Diplome();
+						d.setId(c.getInt("idDiplome"));
 
-						for(int s = 0; s < temp.length;) {
-							map = new HashMap<String, String>();
+						a.setDiplome(d);
 
-							map.put("id", temp[s].replaceAll(" ", ""));
-							map.put("titre", temp[s + 1]);
-							map.put("description", temp[s + 4] + " - " + temp[s + 5]);
-							map.put("decoupage", temp[s + 2]);
-							map.put("isLastYear", temp[s + 3]);
-							map.put("idEta", temp[s + 6]);
-							
-							s = s + 7;							
-
-							listItem.add(map);		
-						}
-
-						final SimpleAdapter mSchedule = new SimpleAdapter (getBaseContext(), listItem, R.layout.etudiant_ajouter_annees_list, new String[] {"titre", "description"}, new int[] {R.id.titre, R.id.description});
-
-						liste.setAdapter(mSchedule); 
-
-						liste.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-							public void onItemClick(AdapterView<?> arg0, View arg1, final int position, long arg3) {
-								final Annee an = new Annee();
-								an.setId(Integer.parseInt(listItem.get(position).get("id")));
-								an.setNom(listItem.get(position).get("titre"));
-								an.setDecoupage(DecoupageType.valueOf(listItem.get(position).get("decoupage")));
-								an.setIsLast(listItem.get(position).get("isLastYear").equals("0") ? false : true);
-								
-								final ArrayList<Regle> listeRegles = new ArrayList<Regle>();
-								
-								final String urlGetAllRegle = "http://www.jordi-charpentier.com/jmd/mobile/getInfos.php?type=getReglesByID&typeReq=annee&id=" + an.getId();
-								
-								class GetAllRegleIDAnnee extends AsyncTask<Void, Void, Void> {
-									private String pathUrl;
-									
-									public GetAllRegleIDAnnee(String pathUrl) {
-										this.pathUrl = pathUrl;
-									}
-
-									protected Void doInBackground(Void... arg0) {
-										try {
-											if((contenuPage = WebUtils.getPage(pathUrl)) != "-1");
-
-											else {
-												AjouterAnneeE.this.runOnUiThread(new Runnable() {
-													public void run() {
-														AlertDialog.Builder builder = new AlertDialog.Builder(AjouterAnneeE.this);
-														builder.setMessage("Erreur - Vérifiez votre connexion");
-														builder.setCancelable(false);
-														builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
-															public void onClick(DialogInterface dialog, int which) {
-																AjouterAnneeE.this.finish();
-															}
-														});
-
-														AlertDialog error = builder.create();
-														error.show();
-													}});
-
-												return null;
-											}
-										} catch (ClientProtocolException e) { 
-											return null;
-										} catch (IOException e) { 
-											return null;
-										} 
-										
-										StringTokenizer chaineEclate = new StringTokenizer(contenuPage, ";");
-
-										final String[] temp = new String[chaineEclate.countTokens()];
-
-										if (temp.length != 1) {
-											int i = 0;
-
-											while(chaineEclate.hasMoreTokens()) {
-												temp[i++] = chaineEclate.nextToken();	
-											}
-											
-											Regle r = null;
-											
-											for(int s = 0; s < temp.length;) {
-												r = new Regle();
-												r.setId(Integer.parseInt(temp[s].replaceAll(" ", "")));
-												r.setRegle(Integer.parseInt(temp[s+1].replaceAll(" ", "")));
-												r.setOperateur(Integer.parseInt(temp[s+2].replaceAll(" ", "")));
-												r.setValeur(Integer.parseInt(temp[s+3].replaceAll(" ", "")));
-													
-												listeRegles.add(r);
-												
-												s=s+4;
-											}
-										}
-										
-										an.setListeRegles(listeRegles);
-
-										return null;
-									}
-								}
-								
-								new GetAllRegleIDAnnee(urlGetAllRegle).execute();
-								
-								Etablissement eta = new Etablissement();
-								eta.setId(Integer.parseInt(listItem.get(position).get("idEta")));
-								eta.setNom(listItem.get(position).get("description").substring(0, listItem.get(position).get("description").indexOf("-") - 1));
-								eta.setVille(listItem.get(position).get("description").substring(listItem.get(position).get("description").indexOf("-") + 1, listItem.get(position).get("description").length()));
-
-								an.setEtablissement(eta);
-
-								final String urlGetUEByIdAnnee = "http://www.jordi-charpentier.com/jmd/mobile/getInfos.php?type=getAllInfosAnnee&idAnnee=" + an.getId();
-
-								class GetAllByIDAnnee extends AsyncTask<Void, Void, Void> {
-									private String pathUrl;
-									private Annee an;
-									
-									public GetAllByIDAnnee(String pathUrl, Annee an) {
-										this.pathUrl = pathUrl;
-										this.an = an;
-									}
-
-									protected Void doInBackground(Void... arg0) {
-										try {
-											if((contenuPage = WebUtils.getPage(pathUrl)) != "-1");
-
-											else {
-												AjouterAnneeE.this.runOnUiThread(new Runnable() {
-													public void run() {
-														AlertDialog.Builder builder = new AlertDialog.Builder(AjouterAnneeE.this);
-														builder.setMessage("Erreur - Vérifiez votre connexion");
-														builder.setCancelable(false);
-														builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
-															public void onClick(DialogInterface dialog, int which) {
-																AjouterAnneeE.this.finish();
-															}
-														});
-
-														AlertDialog error = builder.create();
-														error.show();
-													}});
-
-												return null;
-											}
-										} catch (ClientProtocolException e) { 
-											return null;
-										} catch (IOException e) { 
-											return null;
-										} 
-										
-										if (contenuPage.length() == 2) {
-											toast.setText("L'année n'est pas complète (0 UE ou 0 matière sur une UE).");
-											toast.show();
-											
-											return null;
-										}
-										
-										listeUE.clear();
-										
-										StringTokenizer chaineEclate2 = new StringTokenizer(contenuPage, "//");
-
-										final String[] temp2 = new String[chaineEclate2.countTokens()];
-
-										if (temp2.length != 1) {
-											int i = 0;
-
-											while(chaineEclate2.hasMoreTokens()) {
-												temp2[i++] = chaineEclate2.nextToken();	
-											}
-											
-											for (int n = 0; n < temp2.length; n++) {
-												StringTokenizer chaineEclate = new StringTokenizer(temp2[n], ";");
-
-												final String[] temp = new String[chaineEclate.countTokens()];
-
-												if (temp.length != 1) {
-													int g = 0;
-													boolean isPresent = false;
-													
-													while(chaineEclate.hasMoreTokens()) {
-														temp[g++] = chaineEclate.nextToken();	
-													}
-													
-													final UE ue = new UE();
-													ue.setId(Integer.parseInt(temp[0].replaceAll(" ", "")));
-													ue.setNom(temp[1]);
-													ue.setDecoupage(DecoupageYearType.valueOf(temp[2]));
-													
-													final String urlGetAllRegleUE = "http://www.jordi-charpentier.com/jmd/mobile/getInfos.php?type=getReglesByID&typeReq=ue&id=" + ue.getId();
-													final ArrayList<Regle> listeReglesUE = new ArrayList<Regle>();
-													
-													class GetAllRegleIDUE extends AsyncTask<Void, Void, Void> {
-														private String pathUrl;
-														
-														public GetAllRegleIDUE(String pathUrl) {
-															this.pathUrl = pathUrl;
-														}
-
-														protected Void doInBackground(Void... arg0) {
-															try {
-																if((contenuPage = WebUtils.getPage(pathUrl)) != "-1");
-
-																else {
-																	AjouterAnneeE.this.runOnUiThread(new Runnable() {
-																		public void run() {
-																			AlertDialog.Builder builder = new AlertDialog.Builder(AjouterAnneeE.this);
-																			builder.setMessage("Erreur - Vérifiez votre connexion");
-																			builder.setCancelable(false);
-																			builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
-																				public void onClick(DialogInterface dialog, int which) {
-																					AjouterAnneeE.this.finish();
-																				}
-																			});
-
-																			AlertDialog error = builder.create();
-																			error.show();
-																		}});
-
-																	return null;
-																}
-															} catch (ClientProtocolException e) { 
-																return null;
-															} catch (IOException e) { 
-																return null;
-															} 
-															
-															StringTokenizer chaineEclate = new StringTokenizer(contenuPage, ";");
-
-															final String[] temp = new String[chaineEclate.countTokens()];
-
-															if (temp.length != 1) {
-																int i = 0;
-
-																while(chaineEclate.hasMoreTokens()) {
-																	temp[i++] = chaineEclate.nextToken();	
-																}
-																
-																Regle r = null;
-																
-																for(int s = 0; s < temp.length;) {
-																	r = new Regle();
-																	r.setId(Integer.parseInt(temp[s].replaceAll(" ", "")));
-																	r.setRegle(Integer.parseInt(temp[s+1].replaceAll(" ", "")));
-																	r.setOperateur(Integer.parseInt(temp[s+2].replaceAll(" ", "")));
-																	r.setValeur(Integer.parseInt(temp[s+3].replaceAll(" ", "")));
-																		
-																	listeReglesUE.add(r);
-																	
-																	s=s+4;
-																}
-															}
-															
-															ue.setListeRegles(listeReglesUE);
-
-															return null;
-														}
-													}
-													
-													new GetAllRegleIDUE(urlGetAllRegleUE).execute();
-													
-													for (int y = 0; y < listeUE.size(); y++) {
-														if (ue.getId() == listeUE.get(y).getId()) {
-															isPresent = true;
-														}	
-													}
-													
-													if (!isPresent) {
-														listeUE.add(ue);
-													}
-												} 
-											}
-											
-											an.setListeUE(listeUE);
-											
-											if (listeUE.size() == 0) {
-												toast.setText("L'année n'est pas complète (0 UE sur l'année).");
-												toast.show();
-												
-												return null;
-											}
-											
-											listeMatiere.clear();
-											
-											for (int r = 0; r < temp2.length; r++) {
-												StringTokenizer chaineEclate = new StringTokenizer(temp2[r], ";");
-
-												final String[] temp = new String[chaineEclate.countTokens()];
-
-												if (temp.length != 1) {
-													int g = 0;
-
-													while(chaineEclate.hasMoreTokens()) {
-														temp[g++] = chaineEclate.nextToken();	
-													}
-
-													final Matiere m = new Matiere();
-													m.setId(Integer.parseInt(temp[3].replaceAll(" ", "")));
-													m.setNom(temp[4]);
-													m.setCoefficient(Integer.parseInt(temp[5].replaceAll(" ", "")));
-													m.setIsOption((temp[6].equals("1")) ? true : false);
-													
-													final String urlGetAllRegleMat = "http://www.jordi-charpentier.com/jmd/mobile/getInfos.php?type=getReglesByID&typeReq=matiere&id=" + m.getId();
-													final ArrayList<Regle> listeReglesMat = new ArrayList<Regle>();
-													
-													class GetAllRegleIDMat extends AsyncTask<Void, Void, Void> {
-														private String pathUrl;
-														
-														public GetAllRegleIDMat(String pathUrl) {
-															this.pathUrl = pathUrl;
-														}
-
-														protected Void doInBackground(Void... arg0) {
-															try {
-																if((contenuPage = WebUtils.getPage(pathUrl)) != "-1");
-
-																else {
-																	AjouterAnneeE.this.runOnUiThread(new Runnable() {
-																		public void run() {
-																			AlertDialog.Builder builder = new AlertDialog.Builder(AjouterAnneeE.this);
-																			builder.setMessage("Erreur - Vérifiez votre connexion");
-																			builder.setCancelable(false);
-																			builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
-																				public void onClick(DialogInterface dialog, int which) {
-																					AjouterAnneeE.this.finish();
-																				}
-																			});
-
-																			AlertDialog error = builder.create();
-																			error.show();
-																		}});
-
-																	return null;
-																}
-															} catch (ClientProtocolException e) { 
-																return null;
-															} catch (IOException e) { 
-																return null;
-															} 
-															
-															StringTokenizer chaineEclate = new StringTokenizer(contenuPage, ";");
-
-															final String[] temp = new String[chaineEclate.countTokens()];
-
-															if (temp.length != 1) {
-																int i = 0;
-
-																while(chaineEclate.hasMoreTokens()) {
-																	temp[i++] = chaineEclate.nextToken();	
-																}
-																
-																Regle r = null;
-																
-																for(int s = 0; s < temp.length;) {
-																	r = new Regle();
-																	r.setId(Integer.parseInt(temp[s].replaceAll(" ", "")));
-																	r.setRegle(Integer.parseInt(temp[s+1].replaceAll(" ", "")));
-																	r.setOperateur(Integer.parseInt(temp[s+2].replaceAll(" ", "")));
-																	r.setValeur(Integer.parseInt(temp[s+3].replaceAll(" ", "")));
-																		
-																	listeReglesMat.add(r);
-																	
-																	s=s+4;
-																}
-															}
-															
-															m.setListeRegles(listeReglesMat);
-
-															return null;
-														}
-													}
-													
-													new GetAllRegleIDMat(urlGetAllRegleMat).execute();
-													
-													for (int n = 0; n < listeUE.size(); n++) {
-														if (Integer.parseInt(temp[0].replaceAll(" ", "")) == listeUE.get(n).getId()) {
-															ArrayList<Matiere> tmp = listeUE.get(n).getListeMatieres();
-															tmp.add(m);
-															
-															listeUE.get(n).setListeMatieres(tmp);
-															
-															if (tmp.size() == 0) {
-																toast.setText("L'année n'est pas complète (0 matière sur l'UE " + listeUE.get(n).getNom() + ").");
-																toast.show();
-																
-																return null;
-															}
-														}
-													}
-												}
-											}
-										}
-										
-										int pos = 0;
-
-										for (int b = 0; b < etud.getListeDiplomes().size(); b++) {
-											if (etud.getListeDiplomes().get(b).getId() == idDiplome) {
-												pos = b;
-											}
-										}
-										
-										ArrayList<Diplome> lD = etud.getListeDiplomes();
-										ArrayList<Annee> listeAnnees = etud.getListeDiplomes().get(pos).getListeAnnees();
-										
-										boolean error = false;
-										
-										for(int o = 0; o < listeAnnees.size(); o++) {
-											if (listeAnnees.get(o).getId() == an.getId()) {
-												error = true;
-											}
-										}
-										
-										if (!error) {
-											listeAnnees.add(an);
-											
-											Diplome d = etud.getListeDiplomes().get(pos);
-											d.setListeAnnees(listeAnnees);
-
-											lD.remove(pos);
-											lD.add(d);
-
-											etud.setListeDiplomes(lD);
-										} else {
-											toast.setText("L'année a déjà été ajoutée au diplôme.");
-											toast.show();
-											
-											return null;
-										}
-										
-										if (EtudiantDAO.save(etud)) {
-											finish();
-										} else {
-											toast.setText("Erreur lors de la sauvegarde de l'année.");
-											toast.show();
-											
-											return null;
-										}
-
-										return null;
-									}
-								}
-
-								new GetAllByIDAnnee(urlGetUEByIdAnnee, an).execute();
-							}
-						});
-					} else {
-						final ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
-						HashMap<String, String> map;
-
-						map = new HashMap<String, String>();
-
-						map.put("titre", "Aucun résultat.");
-
-						listItem.add(map);		
-
-						final SimpleAdapter mSchedule = new SimpleAdapter (getBaseContext(), listItem, R.layout.etudiant_ajouter_annees_empty_list, new String[] {"titre"}, new int[] {R.id.titre});
-
-						liste.setAdapter(mSchedule); 
+						listeAnnees.add(a);
 					}
-				}});
+
+					AjouterAnneeE.this.runOnUiThread(new Runnable() {
+						public void run() {    						
+							initListe(listeAnnees);
+						}
+					});
+				} catch (JSONException ex) {
+					ex.printStackTrace();
+				}
+			}
 
 			return null;
 		}

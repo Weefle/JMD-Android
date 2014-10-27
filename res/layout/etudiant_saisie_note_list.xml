@@ -13,7 +13,7 @@
     </TextView>
 
     <EditText
-        android:id="@+id/note_list1"
+        android:id="@+id/noteCC"
         android:layout_width="60dp"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"

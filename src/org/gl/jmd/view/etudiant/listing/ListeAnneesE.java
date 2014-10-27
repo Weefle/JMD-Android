@@ -28,8 +28,6 @@ public class ListeAnneesE extends Activity {
 
 	private Etudiant etud = EtudiantDAO.load();
 
-	private Intent lastIntent;
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -37,45 +35,14 @@ public class ListeAnneesE extends Activity {
 		setContentView(R.layout.etudiant_liste_annees);
 		overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
 
-		lastIntent = getIntent();
-
-		idDiplome = lastIntent.getExtras().getInt("idDiplome");
-		nomDiplome = lastIntent.getExtras().getString("nomDiplome");
+		idDiplome = getIntent().getExtras().getInt("idDiplome");
+		nomDiplome = getIntent().getExtras().getString("nomDiplome");
 
 		initListe();
-		initTxt();
-
-		// On donne comme titre à la vue le nom du diplôme choisi.
-		TextView tvTitre = (TextView) findViewById(R.id.etudiant_liste_annees_titre);
-		tvTitre.setText(nomDiplome);
+		initTxtTitre();
 	}
 
-	private void initTxt() {
-		// On affiche ou non le texte de la validation diplôme.
-		TextView tvValid = (TextView) findViewById(R.id.txt_valid_diplome);
-
-		boolean isValide = false;
-		String res = "";
-		int idDip = 0;
-		
-		for (int i = 0; i < etud.getListeDiplomes().size(); i++) {
-			if (etud.getListeDiplomes().get(i).getId() == idDiplome) {
-				isValide = etud.getListeDiplomes().get(i).isValide();
-			}
-		}
-
-		if (etud.getListeDiplomes().get(idDip).getListeAnnees().size() > 0) {
-			if (!isValide) {
-				res = "Le diplôme n'est pas validé.";
-			} else {
-				res = "Le diplôme est validé.";
-			}
-		}
-
-		tvValid.setText(res);
-	}
-
-	public void initListe() {
+	private void initListe() {
 		int pos = 0;
 
 		for (int i = 0; i < this.etud.getListeDiplomes().size(); i++) {
@@ -87,18 +54,14 @@ public class ListeAnneesE extends Activity {
 		final int posFin = pos;
 
 		if (etud.getListeDiplomes().get(pos).getListeAnnees().isEmpty()) {
-			final ListView liste = (ListView) findViewById(android.R.id.list);
-			final ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
+			ListView liste = (ListView) findViewById(android.R.id.list);
+			ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
 
 			HashMap<String, String> map = new HashMap<String, String>();
-
 			map.put("titre", "Aucune année.");
 
 			listItem.add(map);		
-
-			final SimpleAdapter mSchedule = new SimpleAdapter (getBaseContext(), listItem, R.layout.etudiant_liste_annee_empty_list, new String[] {"titre"}, new int[] {R.id.titre});
-
-			liste.setAdapter(mSchedule); 
+			liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.etudiant_liste_annee_empty_list, new String[] {"titre"}, new int[] {R.id.titre})); 
 		} else {
 			final ListView liste = (ListView) findViewById(android.R.id.list);
 
@@ -109,13 +72,13 @@ public class ListeAnneesE extends Activity {
 				map = new HashMap<String, String>();
 
 				map.put("titre", etud.getListeDiplomes().get(pos).getListeAnnees().get(s).getNom());
-				map.put("description", etud.getListeDiplomes().get(pos).getListeAnnees().get(s).getEtablissement().getNom() + " - " + etud.getListeDiplomes().get(pos).getListeAnnees().get(s).getEtablissement().getVille());
+				map.put("description", etud.getListeDiplomes().get(pos).getListeAnnees().get(s).getEtablissement().getNom());
 				map.put("decoupage", etud.getListeDiplomes().get(pos).getListeAnnees().get(s).getDecoupage().name());
 
 				if (etud.getListeDiplomes().get(pos).getListeAnnees().get(s).getMoyenne() != -1) {
 					map.put("note", "" + etud.getListeDiplomes().get(pos).getListeAnnees().get(s).getMoyenne());
 				} else {
-					map.put("note", "0 note");
+					map.put("note", "-1");
 				}
 
 				listItem.add(map);		
@@ -145,7 +108,28 @@ public class ListeAnneesE extends Activity {
 					startActivity(newIntent);
 				}
 			});
+			
+			// Cache le badge si aucune note n'a été entrée.
+			liste.post(new Runnable() {
+			    @Override
+			    public void run() {
+					for (int i = 0; i < liste.getCount(); i++) {
+						View tempView = (View) liste.getChildAt(i);
+						TextView badgeNote = (TextView) tempView.findViewById(R.id.note);
+						
+						if (badgeNote.getText().toString().equals("-1")) {							
+							badgeNote.setVisibility(View.GONE);
+						}
+					}
+			    }
+			});
 		}
+	}
+	
+	private void initTxtTitre() {
+		// On donne comme titre à la vue le nom du diplôme choisi.
+		TextView tvTitre = (TextView) findViewById(R.id.etudiant_liste_annees_titre);
+		tvTitre.setText(nomDiplome);
 	}
 
 	/**
@@ -177,7 +161,7 @@ public class ListeAnneesE extends Activity {
 		etud = EtudiantDAO.load();
 
 		initListe();
-		initTxt();
+		initTxtTitre();
 
 		super.onRestart();
 	} 
@@ -190,7 +174,7 @@ public class ListeAnneesE extends Activity {
 		etud = EtudiantDAO.load();
 
 		initListe();
-		initTxt();
+		initTxtTitre();
 
 		super.onRestart();
 	} 

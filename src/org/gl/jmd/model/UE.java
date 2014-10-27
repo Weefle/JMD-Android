@@ -61,17 +61,17 @@ public class UE implements Serializable {
 		double produitMatiereCoeff = 0.0;
 		
 		for (int i = 0; i < this.listeMatieres.size(); i++) {
-			if (this.listeMatieres.get(i).getNoteFinale() == -2) {
+			/* if (this.listeMatieres.get(i).getNoteFinale() == -2) {
 				res = -2;
 				
 				return res;
-			}
+			} */
 			
 			coeffGlobalUE += this.listeMatieres.get(i).getCoefficient();
-			produitMatiereCoeff += this.listeMatieres.get(i).getNoteFinale() * this.listeMatieres.get(i).getCoefficient();
+			// produitMatiereCoeff += this.listeMatieres.get(i).getNoteFinale() * this.listeMatieres.get(i).getCoefficient();
 		}
 		
-		res = produitMatiereCoeff / coeffGlobalUE;
+		// res = produitMatiereCoeff / coeffGlobalUE;
 		res = NumberUtils.round(res, 2);
 		
 		return res;

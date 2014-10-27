@@ -8,10 +8,11 @@ import org.apache.http.client.*;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.gl.jmd.*;
-import org.gl.jmd.model.Regle;
+import org.gl.jmd.model.*;
 import org.gl.jmd.model.enumeration.*;
 import org.gl.jmd.utils.*;
 import org.gl.jmd.view.Accueil;
+import org.json.*;
 
 import android.app.*;
 import android.content.*;
@@ -31,10 +32,6 @@ public class CreationRegle extends Activity {
 	private Activity activity;
 
 	private Toast toast;
-
-	private String contenuPage = "";
-	
-	private Intent lastIntent;
 	
 	private String idAnnee;
 	
@@ -67,11 +64,9 @@ public class CreationRegle extends Activity {
 
 		activity = this;
 		toast = Toast.makeText(activity, "", Toast.LENGTH_SHORT);
-
-		lastIntent = getIntent();
 		
-		idAnnee = lastIntent.getExtras().getString("idAnnee");
-		decoupage = lastIntent.getExtras().getString("decoupage");
+		idAnnee = getIntent().getExtras().getString("idAnnee");
+		decoupage = getIntent().getExtras().getString("decoupage");
 		
 		VALUE = (EditText) findViewById(R.id.admin_creation_regle_value);
 
@@ -106,8 +101,10 @@ public class CreationRegle extends Activity {
 			}
 
 			r.setValeur(Integer.parseInt(VALUE.getText().toString()));
-			
-			String URL = Constantes.URL_SERVER + "regle" +
+
+			ProgressDialog progress = new ProgressDialog(activity);
+			progress.setMessage("Chargement...");
+			new CreerRegle(progress, Constantes.URL_SERVER + "regle" +
 					"?regle=" + r.getRegle() +
 					"&operateur=" + r.getOperateur() +
 					"&valeur=" + r.getValeur() +
@@ -116,11 +113,7 @@ public class CreationRegle extends Activity {
 					"&idMatiere=" + selectedMatiere_ID +
 					"&token=" + FileUtils.lireFichier("/sdcard/cacheJMD/token.jmd") + 
 					"&pseudo=" + FileUtils.lireFichier("/sdcard/cacheJMD/pseudo.jmd") +
-					"&timestamp=" + new java.util.Date().getTime();	
-
-			ProgressDialog progress = new ProgressDialog(activity);
-			progress.setMessage("Chargement...");
-			new CreerRegle(progress, URL).execute();	
+					"&timestamp=" + new java.util.Date().getTime()).execute();	
 		} else {
 			toast.setText("Au moins un des champs est vide.");
 			toast.show();
@@ -179,25 +172,112 @@ public class CreationRegle extends Activity {
 		});
 		
 		// Liste des UE
-		String URL1 = "http://www.jordi-charpentier.com/jmd/mobile/getInfos.php?type=ue&idAnnee=" + idAnnee + "&yearType=" + decoupage;
-		
 		ProgressDialog progress = new ProgressDialog(activity);
 		progress.setMessage("Chargement...");
-		new GetUE(progress, URL1).execute(); 
+		new GetUE(progress, Constantes.URL_SERVER + "ue/getAllUEOfAnneeByYearType" +
+									"?idAnnee=" + idAnnee +
+									"&yearType=" + decoupage).execute(); 
 		
 		// Liste des matières de l'année
-		String URL2 = "http://www.jordi-charpentier.com/jmd/mobile/getInfos.php?type=matiere&idAnnee=" + idAnnee;
-		
 		ProgressDialog progress2 = new ProgressDialog(activity);
 		progress2.setMessage("Chargement...");
-		new GetMatieres(progress2, URL2).execute(); 
+		new GetMatieres(progress2, Constantes.URL_SERVER + "matiere/getAllMatiereOfYear" +
+				"?idAnnee=" + idAnnee).execute(); 
 	}
+	
+	private void finishAllActivities(){
+		this.finishAffinity();
+	}
+	
+	private void initListeUE(final ArrayList<UE> listeUE) {
+		if (listeUE.size() > 0) {
+			listeUE_ID.add("0");
+			listeUE_NOM.add("Toutes");
+			
+			for(int s = 0; s < listeUE.size(); s++) {
+				listeUE_ID.add("" + listeUE.get(s).getId());
+				listeUE_NOM.add(listeUE.get(s).getNom());	
+			}
+		} else {
+			listeUE_ID.add("0");
+			listeUE_NOM.add("Aucune UE");
+		}
+		
+		CreationRegle.this.runOnUiThread(new Runnable() {
+			public void run() {
+				ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), R.drawable.spinner_item, listeUE_NOM);
 
-	/**
-	 * Classe interne représentant une tâche asynchrone qui sera effectuée en fond pendant un rond de chargement.
-	 * 
-	 * @author Jordi CHARPENTIER & Yoann VANHOESERLANDE
-	 */
+				Spinner spinUE = (Spinner)findViewById(R.id.admin_creation_regle_liste_ue_spinner);
+				spinUE.setAdapter(adapter);
+
+				spinUE.setOnItemSelectedListener(new OnItemSelectedListener() {
+					@Override
+					public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+						if (parent.getItemAtPosition(pos).toString().equals("Toutes")) {
+							selectedUE_ID = "1000000000";
+						} else if (parent.getItemAtPosition(pos).toString().equals("Aucune UE")) {
+							selectedUE_ID = "0";
+						} else {
+							selectedUE_ID = parent.getItemAtPosition(pos).toString();
+						}
+					}
+
+					@Override
+					public void onNothingSelected(AdapterView<?> parent) {
+						// Empty
+					}
+				});
+			}
+		});
+	}
+	
+	private void initListeMatieres(final ArrayList<Matiere> listeMatieres) {
+		if (listeMatieres.size() > 0) {
+			listeMatiere_ID.add("0");
+			listeMatiere_NOM.add("Toutes");
+			
+			for(int s = 0; s < listeMatieres.size(); s++) {
+				listeMatiere_ID.add("" + listeMatieres.get(s).getId());
+				listeMatiere_NOM.add(listeMatieres.get(s).getNom());	
+			}
+		} else {
+			listeMatiere_ID.add("0");
+			listeMatiere_NOM.add("Aucune matière");
+		}
+		
+		CreationRegle.this.runOnUiThread(new Runnable() {
+			public void run() {
+				ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), R.drawable.spinner_item, listeMatiere_NOM);
+
+				Spinner spinMatiere = (Spinner)findViewById(R.id.admin_creation_regle_liste_matieres_spinner);
+				spinMatiere.setAdapter(adapter);
+
+				spinMatiere.setOnItemSelectedListener(new OnItemSelectedListener() {
+					@Override
+					public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+						if (parent.getItemAtPosition(pos).toString().equals("Toutes")) {
+							selectedMatiere_ID = "1000000000";
+						} else {
+							for (int i = 0; i < listeMatiere_NOM.size(); i++) {
+								if (parent.getItemAtPosition(pos).toString().equals(listeMatiere_NOM.get(i))) {
+									selectedMatiere_ID = listeMatiere_ID.get(i);
+								}
+							}
+							
+						}
+					}
+
+					@Override
+					public void onNothingSelected(AdapterView<?> parent) {
+						// Empty
+					}
+				});
+			}
+		});
+	}
+	
+	/* Classes internes. */
+	
 	private class CreerRegle extends AsyncTask<Void, Void, Void> {
 		private ProgressDialog progress;
 		private String pathUrl;
@@ -284,15 +364,6 @@ public class CreationRegle extends Activity {
 		}
 	}
 	
-	public void finishAllActivities(){
-		this.finishAffinity();
-	}
-	
-	/**
-	 * Classe interne représentant une tâche asynchrone qui sera effectuée en fond pendant un rond de chargement.
-	 * 
-	 * @author Jordi CHARPENTIER & Yoann VANHOESERLANDE
-	 */
 	private class GetMatieres extends AsyncTask<Void, Void, Void> {
 		private ProgressDialog progress;
 		private String pathUrl;
@@ -311,44 +382,42 @@ public class CreationRegle extends Activity {
 		}
 
 		protected Void doInBackground(Void... arg0) {
-			try {
-				if((contenuPage = WebUtils.getPage(pathUrl)) != "-1");
-
-				else {
-					CreationRegle.this.runOnUiThread(new Runnable() {
-						public void run() {
-							AlertDialog.Builder builder = new AlertDialog.Builder(CreationRegle.this);
-							builder.setMessage("Erreur - Vérifiez votre connexion");
-							builder.setCancelable(false);
-							builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog, int which) {
-									CreationRegle.this.finish();
-								}
-							});
-
-							AlertDialog error = builder.create();
-							error.show();
-						}});
-
-					return null;
-				}
-			} catch (ClientProtocolException e) { 
-				return null;
-			} catch (IOException e) { 
-				return null;
-			} 
-
-			initListeMatieres(contenuPage);
+			ServiceHandler sh = new ServiceHandler();
+            String jsonStr = sh.makeServiceCall(pathUrl, ServiceHandler.GET);
+            
+            final ArrayList<Matiere> listeMatieres = new ArrayList<Matiere>();
+            Matiere matiere = null;
+            
+            if (jsonStr != null) {            	
+                try {
+                    JSONArray matieres = new JSONArray(jsonStr);
+ 
+                    for (int i = 0; i < matieres.length(); i++) {
+                    	JSONObject c = matieres.getJSONObject(i);
+                        
+                        matiere = new Matiere();
+                        matiere.setCoefficient(c.getLong("coefficient"));
+                        matiere.setId(c.getInt("idMatiere"));
+                        matiere.setIsOption(c.getBoolean("isOption"));
+                        matiere.setNom(c.getString("nom"));
+                        
+                        listeMatieres.add(matiere);
+                    }
+                    
+                    CreationRegle.this.runOnUiThread(new Runnable() {
+    					public void run() {    						
+    						initListeMatieres(listeMatieres);
+    					}
+    				});
+                } catch (JSONException ex) {
+                    ex.printStackTrace();
+                }
+            } 
 			
 			return null;
 		}
 	}
-	
-	/**
-	 * Classe interne représentant une tâche asynchrone qui sera effectuée en fond pendant un rond de chargement.
-	 * 
-	 * @author Jordi CHARPENTIER & Yoann VANHOESERLANDE
-	 */
+
 	private class GetUE extends AsyncTask<Void, Void, Void> {
 		private ProgressDialog progress;
 		private String pathUrl;
@@ -367,144 +436,40 @@ public class CreationRegle extends Activity {
 		}
 
 		protected Void doInBackground(Void... arg0) {
-			try {
-				if((contenuPage = WebUtils.getPage(pathUrl)) != "-1");
-
-				else {
-					CreationRegle.this.runOnUiThread(new Runnable() {
-						public void run() {
-							AlertDialog.Builder builder = new AlertDialog.Builder(CreationRegle.this);
-							builder.setMessage("Erreur - Vérifiez votre connexion");
-							builder.setCancelable(false);
-							builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog, int which) {
-									CreationRegle.this.finish();
-								}
-							});
-
-							AlertDialog error = builder.create();
-							error.show();
-						}});
-
-					return null;
-				}
-			} catch (ClientProtocolException e) { 
-				return null;
-			} catch (IOException e) { 
-				return null;
-			} 
-
-			initListeUE(contenuPage);	
+			ServiceHandler sh = new ServiceHandler();
+            String jsonStr = sh.makeServiceCall(pathUrl, ServiceHandler.GET);
+            
+            final ArrayList<UE> listeUE = new ArrayList<UE>();
+            UE ue = null;
+            
+            if (jsonStr != null) {            	
+                try {
+                    JSONArray ues = new JSONArray(jsonStr);
+ 
+                    for (int i = 0; i < ues.length(); i++) {
+                    	JSONObject c = ues.getJSONObject(i);
+                    	
+                        ue = new UE();
+                        ue.setId(c.getInt("idUE"));
+                        ue.setNom(c.getString("nom"));
+                        ue.setIdAnnee(c.getInt("idAnnee"));
+                        ue.setDecoupage(DecoupageYearType.valueOf(c.getString("yearType")));
+                        
+                        listeUE.add(ue);
+                    }
+                    
+                    CreationRegle.this.runOnUiThread(new Runnable() {
+    					public void run() {    						
+    						initListeUE(listeUE);
+    					}
+    				});
+                } catch (JSONException ex) {
+                    ex.printStackTrace();
+                }
+            } 	
 
 			return null;
 		}
-	}
-	
-	public void initListeUE(String contenu_page) {
-		StringTokenizer chaineEclate = new StringTokenizer(contenu_page, ";");
-		
-		final String[] temp = new String[chaineEclate.countTokens()];
-		
-		if (temp.length != 1) {
-			int i = 0;
-
-			while(chaineEclate.hasMoreTokens()) {
-				temp[i++] = chaineEclate.nextToken();	
-			}
-			
-			listeUE_ID.add("0");
-			listeUE_NOM.add("Toutes");
-			
-			for(int s = 0; s < temp.length; s=s+3) {
-				listeUE_ID.add(temp[s]);
-				listeUE_NOM.add(temp[s+1]);	
-			}
-		} else {
-			listeUE_ID.add("0");
-			listeUE_NOM.add("Aucune UE");
-		}
-		
-		CreationRegle.this.runOnUiThread(new Runnable() {
-			public void run() {
-				ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), R.drawable.spinner_item, listeUE_NOM);
-
-				Spinner spinUE = (Spinner)findViewById(R.id.admin_creation_regle_liste_ue_spinner);
-				spinUE.setAdapter(adapter);
-
-				spinUE.setOnItemSelectedListener(new OnItemSelectedListener() {
-					@Override
-					public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-						if (parent.getItemAtPosition(pos).toString().equals("Toutes")) {
-							selectedUE_ID = "1000000000";
-						} else if (parent.getItemAtPosition(pos).toString().equals("Aucune UE")) {
-							selectedUE_ID = "0";
-						} else {
-							selectedUE_ID = parent.getItemAtPosition(pos).toString();
-						}
-					}
-
-					@Override
-					public void onNothingSelected(AdapterView<?> parent) {
-						// Empty
-					}
-				});
-			}
-		});
-	}
-	
-	public void initListeMatieres(String contenu_page) {
-		StringTokenizer chaineEclate = new StringTokenizer(contenu_page, ";");
-		
-		final String[] temp = new String[chaineEclate.countTokens()];
-		
-		if (temp.length != 1) {
-			int i = 0;
-
-			while(chaineEclate.hasMoreTokens()) {
-				temp[i++] = chaineEclate.nextToken();	
-			}
-			
-			listeMatiere_ID.add("0");
-			listeMatiere_NOM.add("Toutes");
-			
-			for(int s = 0; s < temp.length; s=s+4) {
-				listeMatiere_ID.add(temp[s]);
-				listeMatiere_NOM.add(temp[s+1]);	
-			}
-		} else {
-			listeMatiere_ID.add("0");
-			listeMatiere_NOM.add("Aucune matière");
-		}
-		
-		CreationRegle.this.runOnUiThread(new Runnable() {
-			public void run() {
-				ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), R.drawable.spinner_item, listeMatiere_NOM);
-
-				Spinner spinMatiere = (Spinner)findViewById(R.id.admin_creation_regle_liste_matieres_spinner);
-				spinMatiere.setAdapter(adapter);
-
-				spinMatiere.setOnItemSelectedListener(new OnItemSelectedListener() {
-					@Override
-					public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-						if (parent.getItemAtPosition(pos).toString().equals("Toutes")) {
-							selectedMatiere_ID = "1000000000";
-						} else {
-							for (int i = 0; i < listeMatiere_NOM.size(); i++) {
-								if (parent.getItemAtPosition(pos).toString().equals(listeMatiere_NOM.get(i))) {
-									selectedMatiere_ID = listeMatiere_ID.get(i);
-								}
-							}
-							
-						}
-					}
-
-					@Override
-					public void onNothingSelected(AdapterView<?> parent) {
-						// Empty
-					}
-				});
-			}
-		});
 	}
 
 	/* Méthodes héritées de la classe Activity. */

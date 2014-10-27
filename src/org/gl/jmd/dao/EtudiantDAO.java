@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import org.gl.jmd.model.Diplome;
 import org.gl.jmd.model.user.Etudiant;
 
-import android.os.Environment;
-
 /**
  * Objet permettant de manipuler des étudiants.
  * 
@@ -18,7 +16,7 @@ public class EtudiantDAO {
 	/**
 	 * Le fichier où est enregistré l'étudiant.
 	 */
-	private static File fileProfil = new File(Environment.getExternalStorageDirectory().getPath() + "/cacheJMD/etudiant.cfg");
+	private static File fileProfil = new File("/sdcard/cacheJMD/etudiant.cfg");
 	
 	/**
 	 * Constructeur par défaut du DAO.<br />

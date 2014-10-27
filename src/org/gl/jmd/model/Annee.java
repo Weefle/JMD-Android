@@ -30,6 +30,8 @@ public class Annee implements Serializable {
 	 */
 	private Etablissement etablissement;
 	
+	private Diplome d;
+	
 	/**
 	 * Le découpage de l'année.
 	 */
@@ -60,7 +62,7 @@ public class Annee implements Serializable {
 		float sommeCoeffEntrees = 0;
 		float sommeCoeff = 0;
 		
-		for (int i = 0; i < this.listeUE.size(); i++) {
+		/* for (int i = 0; i < this.listeUE.size(); i++) {
 			for (int j = 0; j < this.listeUE.get(i).getListeMatieres().size(); j++) {
 				for (int k = 0; k < this.listeUE.get(i).getListeMatieres().get(j).getListeNotes().size(); k++) {
 					if (this.listeUE.get(i).getListeMatieres().get(j).getListeNotes().get(k).getNoteType() == NoteType.SESSION_1) {
@@ -70,7 +72,7 @@ public class Annee implements Serializable {
 				
 				sommeCoeff += this.listeUE.get(i).getListeMatieres().get(j).getCoefficient();
 			}
-		}
+		} */
 		
 		res = (sommeCoeffEntrees / sommeCoeff) * 100;
 		
@@ -104,7 +106,7 @@ public class Annee implements Serializable {
 			float sommeCoeffEntrees = 0;
 			boolean hasNote = false;
 			
-			for (int i = 0; i < this.listeUE.size(); i++) {
+			/* for (int i = 0; i < this.listeUE.size(); i++) {
 				for (int j = 0; j < this.listeUE.get(i).getListeMatieres().size(); j++) {
 					for (int k = 0; k < this.listeUE.get(i).getListeMatieres().get(j).getListeNotes().size(); k++) {
 						if (this.listeUE.get(i).getListeMatieres().get(j).getListeNotes().get(k).getNote() != -1) {
@@ -114,7 +116,7 @@ public class Annee implements Serializable {
 						}
 					}
 				}
-			}
+			} */
 			
 			if (hasNote) {
 				resNULL = resNULL / sommeCoeffEntrees;
@@ -330,6 +332,10 @@ public class Annee implements Serializable {
 		return this.decoupage;
 	}
 	
+	public Diplome getDiplome() {
+		return this.d;
+	}
+	
 	public boolean isLast() {
 		return this.isLast;
 	}
@@ -383,6 +389,10 @@ public class Annee implements Serializable {
 	 */
 	public void setDecoupage(DecoupageType decoupage) {
 		this.decoupage = decoupage;
+	}
+	
+	public void setDiplome(Diplome d) {
+		this.d = d;
 	}
 	
 	public void setIsLast(boolean isLast) {

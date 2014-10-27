@@ -141,11 +141,7 @@ public class ListeMatieresE extends Activity {
 					map.put("isOption", "Obligatoire");
 				}
 
-				if (etud.getListeDiplomes().get(posDipFin).getListeAnnees().get(posAnnFin).getListeUE().get(posUeFin).getListeMatieres().get(s).getNoteFinale() == -2.0) {
-					map.put("note", "0 note");
-				} else {
-					map.put("note", "" + etud.getListeDiplomes().get(posDipFin).getListeAnnees().get(posAnnFin).getListeUE().get(posUeFin).getListeMatieres().get(s).getNoteFinale());
-				}
+				// map.put("note", "" + etud.getListeDiplomes().get(posDipFin).getListeAnnees().get(posAnnFin).getListeUE().get(posUeFin).getListeMatieres().get(s).getNoteFinale());
 
 				listItem.add(map);		
 			}

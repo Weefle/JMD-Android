@@ -3,9 +3,6 @@ package org.gl.jmd.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import org.gl.jmd.model.enumeration.NoteType;
-import org.gl.jmd.utils.NumberUtils;
-
 /**
  * Classe représentant une matière.
  * 
@@ -41,9 +38,19 @@ public class Matiere implements Serializable {
 	private int coeffPartiel = 0;
 	
 	/**
-	 * Les notes de la matière.
+	 * La note de première session.
 	 */
-	private ArrayList<Note> listeNotes = new ArrayList<Note>();
+	private Note noteSession1;
+	
+	/**
+	 * La note de seconde session.
+	 */
+	private Note noteSession2;
+	
+	/**
+	 * Les notes de contrôle continu de la matière.
+	 */
+	private ArrayList<Note> listeNotesCC = new ArrayList<Note>();
 	
 	/**
 	 * Les règles que devra respecter la matière.
@@ -104,14 +111,32 @@ public class Matiere implements Serializable {
 	public int getCoeffPartiel() {
 		return this.coeffPartiel;
 	}
+	
+	/**
+	 * Méthode retournant la note de première session de la matière.
+	 * 
+	 * @return La note de première session de la matière.
+	 */
+	public Note getNoteSession1() {
+		return this.noteSession1;
+	}
+	
+	/**
+	 * Méthode retournant la note de seconde session de la matière.
+	 * 
+	 * @return La note de seconde session de la matière.
+	 */
+	public Note getNoteSession2() {
+		return this.noteSession2;
+	}
 
 	/**
-	 * Méthode retournant les notes de la matière.
+	 * Méthode retournant les notes de contrôle continu de la matière.
 	 * 
-	 * @return Les notes de la matière.
+	 * @return Les notes de contrôle continu de la matière.
 	 */
-	public ArrayList<Note> getListeNotes() {
-		return this.listeNotes;
+	public ArrayList<Note> getListeNotesCC() {
+		return this.listeNotesCC;
 	}
 	
 	/**
@@ -166,17 +191,35 @@ public class Matiere implements Serializable {
 	 * 
 	 * @param coeffPartiel Le nouveau coefficient du partiel de la matière.
 	 */
-	public void setCoefficientControleContinu(int coeffPartiel) {
+	public void setCoeffPartiel(int coeffPartiel) {
 		this.coeffPartiel = coeffPartiel;
 	}
 
 	/**
-	 * Méthode permettant de modifier les notes de la matière.
+	 * Méthode permettant de modifier la note de première session de la matière.
 	 * 
-	 * @param listeNotes Les nouvelle notes de la matière.
+	 * @param noteSession1 La nouvelle note de première session de la matière.
 	 */
-	public void setListeNotes(ArrayList<Note> listeNotes) {
-		this.listeNotes = listeNotes;
+	public void setNoteSession1(Note noteSession1) {
+		this.noteSession1 = noteSession1;
+	}
+	
+	/**
+	 * Méthode permettant de modifier la note de seconde session de la matière.
+	 * 
+	 * @param noteSession1 La nouvelle note de seconde session de la matière.
+	 */
+	public void setNoteSession2(Note noteSession2) {
+		this.noteSession2 = noteSession2;
+	}
+	
+	/**
+	 * Méthode permettant de modifier les notes de contrôle continu de la matière.
+	 * 
+	 * @param listeNotes Les nouvelle notes de contrôle continu de la matière.
+	 */
+	public void setListeNotesCC(ArrayList<Note> listeNotesCC) {
+		this.listeNotesCC = listeNotesCC;
 	}
 	
 	/**
@@ -188,7 +231,7 @@ public class Matiere implements Serializable {
 		this.listeRegles = listeRegles;
 	}
 	
-	/* Autres. */
+	/* Autre. */
 	
 	/**
 	 * Méthode permettant de calculer la note finale de la matière.
@@ -198,46 +241,14 @@ public class Matiere implements Serializable {
 	public double getNoteFinale() {
 		double res = -1;
 		
-		if (this.listeNotes.size() > 0) {
-			boolean hasControleContinu = false;
-			
-			double note = 0.0;
-			double noteS1 = 0.0;
-			double noteS2 = 0.0;
-			
-			for (int i = 0; i < this.listeNotes.size(); i++) {
-				if (this.listeNotes.get(i).getNoteType() == NoteType.SESSION_1) {
-					noteS1 = this.listeNotes.get(i).getNote();
-				} else if (this.listeNotes.get(i).getNoteType() == NoteType.SESSION_2) {
-					noteS2 = this.listeNotes.get(i).getNote();
-				} else if (this.listeNotes.get(i).getNoteType() == NoteType.CONTROLE_CONTINU) {
-					hasControleContinu = true;
-				}
-			}
-			
-			if (noteS1 > noteS2) {
-				note = noteS1;
-			} else {
-				note = noteS2;
-			}
-	
-			if (hasControleContinu) {
-				double moyenneCC = 0.0;
-				
-				for (int i = 0; i < this.listeNotes.size(); i++) {
-					if (this.listeNotes.get(i).getNoteType() == NoteType.CONTROLE_CONTINU) {
-						// moyenneCC += this.listeNotes.get(i).getCoefficient().multiplyByNote(this.listeNotes.get(i).getNote());
-					}
-				}
-				
-				// res = coeffCC.multiplyByNote(moyenneCC) + coeffCC.getOppose().multiplyByNote(note);
-			} else {
-				res = note;
-			}
-			
-			res = NumberUtils.round(res, 2);
+		if (this.listeNotesCC.size() > 0) {
+			res = 0;
 		} else {
-			res = -2;
+			if (this.noteSession2.getNote() != -1) {
+				res = this.noteSession2.getNote();
+			} else {
+				res = this.noteSession1.getNote();
+			}
 		}
 		
 		return res;

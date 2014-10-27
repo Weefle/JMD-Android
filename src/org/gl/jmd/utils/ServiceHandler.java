@@ -52,6 +52,14 @@ public class ServiceHandler {
 			
 			httpEntity = httpResponse.getEntity();
 			response = EntityUtils.toString(httpEntity);
+			
+			if (httpEntity != null) {
+			    try {
+			        httpEntity.consumeContent();
+			    } catch (IOException e) {
+			        e.printStackTrace();
+			    }
+			}
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		} catch (ClientProtocolException e) {

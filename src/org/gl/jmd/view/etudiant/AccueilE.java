@@ -45,39 +45,32 @@ public class AccueilE extends Activity {
 		initListe();
 	}
 
-	public void initListe() {			
+	private void initListe() {			
 		if (etud.getListeDiplomes().isEmpty()) {
-			final ListView liste = (ListView) findViewById(android.R.id.list);
-			final ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
-
-			HashMap<String, String> map = new HashMap<String, String>();
+			ListView liste = (ListView) findViewById(android.R.id.list);
+			ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
 			
+			HashMap<String, String> map = new HashMap<String, String>();
 			map.put("description", "Aucun diplôme.");
 			
 			listItem.add(map);		
 
-			final SimpleAdapter mSchedule = new SimpleAdapter (getBaseContext(), listItem, R.layout.etudiant_accueil_list, new String[] {"description"}, new int[] {R.id.description});
-
-			liste.setAdapter(mSchedule);
+			liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.etudiant_accueil_list, new String[] {"description"}, new int[] {R.id.description}));
 			liste.setOnItemClickListener(null);
 		} else {
 			final ListView liste = (ListView) findViewById(android.R.id.list);
-
 			final ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
+			
 			HashMap<String, String> map;	
 
 			for(int s = 0; s < etud.getListeDiplomes().size(); s++) {
 				map = new HashMap<String, String>();
-
 				map.put("description", etud.getListeDiplomes().get(s).getNom());
-				map.put("img", null);
 				
 				listItem.add(map);		
 			}
 
-			final SimpleAdapter mSchedule = new SimpleAdapter (getBaseContext(), listItem, R.layout.etudiant_accueil_list, new String[] {"description"}, new int[] {R.id.description});
-
-			liste.setAdapter(mSchedule); 
+			liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.etudiant_accueil_list, new String[] {"description"}, new int[] {R.id.description})); 
 
 			liste.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 				public void onItemClick(AdapterView<?> arg0, View arg1, final int position, long arg3) {
@@ -104,12 +97,10 @@ public class AccueilE extends Activity {
 								etud.setListeDiplomes(listeDiplomes);
 								EtudiantDAO.save(etud);
 								
-								initListe();
-								
-								liste.setSelection(arg2);
-								
 								toast.setText("Le diplôme a bien été supprimé.");
 								toast.show();
+								
+								initListe();
 							}
 						});
 						
