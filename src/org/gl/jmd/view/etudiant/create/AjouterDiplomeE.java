@@ -5,10 +5,18 @@ import java.util.*;
 import org.gl.jmd.Constantes;
 import org.gl.jmd.R;
 import org.gl.jmd.dao.EtudiantDAO;
+import org.gl.jmd.model.Annee;
 import org.gl.jmd.model.Diplome;
+import org.gl.jmd.model.Etablissement;
+import org.gl.jmd.model.enumeration.DecoupageType;
 import org.gl.jmd.model.user.Etudiant;
 import org.gl.jmd.utils.ServiceHandler;
 import org.json.*;
+
+import org.gl.jmd.view.admin.listing.ListeAnneeA;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.os.*;
 import android.view.View;
