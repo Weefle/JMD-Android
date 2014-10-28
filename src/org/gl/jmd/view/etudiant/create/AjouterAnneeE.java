@@ -72,7 +72,7 @@ public class AjouterAnneeE extends Activity {
 				listItem.add(map);		
 			}
 
-			final SimpleAdapter mSchedule = new SimpleAdapter (getBaseContext(), listItem, R.layout.etudiant_ajouter_annees_list, new String[] {"titre"}, new int[] {R.id.titre});
+			final SimpleAdapter mSchedule = new SimpleAdapter (getBaseContext(), listItem, R.layout.etudiant_simple_list, new String[] {"titre"}, new int[] {R.id.titre});
 
 			liste.setAdapter(mSchedule); 
 
@@ -96,7 +96,7 @@ public class AjouterAnneeE extends Activity {
 
 			listItem.add(map);
 
-			SimpleAdapter mSchedule = new SimpleAdapter (getBaseContext(), listItem, R.layout.etudiant_ajouter_annees_empty_list, new String[] {"titre"}, new int[] {R.id.titre});
+			SimpleAdapter mSchedule = new SimpleAdapter (getBaseContext(), listItem, R.layout.etudiant_simple_list, new String[] {"titre"}, new int[] {R.id.titre});
 
 			liste.setAdapter(mSchedule); 
 		}

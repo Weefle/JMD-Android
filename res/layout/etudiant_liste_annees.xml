@@ -30,7 +30,7 @@
             android:layout_marginRight="15dp"
             android:contentDescription="@string/desc_img"
             android:onClick="modifierListe"
-            android:src="@drawable/plus_menu" />
+            android:src="@drawable/plus" />
     </RelativeLayout>
     
     <ListView

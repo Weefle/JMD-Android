@@ -84,21 +84,6 @@ public class ListeMatieresE extends Activity {
 			}
 		}
 
-		// On affiche ou non le texte de la validation UE.
-		TextView tvValid = (TextView) findViewById(R.id.txt_valid_ue);
-
-		String res = "";
-
-		if (etud.getListeDiplomes().get(posDip).getListeAnnees().get(posAnn).getListeUE().get(posUe).getMoyenne() == -2.0) {
-			res = "Il manque une ou plusieurs notes.";
-		} 
-		
-		if ((etud.getListeDiplomes().get(posDip).getListeAnnees().get(posAnn).getListeUE().get(posUe).getMoyenne() < 10) && (etud.getListeDiplomes().get(posDip).getListeAnnees().get(posAnn).getListeUE().get(posUe).getMoyenne() != -2.0)) {
-			res += "\nL'UE n'est pas validée.\nMoyenne : " + etud.getListeDiplomes().get(posDip).getListeAnnees().get(posAnn).getListeUE().get(posUe).getMoyenne();
-		} 
-
-		tvValid.setText(res);
-
 		final int posDipFin = posDip;
 		final int posAnnFin = posAnn;
 		final int posUeFin = posUe;
@@ -113,7 +98,7 @@ public class ListeMatieresE extends Activity {
 
 			listItem.add(map);		
 
-			final SimpleAdapter mSchedule = new SimpleAdapter (getBaseContext(), listItem, R.layout.etudiant_liste_matiere_empty_list, new String[] {"titre"}, new int[] {R.id.titre});
+			final SimpleAdapter mSchedule = new SimpleAdapter (getBaseContext(), listItem, R.layout.etudiant_simple_list, new String[] {"titre"}, new int[] {R.id.titre});
 
 			liste.setAdapter(mSchedule); 
 		} else {

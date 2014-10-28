@@ -2,21 +2,13 @@ package org.gl.jmd.view.etudiant.create;
 
 import java.util.*;
 
-import org.gl.jmd.Constantes;
-import org.gl.jmd.R;
+import org.gl.jmd.*;
 import org.gl.jmd.dao.EtudiantDAO;
-import org.gl.jmd.model.Annee;
 import org.gl.jmd.model.Diplome;
-import org.gl.jmd.model.Etablissement;
-import org.gl.jmd.model.enumeration.DecoupageType;
 import org.gl.jmd.model.user.Etudiant;
 import org.gl.jmd.utils.ServiceHandler;
-import org.json.*;
 
-import org.gl.jmd.view.admin.listing.ListeAnneeA;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.json.*;
 
 import android.os.*;
 import android.view.View;
@@ -39,6 +31,8 @@ public class AjouterDiplomeE extends Activity {
 	
 	private EditText DIP;
 	
+	private ImageButton imgB;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -49,6 +43,7 @@ public class AjouterDiplomeE extends Activity {
 		activity = this;
 		toast = Toast.makeText(activity, "", Toast.LENGTH_SHORT);
 		
+		imgB = (ImageButton) findViewById(R.id.etudiant_ajout_diplome_img_recherche);
 		DIP = (EditText) findViewById(R.id.etudiant_ajout_diplome_zone_nom);
 	}
 
@@ -70,12 +65,12 @@ public class AjouterDiplomeE extends Activity {
 				map = new HashMap<String, String>();
 
 				map.put("id", "" + listeDiplomes.get(s).getId());
-				map.put("description", listeDiplomes.get(s).getNom());
+				map.put("titre", listeDiplomes.get(s).getNom());
 
 				listItem.add(map);		
 			}
 
-			final SimpleAdapter mSchedule = new SimpleAdapter (getBaseContext(), listItem, R.layout.etudiant_ajouter_diplome_list, new String[] {"description"}, new int[] {R.id.description});
+			final SimpleAdapter mSchedule = new SimpleAdapter (getBaseContext(), listItem, R.layout.etudiant_simple_list, new String[] {"titre"}, new int[] {R.id.titre});
 
 			liste.setAdapter(mSchedule); 
 
@@ -119,11 +114,11 @@ public class AjouterDiplomeE extends Activity {
 
 			map = new HashMap<String, String>();
 			
-			map.put("description", "Aucun résultat.");
+			map.put("titre", "Aucun résultat.");
 
 			listItem.add(map);		
 
-			final SimpleAdapter mSchedule = new SimpleAdapter (getBaseContext(), listItem, R.layout.etudiant_ajouter_diplome_list, new String[] {"description"}, new int[] {R.id.description});
+			final SimpleAdapter mSchedule = new SimpleAdapter (getBaseContext(), listItem, R.layout.etudiant_simple_list, new String[] {"titre"}, new int[] {R.id.titre});
 
 			liste.setAdapter(mSchedule); 
 		}

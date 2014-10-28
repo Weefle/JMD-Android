@@ -2,17 +2,14 @@
     
     <item
         android:id="@+id/menu_deconnexion"
-        android:icon="@drawable/deconnexion"
         android:title="@string/menu_deconnexion"/>
     
     <item
         android:id="@+id/menu_accueil"
-        android:icon="@drawable/accueil"
         android:title="@string/menu_accueil" />
 
     <item
         android:id="@+id/menu_nommer_admin"
-        android:icon="@drawable/nommer_admin"
         android:title="@string/menu_nommer_admin"/>
 
 </menu>

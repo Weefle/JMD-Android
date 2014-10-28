@@ -43,7 +43,7 @@ public class ProfilView extends Activity {
 		
 		e = EtudiantDAO.load();
 		
-		PRENOM = (EditText) findViewById(R.id.etudiant_profil_prenom);
+		PRENOM = (EditText) findViewById(R.id.etudiant_profil_zone_prenom);
 		NOM = (EditText) findViewById(R.id.etudiant_profil_nom);
 		EMAIL = (EditText) findViewById(R.id.etudiant_profil_email);	
 		

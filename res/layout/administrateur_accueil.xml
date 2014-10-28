@@ -31,7 +31,7 @@
             android:layout_marginRight="65dp"
             android:contentDescription="@string/desc_img"
             android:onClick="openPopupCreation"
-            android:src="@drawable/plus_menu" />
+            android:src="@drawable/plus" />
 
         <ImageView
             android:id="@+id/admin_accueil_img_menu"

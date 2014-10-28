@@ -28,10 +28,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="65dp"
+            android:layout_marginRight="70dp"
             android:layout_centerInParent="true"
             android:contentDescription="@string/desc_img"
-            android:src="@drawable/plus_menu" />
+            android:src="@drawable/plus" />
         
         <ImageView
             android:id="@+id/etudiant_accueil_img_menu"
@@ -39,7 +39,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerInParent="true"
-            android:layout_marginRight="15dp"
+            android:layout_marginRight="20dp"
             android:contentDescription="@string/desc_img"
             android:onClick="openMenu"
             android:src="@drawable/menu" />

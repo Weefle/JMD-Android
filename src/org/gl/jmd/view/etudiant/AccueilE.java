@@ -51,11 +51,11 @@ public class AccueilE extends Activity {
 			ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
 			
 			HashMap<String, String> map = new HashMap<String, String>();
-			map.put("description", "Aucun diplôme.");
+			map.put("titre", "Aucun diplôme.");
 			
 			listItem.add(map);		
 
-			liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.etudiant_accueil_list, new String[] {"description"}, new int[] {R.id.description}));
+			liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.etudiant_simple_list, new String[] {"titre"}, new int[] {R.id.titre}));
 			liste.setOnItemClickListener(null);
 		} else {
 			final ListView liste = (ListView) findViewById(android.R.id.list);
@@ -65,12 +65,12 @@ public class AccueilE extends Activity {
 
 			for(int s = 0; s < etud.getListeDiplomes().size(); s++) {
 				map = new HashMap<String, String>();
-				map.put("description", etud.getListeDiplomes().get(s).getNom());
+				map.put("titre", etud.getListeDiplomes().get(s).getNom());
 				
 				listItem.add(map);		
 			}
 
-			liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.etudiant_accueil_list, new String[] {"description"}, new int[] {R.id.description})); 
+			liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.etudiant_simple_list, new String[] {"titre"}, new int[] {R.id.titre})); 
 
 			liste.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 				public void onItemClick(AdapterView<?> arg0, View arg1, final int position, long arg3) {

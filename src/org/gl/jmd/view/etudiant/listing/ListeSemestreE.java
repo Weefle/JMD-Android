@@ -57,7 +57,7 @@ public class ListeSemestreE extends Activity {
 		
 		listItem.add(map);		
 
-		final SimpleAdapter mSchedule = new SimpleAdapter (getBaseContext(), listItem, R.layout.etudiant_liste_semestre_list, new String[] {"titre"}, new int[] {R.id.titre});
+		final SimpleAdapter mSchedule = new SimpleAdapter (getBaseContext(), listItem, R.layout.etudiant_simple_list, new String[] {"titre"}, new int[] {R.id.titre});
 
 		liste.setAdapter(mSchedule); 
 

@@ -18,14 +18,41 @@
             android:layout_alignParentLeft="true"
             android:layout_centerInParent="true"
             android:layout_marginLeft="30dp"
-            android:textColor="#FFFFFF"
             android:text="@string/etudiant_profil_titre_txt"
+            android:textColor="#FFFFFF"
             android:textSize="20sp" />
 
+        <ImageButton
+            android:id="@+id/etudiant_profil_bout_supp_profil"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
+            android:layout_marginRight="85dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/delete"
+            android:onClick="supprimerProfil"
+            android:textColor="@drawable/button_color_selector" 
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/etudiant_profil_bout_valider"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
+            android:layout_marginRight="30dp"
+            android:background="@android:color/transparent"
+            android:onClick="sauvegarderProfil"
+            android:text="OK"
+            android:textColor="@drawable/button_color_selector"
+            android:textSize="22sp"
+            android:textStyle="bold" />
     </RelativeLayout>
-    
+
     <EditText
-        android:id="@+id/etudiant_profil_prenom"
+        android:id="@+id/etudiant_profil_zone_prenom"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -33,7 +60,7 @@
         android:hint="Prénom"
         android:inputType="text"
         android:singleLine="true" />
-    
+
     <EditText
         android:id="@+id/etudiant_profil_nom"
         android:layout_width="fill_parent"
@@ -43,7 +70,7 @@
         android:hint="Nom"
         android:inputType="text"
         android:singleLine="true" />
-    
+
     <EditText
         android:id="@+id/etudiant_profil_email"
         android:layout_width="fill_parent"
@@ -53,29 +80,5 @@
         android:hint="Email"
         android:inputType="text"
         android:singleLine="true" />
-    
-    <Button
-        android:id="@+id/etudiant_profil_bout_supp_profil"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/button_style"
-        android:onClick="supprimerProfil"
-        android:padding="10dp"
-        android:text="Supprimer le profil"
-        android:textColor="@drawable/button_color_selector" />
-    
-    <Button
-        android:id="@+id/etudiant_profil_bout_valider"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="60dp"
-        android:background="@drawable/button_style"
-        android:padding="10dp"
-        android:onClick="sauvegarderProfil"
-        android:text="Valider"
-        android:textColor="@drawable/button_color_selector" />
 
 </LinearLayout>

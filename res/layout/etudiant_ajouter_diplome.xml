@@ -21,25 +21,9 @@
             android:text="Ajouter un diplôme"
             android:textColor="#FFFFFF"
             android:textSize="20sp" />
-    </RelativeLayout>
-    
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="60dp"
-        android:orientation="horizontal" >
-
-        <EditText
-            android:id="@+id/etudiant_ajout_diplome_zone_nom"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_alignParentLeft="true"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="60dp"
-            android:inputType="text" />
-
+        
         <ImageButton
-            android:id="@+id/etudiant_ajout_diplome_bout_recherche"
+            android:id="@+id/etudiant_ajout_diplome_img_recherche"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
@@ -47,9 +31,20 @@
             android:padding="5dp"
             android:layout_marginRight="10dp"
             android:onClick="recherche"
-            android:background="@drawable/button_style"
-            android:src="@drawable/loupe" />
+            android:background = "@android:color/transparent"
+            android:src="@drawable/search" />
     </RelativeLayout>
+
+    <EditText
+        android:id="@+id/etudiant_ajout_diplome_zone_nom"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:inputType="text" />
 
     <ListView
         android:id="@android:id/list"

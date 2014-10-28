@@ -167,7 +167,7 @@ public class ListeRegleA extends Activity {
 
 			listItem.add(map);
 
-			SimpleAdapter mSchedule = new SimpleAdapter (getBaseContext(), listItem, R.layout.administrateur_liste_regle_empty_list, new String[] {"titre"}, new int[] {R.id.titre});
+			SimpleAdapter mSchedule = new SimpleAdapter (getBaseContext(), listItem, R.layout.admin_simple_list, new String[] {"titre"}, new int[] {R.id.titre});
 
 			liste.setAdapter(mSchedule); 
 		}
@@ -277,8 +277,8 @@ public class ListeRegleA extends Activity {
 					filePseudo.delete();
 					fileToken.delete();
 
-					activity.finishAffinity()
-					;
+					activity.finishAffinity();
+					
 					startActivity(new Intent(ListeRegleA.this, Accueil.class));	
 
 					toast.setText("Session expirée.");	
