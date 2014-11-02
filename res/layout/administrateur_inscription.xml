@@ -21,6 +21,19 @@
             android:text="@string/administrateur_inscription_titre_texte"
             android:textColor="#FFFFFF"
             android:textSize="20sp" />
+        
+        <TextView
+            android:id="@+id/admin_inscription_btn_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
+            android:layout_marginRight="30dp"
+            android:clickable="true"
+            android:onClick="inscription"
+            android:text="OK"
+            android:textColor="@drawable/button_color_selector" 
+            android:textSize="18dp" />
     </RelativeLayout>
     
     <EditText
@@ -76,17 +89,5 @@
         android:layout_marginTop="20dp"
         android:hint="@string/admin_inscr_password_retype"
         android:inputType="textPassword" />
-    
-    <Button
-        android:id="@+id/admin_inscription_bout_inscription"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/button_style"
-        android:textColor="@drawable/button_color_selector" 
-        android:padding="10dp"
-        android:onClick="inscription"
-        android:text="@string/admin_inscription_bout_inscription" />
 
 </LinearLayout>

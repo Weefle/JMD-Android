@@ -92,22 +92,20 @@ public class ListeEtablissementA extends Activity {
 							new DeleteEtablissement(progress, URL).execute();
 						}
 					});
+					
 					confirmQuitter.setNegativeButton("Non", null);
 					confirmQuitter.show();
 
 					return true;
 				}
-
 			});
 		} else {						
-			final ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
-			HashMap<String, String> map;
-
-			map = new HashMap<String, String>();
+			HashMap<String, String> map = new HashMap<String, String>();
 			map.put("titre", "Aucun établissement.");
-
+			
+			ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
 			listItem.add(map);
-
+			
 			liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.admin_simple_list, new String[] {"titre"}, new int[] {R.id.titre})); 
 		}
 	}
@@ -161,7 +159,23 @@ public class ListeEtablissementA extends Activity {
                 } catch (JSONException ex) {
                     ex.printStackTrace();
                 }
-            } 
+            } else {
+            	ListeEtablissementA.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(ListeEtablissementA.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								ListeEtablissementA.this.finish();
+							}
+						});
+
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+            }
 
 			return null;
 		}

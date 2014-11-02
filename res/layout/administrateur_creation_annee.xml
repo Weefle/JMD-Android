@@ -18,20 +18,23 @@
             android:layout_alignParentLeft="true"
             android:layout_centerInParent="true"
             android:layout_marginLeft="30dp"
-            android:text="@string/administrateur_creation_annee_titre_texte"
+            android:text="Nouvelle année"
             android:textColor="#FFFFFF"
             android:textSize="20sp" />
+        
+        <TextView
+            android:id="@+id/admin_crea_annee_btn_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
+            android:layout_marginRight="30dp"
+            android:clickable="true"
+            android:onClick="creerAnnee"
+            android:text="OK"
+            android:textColor="@drawable/button_color_selector" 
+            android:textSize="18dp" />
     </RelativeLayout>
-
-    <EditText
-        android:id="@+id/admin_creation_annee_nom"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="30dp"
-        android:hint="@string/admin_crea_annee_hint_nom"
-        android:inputType="text"
-        android:singleLine="true" />
 
     <LinearLayout
         android:id="@+id/linearLayout1"
@@ -60,6 +63,25 @@
             android:text="Choisir"
             android:textColor="@drawable/button_color_selector" />
     </LinearLayout>
+    
+    <EditText
+        android:id="@+id/admin_creation_annee_nom"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp"
+        android:hint="@string/admin_crea_annee_hint_nom"
+        android:inputType="text"
+        android:singleLine="true" />
+    
+    <CheckBox
+        android:id="@+id/administrateur_creation_annee_is_last_year"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp"
+        android:text="Dernière année d'un diplôme ?"
+        android:textColor="#000000" />
 
     <Spinner
         android:id="@+id/admin_creation_annee_spinner"
@@ -68,26 +90,5 @@
         android:layout_marginTop="20dp"
         android:gravity="center"
         android:prompt="@string/crea_annee_decoupage" />
-
-    <CheckBox
-        android:id="@+id/admin_creation_annee_is_last_year"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="30dp"
-        android:text="Dernière année"
-        android:textColor="#000000" />
-
-    <Button
-        android:id="@+id/crea_annee_bout_creer"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/button_style"
-        android:onClick="creerAnnee"
-        android:padding="10dp"
-        android:text="@string/bout_creer_txt"
-        android:textColor="@drawable/button_color_selector" />
 
 </LinearLayout>

@@ -37,6 +37,8 @@ public class ListeMatiereA extends Activity {
 	
 	private UE ue = null;
 	
+	private ArrayList<Matiere> listeMatieres = new ArrayList<Matiere>();
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -54,7 +56,6 @@ public class ListeMatiereA extends Activity {
 	}
 	
 	private void initTextView() {
-		// On donne comme titre à la vue le nom de l'UE choisie.
 		TextView tvTitre = (TextView) findViewById(R.id.admin_liste_matier_titre);
 		tvTitre.setText(ue.getNom());
 	}
@@ -62,10 +63,11 @@ public class ListeMatiereA extends Activity {
 	private void actualiserListe() {	
 		ProgressDialog progress = new ProgressDialog(this);
 		progress.setMessage("Chargement...");
-		new ListerMatieres(progress, Constantes.URL_SERVER + "matiere/getAllMatieretOfUE?idUE=" + ue.getId()).execute();
+		new ListerMatieres(progress, Constantes.URL_SERVER + "matiere/getAllMatieretOfUE" +
+											"?idUE=" + ue.getId()).execute();
 	}
 	
-	private void initListe(final ArrayList<Matiere> listeMatieres) {
+	private void initListe() {
 		final ListView liste = (ListView) findViewById(android.R.id.list);
 		
 		if (listeMatieres.size() > 0) {
@@ -82,10 +84,8 @@ public class ListeMatiereA extends Activity {
 
 				listItem.add(map);		
 			}
-			
-			final SimpleAdapter mSchedule = new SimpleAdapter (getBaseContext(), listItem, R.layout.administrateur_liste_matiere_list, new String[] {"titre", "description", "isOption"}, new int[] {R.id.titre, R.id.description, R.id.isOption});
 
-			liste.setAdapter(mSchedule); 
+			liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.administrateur_liste_matiere_list, new String[] {"titre", "description", "isOption"}, new int[] {R.id.titre, R.id.description, R.id.isOption})); 
 			
 			liste.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 				public boolean onItemLongClick(AdapterView<?> arg0, View arg1, final int arg2, final long arg3) {
@@ -98,7 +98,7 @@ public class ListeMatiereA extends Activity {
 								ProgressDialog progress = new ProgressDialog(activity);
 								progress.setMessage("Chargement...");
 								new DeleteMatiere(progress, Constantes.URL_SERVER + "matiere" +
-										"?id=" + listItem.get(arg2).get("id") +
+										"?id=" + listeMatieres.get(arg2).getId() +
 										"&token=" + FileUtils.lireFichier("/sdcard/cacheJMD/token.jmd") + 
 										"&pseudo=" + FileUtils.lireFichier("/sdcard/cacheJMD/pseudo.jmd") +
 										"&timestamp=" + new java.util.Date().getTime()).execute();
@@ -112,17 +112,13 @@ public class ListeMatiereA extends Activity {
 				}
 			}); 
 		} else {
-			final ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
-			HashMap<String, String> map;
-			
-			map = new HashMap<String, String>();
+			HashMap<String, String> map = new HashMap<String, String>();
 			map.put("titre", "Aucune matière.");
 			
+			ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
 			listItem.add(map);
-			
-			SimpleAdapter mSchedule = new SimpleAdapter (getBaseContext(), listItem, R.layout.admin_simple_list, new String[] {"titre"}, new int[] {R.id.titre});
 
-			liste.setAdapter(mSchedule); 
+			liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.admin_simple_list, new String[] {"titre"}, new int[] {R.id.titre})); 
 		}
 	}
 	
@@ -156,7 +152,6 @@ public class ListeMatiereA extends Activity {
 			ServiceHandler sh = new ServiceHandler();
             String jsonStr = sh.makeServiceCall(pathUrl, ServiceHandler.GET);
             
-            final ArrayList<Matiere> listeMatieres = new ArrayList<Matiere>();
             Matiere matiere = null;
             
             if (jsonStr != null) {            	
@@ -177,13 +172,29 @@ public class ListeMatiereA extends Activity {
                     
                     ListeMatiereA.this.runOnUiThread(new Runnable() {
     					public void run() {    						
-    						initListe(listeMatieres);
+    						initListe();
     					}
     				});
                 } catch (JSONException ex) {
                     ex.printStackTrace();
                 }
-            } 
+            } else {
+            	ListeMatiereA.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(ListeMatiereA.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								ListeMatiereA.this.finish();
+							}
+						});
+
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+            }
 
 			return null;
 		}

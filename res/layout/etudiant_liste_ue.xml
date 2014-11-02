@@ -22,17 +22,6 @@
             android:textSize="20sp" />
         
         <ImageView
-            android:id="@+id/etudiant_liste_ue_export"
-            android:onClick="export"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="65dp"
-            android:layout_centerInParent="true"
-            android:contentDescription="@string/desc_img"
-            android:src="@drawable/email" />
-
-        <ImageView
             android:id="@+id/etudiant_liste_annees_simul"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

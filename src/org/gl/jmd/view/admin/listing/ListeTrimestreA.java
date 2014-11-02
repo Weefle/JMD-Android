@@ -3,6 +3,7 @@ package org.gl.jmd.view.admin.listing;
 import java.util.*;
 
 import org.gl.jmd.R;
+import org.gl.jmd.model.Annee;
 
 import android.app.*;
 import android.content.Intent;
@@ -17,7 +18,7 @@ import android.widget.*;
  */
 public class ListeTrimestreA extends Activity {
 	
-	private String idAnnee = "";
+	private Annee a = null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -26,15 +27,15 @@ public class ListeTrimestreA extends Activity {
 		setContentView(R.layout.administrateur_liste_semestre);
 		overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
 		
-		idAnnee = getIntent().getExtras().getString("idAnnee");
+		a = (Annee) getIntent().getExtras().getSerializable("annee");
 		
 		initListe();
 	}
 	
 	private void initListe() {
 		final ListView liste = (ListView) findViewById(android.R.id.list);
-
 		final ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
+		
 		HashMap<String, String> map;
 
 		map = new HashMap<String, String>();
@@ -55,15 +56,12 @@ public class ListeTrimestreA extends Activity {
 		
 		listItem.add(map);	
 
-		final SimpleAdapter mSchedule = new SimpleAdapter (getBaseContext(), listItem, R.layout.admin_simple_list, new String[] {"titre"}, new int[] {R.id.titre});
-
-		liste.setAdapter(mSchedule); 
+		liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.admin_simple_list, new String[] {"titre"}, new int[] {R.id.titre})); 
 
 		liste.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			public void onItemClick(AdapterView<?> arg0, View arg1, final int position, long arg3) {
 				Intent newIntent = new Intent(ListeTrimestreA.this, ListeUERegleA.class);
-
-				newIntent.putExtra("idAnnee", idAnnee);
+				newIntent.putExtra("annee", a);
 				newIntent.putExtra("decoupage", listItem.get(position).get("decoupage"));
 				
 				startActivity(newIntent);

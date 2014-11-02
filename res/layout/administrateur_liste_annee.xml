@@ -4,7 +4,7 @@
     android:layout_height="fill_parent"
     android:background="#FFFFFF"
     android:orientation="vertical" >
-    
+
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="60dp"
@@ -15,29 +15,28 @@
             android:id="@+id/admin_liste_annee_titre"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
             android:layout_centerInParent="true"
-            android:textColor="#FFFFFF"
-            android:textSize="20sp"
             android:layout_marginLeft="30dp"
-            android:layout_alignParentLeft="true" />
-        
+            android:textColor="#FFFFFF"
+            android:textSize="20sp" />
+
         <ImageView
             android:id="@+id/admin_liste_annee_bout_modifier"
-            android:onClick="creerAnnee"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="15dp"
             android:layout_centerInParent="true"
+            android:layout_marginRight="15dp"
             android:contentDescription="@string/desc_img"
+            android:onClick="creerAnnee"
             android:src="@drawable/plus" />
-       
     </RelativeLayout>
-    
+
     <ListView
         android:id="@android:id/list"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" >
     </ListView>
-    
+
 </LinearLayout>

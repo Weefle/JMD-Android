@@ -66,6 +66,7 @@ public class AccueilE extends Activity {
 			for(int s = 0; s < etud.getListeDiplomes().size(); s++) {
 				map = new HashMap<String, String>();
 				map.put("titre", etud.getListeDiplomes().get(s).getNom());
+				map.put("positionDip", "" + s);
 				
 				listItem.add(map);		
 			}
@@ -75,8 +76,7 @@ public class AccueilE extends Activity {
 			liste.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 				public void onItemClick(AdapterView<?> arg0, View arg1, final int position, long arg3) {
 					Intent act = new Intent(AccueilE.this, ListeAnneesE.class);
-					act.putExtra("idDiplome", etud.getListeDiplomes().get(position).getId());
-					act.putExtra("nomDiplome", etud.getListeDiplomes().get(position).getNom());
+					act.putExtra("positionDip", listItem.get(position).get("positionDip"));
 					
 					startActivity(act);
 				}
@@ -122,14 +122,10 @@ public class AccueilE extends Activity {
 	public void modifierListe(View view) {
 		startActivity(new Intent(AccueilE.this, AjouterDiplomeE.class));	
 	}
-
-	/**
-	 * Méthode permettant de faire apparaitre le menu lors du click sur le bouton de menu.
-	 * 
-	 * @param view La vue lors du click sur le bouton de menu.
-	 */
-	public void openMenu(View view) {
-		openOptionsMenu();
+	
+	public void navigateToAccueil(View view) {
+		finish();
+		startActivity(new Intent(AccueilE.this, InitApp.class));		
 	}
 
 	/* Méthodes héritées de la classe Activity. */
@@ -146,43 +142,6 @@ public class AccueilE extends Activity {
 		}
 		
         back_pressed = System.currentTimeMillis();
-	}
-
-	/**
-	 * Méthode permettant d'afficher le menu de la vue.
-	 * 
-	 * @param menu Le menu à afficher.
-	 */
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.menu_etudiant_view, menu);
-
-		return true;
-	}
-
-	/**
-	 * Méthode déclenchée lors du click sur un élément du menu de l'application.
-	 * 
-	 * @item L'élément du menu sélectionné.
-	 */
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch(item.getItemId()) {
-		
-		case R.id.menu_accueil:
-			finish();
-			startActivity(new Intent(AccueilE.this, InitApp.class));		
-
-			return true;
-		
-		case R.id.menu_profil:
-			startActivity(new Intent(AccueilE.this, ProfilView.class));				
-
-			return true;
-		}
-
-		return false;
 	}
 	
 	/**

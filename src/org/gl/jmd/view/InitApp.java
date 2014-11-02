@@ -8,7 +8,6 @@ import org.gl.jmd.model.*;
 import org.gl.jmd.model.enumeration.ParamType;
 import org.gl.jmd.view.admin.*;
 import org.gl.jmd.view.etudiant.AccueilE;
-import org.gl.jmd.view.menu.admin.ConnexionA;
 
 import android.app.*;
 import android.content.*;
@@ -31,6 +30,10 @@ public class InitApp extends Activity {
 		setContentView(R.layout.ecran_choix_user);
 		overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
 		
+		initCheckbox(); 
+	}
+	
+	private void initCheckbox() {
 		Parametre p = ParametreDAO.load();
 		CheckBox checkbox = (CheckBox) findViewById(R.id.accueil_choix_user_se_souvenir);
 		
@@ -38,7 +41,7 @@ public class InitApp extends Activity {
 			if (p.get(ParamType.IS_ADMIN) != null) {
 				checkbox.setChecked(true);
 			}
-		} 
+		}
 	}
 	
 	/**

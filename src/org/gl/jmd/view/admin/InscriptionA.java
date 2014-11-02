@@ -1,4 +1,4 @@
-package org.gl.jmd.view.menu.admin;
+package org.gl.jmd.view.admin;
 
 import java.io.*;
 import java.util.regex.*;

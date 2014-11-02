@@ -8,6 +8,7 @@ import org.apache.http.client.*;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.gl.jmd.*;
+import org.gl.jmd.model.Annee;
 import org.gl.jmd.model.UE;
 import org.gl.jmd.model.enumeration.DecoupageYearType;
 import org.gl.jmd.utils.*;
@@ -32,11 +33,11 @@ public class ListeUEA extends Activity {
 	
 	private Toast toast;
 	
-	private String idAnnee = "";
+	private Annee annee = null;
 	
-	private String decoupage = "";
+	private String decoupage = null;
 	
-	private Intent lastIntent;
+	private ArrayList<UE> listeUE = new ArrayList<UE>();
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -45,10 +46,8 @@ public class ListeUEA extends Activity {
 		setContentView(R.layout.administrateur_liste_ue);
 		overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
 		
-		lastIntent = getIntent();
-		
-		idAnnee = lastIntent.getExtras().getString("idAnnee");
-		decoupage = lastIntent.getExtras().getString("decoupage");
+		annee = (Annee) getIntent().getExtras().getSerializable("annee");
+		decoupage = getIntent().getExtras().getString("decoupage");
 		
 		activity = this;
 		toast = Toast.makeText(getBaseContext(), "", Toast.LENGTH_SHORT);
@@ -57,14 +56,16 @@ public class ListeUEA extends Activity {
 	}
 	
 	private void actualiserListe() {		
+		listeUE.clear();
+		
 		ProgressDialog progress = new ProgressDialog(this);
 		progress.setMessage("Chargement...");
 		new ListerUE(progress, Constantes.URL_SERVER + "ue/getAllUEOfAnneeByYearType" +
-				"?idAnnee=" + idAnnee + 
+				"?idAnnee=" + annee.getId() + 
 				"&yearType=" + decoupage).execute();
 	}
 	
-	private void initListe(final ArrayList<UE> listeUE) {
+	private void initListe() {
 		final ListView liste = (ListView) findViewById(android.R.id.list);
 		
 		if (listeUE.size() > 0) {
@@ -79,10 +80,8 @@ public class ListeUEA extends Activity {
 
 				listItem.add(map);		
 			}
-			
-			final SimpleAdapter mSchedule = new SimpleAdapter (getBaseContext(), listItem, R.layout.admin_simple_list, new String[] {"titre"}, new int[] {R.id.titre});
 
-			liste.setAdapter(mSchedule); 
+			liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.admin_simple_list, new String[] {"titre"}, new int[] {R.id.titre})); 
 			
 			liste.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 				public void onItemClick(AdapterView<?> arg0, View arg1, final int position, long arg3) {
@@ -104,7 +103,7 @@ public class ListeUEA extends Activity {
 							ProgressDialog progress = new ProgressDialog(activity);
 							progress.setMessage("Chargement...");
 							new DeleteUE(progress, Constantes.URL_SERVER + "ue" +
-									"?id=" + listItem.get(arg2).get("id") +
+									"?id=" + listeUE.get(arg2).getId() +
 									"&token=" + FileUtils.lireFichier("/sdcard/cacheJMD/token.jmd") + 
 									"&pseudo=" + FileUtils.lireFichier("/sdcard/cacheJMD/pseudo.jmd") +
 									"&timestamp=" + new java.util.Date().getTime()).execute();
@@ -116,20 +115,15 @@ public class ListeUEA extends Activity {
 	    			
 					return true;
 				}
-				
 			}); 
-		} else {
-			final ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
-			HashMap<String, String> map;
-			
-			map = new HashMap<String, String>();
+		} else {			
+			HashMap<String, String> map = new HashMap<String, String>();
 			map.put("titre", "Aucune UE.");
 			
+			ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
 			listItem.add(map);
-			
-			SimpleAdapter mSchedule = new SimpleAdapter (getBaseContext(), listItem, R.layout.admin_simple_list, new String[] {"titre"}, new int[] {R.id.titre});
 
-			liste.setAdapter(mSchedule); 
+			liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.admin_simple_list, new String[] {"titre"}, new int[] {R.id.titre})); 
 		}
 	}
 	
@@ -156,7 +150,6 @@ public class ListeUEA extends Activity {
 			ServiceHandler sh = new ServiceHandler();
             String jsonStr = sh.makeServiceCall(pathUrl, ServiceHandler.GET);
             
-            final ArrayList<UE> listeUE = new ArrayList<UE>();
             UE ue = null;
             
             if (jsonStr != null) {            	
@@ -177,13 +170,29 @@ public class ListeUEA extends Activity {
                     
                     ListeUEA.this.runOnUiThread(new Runnable() {
     					public void run() {    						
-    						initListe(listeUE);
+    						initListe();
     					}
     				});
                 } catch (JSONException ex) {
                     ex.printStackTrace();
                 }
-            } 
+            } else {
+            	ListeUEA.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(ListeUEA.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								ListeUEA.this.finish();
+							}
+						});
+
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+            }
 
 			return null;
 		}

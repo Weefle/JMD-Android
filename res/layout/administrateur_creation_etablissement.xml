@@ -20,7 +20,20 @@
             android:layout_centerInParent="true"
             android:textColor="#FFFFFF"
             android:layout_alignParentLeft="true"
-            android:text="@string/administrateur_creation_eta_titre_texte" />
+            android:text="Nouvel établissement" />
+        
+        <TextView
+            android:id="@+id/admin_crea_eta_btn_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
+            android:layout_marginRight="30dp"
+            android:clickable="true"
+            android:onClick="creerEtablissement"
+            android:text="OK"
+            android:textColor="@drawable/button_color_selector" 
+            android:textSize="18dp" />
         
     </RelativeLayout>
 
@@ -43,17 +56,5 @@
         android:singleLine="true"
         android:layout_marginTop="20dp"
         android:inputType="text" />
-    
-    <Button
-        android:id="@+id/crea_eta_bout_creer"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:background="@drawable/button_style"
-        android:textColor="@drawable/button_color_selector" 
-        android:padding="10dp"
-        android:layout_marginTop="20dp"
-        android:onClick="creerEtablissement"
-        android:text="@string/bout_creer_txt"  />
     
 </LinearLayout>

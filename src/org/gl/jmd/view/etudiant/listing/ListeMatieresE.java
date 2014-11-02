@@ -31,8 +31,6 @@ public class ListeMatieresE extends Activity {
 
 	private Etudiant etud = EtudiantDAO.load();
 
-	private Intent lastIntent;
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -40,22 +38,23 @@ public class ListeMatieresE extends Activity {
 		setContentView(R.layout.etudiant_liste_matiere);
 		overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
 
-		lastIntent = getIntent();
+		idDiplome = getIntent().getExtras().getInt("idDiplome");
+		idAnnee = getIntent().getExtras().getInt("idAnnee");
+		idUe = getIntent().getExtras().getInt("idUE");
 
-		idDiplome = lastIntent.getExtras().getInt("idDiplome");
-		idAnnee = lastIntent.getExtras().getInt("idAnnee");
-		idUe = lastIntent.getExtras().getInt("idUE");
+		nomUE = getIntent().getExtras().getString("nomUE");
 
-		nomUE = lastIntent.getExtras().getString("nomUE");
-
+		initTitre();
 		initListe();
-
+	}
+	
+	private void initTitre() {
 		// On donne comme titre à la vue le nom de l'UE choisie.
 		TextView tvTitre = (TextView) findViewById(R.id.etudiant_liste_matiere_titre);
 		tvTitre.setText(nomUE);
 	}
 
-	public void initListe() {
+	private void initListe() {
 		int posDip = 0;
 		int posAnn = 0;
 		int posUe = 0;
@@ -89,18 +88,14 @@ public class ListeMatieresE extends Activity {
 		final int posUeFin = posUe;
 
 		if (etud.getListeDiplomes().get(posDipFin).getListeAnnees().get(posAnnFin).getListeUE().get(posUeFin).getListeMatieres().isEmpty()) {
-			final ListView liste = (ListView) findViewById(android.R.id.list);
-			final ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
-
 			HashMap<String, String> map = new HashMap<String, String>();
-
 			map.put("titre", "Aucune matière.");
 
+			ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
 			listItem.add(map);		
-
-			final SimpleAdapter mSchedule = new SimpleAdapter (getBaseContext(), listItem, R.layout.etudiant_simple_list, new String[] {"titre"}, new int[] {R.id.titre});
-
-			liste.setAdapter(mSchedule); 
+			
+			ListView liste = (ListView) findViewById(android.R.id.list);
+			liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.etudiant_simple_list, new String[] {"titre"}, new int[] {R.id.titre})); 
 		} else {
 			final ListView liste = (ListView) findViewById(android.R.id.list);
 
@@ -126,25 +121,34 @@ public class ListeMatieresE extends Activity {
 					map.put("isOption", "Obligatoire");
 				}
 
-				// map.put("note", "" + etud.getListeDiplomes().get(posDipFin).getListeAnnees().get(posAnnFin).getListeUE().get(posUeFin).getListeMatieres().get(s).getNoteFinale());
+				map.put("note", "" + etud.getListeDiplomes().get(posDipFin).getListeAnnees().get(posAnnFin).getListeUE().get(posUeFin).getListeMatieres().get(s).getNoteFinale());
 
 				listItem.add(map);		
 			}
 
-			final SimpleAdapter mSchedule = new SimpleAdapter (getBaseContext(), listItem, R.layout.etudiant_liste_matiere_list, new String[] {"titre", "description", "isOption", "note"}, new int[] {R.id.titre, R.id.description, R.id.isOption, R.id.note});
-
-			liste.setAdapter(mSchedule); 
+			liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.etudiant_liste_matiere_list, new String[] {"titre", "description", "isOption", "note"}, new int[] {R.id.titre, R.id.description, R.id.isOption, R.id.note})); 
 
 			liste.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 				public void onItemClick(AdapterView<?> arg0, View arg1, final int position, long arg3) {
 					Intent act = new Intent(ListeMatieresE.this, SaisieNoteE.class);
-					act.putExtra("idDiplome", idDiplome);
-					act.putExtra("idAnnee", idAnnee);
-					act.putExtra("idUE", idUe);
-					act.putExtra("idMatiere", listItem.get(position).get("id"));
 					act.putExtra("matiere", etud.getListeDiplomes().get(posDipFin).getListeAnnees().get(posAnnFin).getListeUE().get(posUeFin).getListeMatieres().get(position));
 
 					startActivity(act);
+				}
+			});
+
+			// Cache le badge si aucune note n'a été entrée.
+			liste.post(new Runnable() {
+				@Override
+				public void run() {
+					for (int i = 0; i < liste.getCount(); i++) {
+						View tempView = (View) liste.getChildAt(i);
+						TextView badgeNote = (TextView) tempView.findViewById(R.id.note);
+
+						if (badgeNote.getText().toString().equals("-1.0")) {							
+							badgeNote.setVisibility(View.GONE);
+						}
+					}
 				}
 			});
 		}

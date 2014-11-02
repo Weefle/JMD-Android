@@ -1,6 +1,7 @@
 package org.gl.jmd.view.admin.listing;
 
 import org.gl.jmd.R;
+import org.gl.jmd.model.Annee;
 import org.gl.jmd.view.admin.create.*;
 
 import android.os.Bundle;
@@ -25,11 +26,9 @@ public class ListeUERegleA extends TabActivity {
 
 	private int currentTab = 0;
 	
-	private String decoupage = "";
+	private Annee annee = null;
 	
-	private String idAnnee = "";
-	
-	private Intent lastIntent;
+	private String decoupage = null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -38,19 +37,18 @@ public class ListeUERegleA extends TabActivity {
 		setContentView(R.layout.administrateur_liste_ue_regle);
 		overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
 		
-		lastIntent = getIntent();
-		
-		decoupage = lastIntent.getExtras().getString("decoupage");
-		idAnnee = lastIntent.getExtras().getString("idAnnee");
+		annee = (Annee) getIntent().getExtras().getSerializable("annee");
+		decoupage = getIntent().getExtras().getString("decoupage");
 		
 		tabHost = getTabHost();
 		
 		Intent intentListeUE = new Intent(ListeUERegleA.this, ListeUEA.class);
-		intentListeUE.putExtra("idAnnee", idAnnee);
+		intentListeUE.putExtra("annee", annee);
 		intentListeUE.putExtra("decoupage", decoupage);
 		
 		Intent intentListeRegle = new Intent(ListeUERegleA.this, ListeRegleA.class);
-		intentListeRegle.putExtra("idAnnee", idAnnee);
+		intentListeRegle.putExtra("annee", annee);
+		intentListeRegle.putExtra("decoupage", decoupage);
 		
 		setupTab("Liste des UE", "0", intentListeUE);
         setupTab("Règles de gestion", "1", intentListeRegle);
@@ -128,19 +126,19 @@ public class ListeUERegleA extends TabActivity {
 	 * @param view La vue lors du click sur le bouton "plus".
 	 */
 	public void openPopupCreation(View view) {
+		Class<?> c = null;
+		
 		if (currentTab == 0) {
-			Intent intent = new Intent(ListeUERegleA.this, CreationUE.class);
-			intent.putExtra("idAnnee", idAnnee);
-			intent.putExtra("decoupage", decoupage);
-			
-			startActivity(intent);	
+			c = CreationUE.class;
 		} else if (currentTab == 1) {
-			Intent intent = new Intent(ListeUERegleA.this, CreationRegle.class);
-			intent.putExtra("idAnnee", idAnnee);
-			intent.putExtra("decoupage", decoupage);
-			
-			startActivity(intent);		
+			c = CreationRegle.class;	
 		}
+		
+		Intent intent = new Intent(ListeUERegleA.this, c);
+		intent.putExtra("annee", annee);
+		intent.putExtra("decoupage", decoupage);
+		
+		startActivity(intent);	
 	}
 
 	/* Méthode héritée de la classe Activity. */

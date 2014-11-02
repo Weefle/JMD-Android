@@ -3,6 +3,8 @@ package org.gl.jmd.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import org.gl.jmd.utils.NumberUtils;
+
 /**
  * Classe représentant une matière.
  * 
@@ -35,17 +37,17 @@ public class Matiere implements Serializable {
 	/**
 	 * Le coefficient du partiel.
 	 */
-	private int coeffPartiel = 0;
+	private double coeffPartiel = 0;
 	
 	/**
 	 * La note de première session.
 	 */
-	private Note noteSession1;
+	private Note noteSession1 = new Note();
 	
 	/**
 	 * La note de seconde session.
 	 */
-	private Note noteSession2;
+	private Note noteSession2 = new Note();
 	
 	/**
 	 * Les notes de contrôle continu de la matière.
@@ -62,6 +64,41 @@ public class Matiere implements Serializable {
 	 */
 	public Matiere() {
 		
+	}
+	
+	/**
+	 * Méthode permettant de calculer la note finale de la matière.
+	 * 
+	 * @return La note finale de la matière.
+	 */
+	public double getNoteFinale() {
+		double res = -1;
+		
+		if ((this.noteSession2 != null) &&
+				(this.noteSession2.getNote() > this.noteSession1.getNote())) {
+			
+			res = this.noteSession2.getNote();
+		} else if (this.noteSession1 != null) {
+			res = this.noteSession1.getNote();
+		}
+		
+		if (this.listeNotesCC.size() > 0) {
+			double sommeNoteCoeff = 0;
+			double sommeCoeff = 0;
+			
+			for (int i = 0; i < this.listeNotesCC.size(); i++) {
+				sommeNoteCoeff +=  this.listeNotesCC.get(i).getNote() * this.listeNotesCC.get(i).getCoefficient();
+				sommeCoeff += this.listeNotesCC.get(i).getCoefficient();
+			}
+			
+			double moyenneCC = sommeNoteCoeff / sommeCoeff;
+			double coeff = (this.coeffPartiel / (this.coeffPartiel + 1));
+			double coeffCC = (1.0 / (this.coeffPartiel + 1));
+			
+			res = NumberUtils.round((res * coeff) + (moyenneCC * coeffCC), 2);
+		} 
+		
+		return res;
 	}
 	
 	/* Getters. */
@@ -108,7 +145,7 @@ public class Matiere implements Serializable {
 	 * 
 	 * @return Le coefficient du partiel de la matière.
 	 */
-	public int getCoeffPartiel() {
+	public double getCoeffPartiel() {
 		return this.coeffPartiel;
 	}
 	
@@ -191,7 +228,7 @@ public class Matiere implements Serializable {
 	 * 
 	 * @param coeffPartiel Le nouveau coefficient du partiel de la matière.
 	 */
-	public void setCoeffPartiel(int coeffPartiel) {
+	public void setCoeffPartiel(double coeffPartiel) {
 		this.coeffPartiel = coeffPartiel;
 	}
 
@@ -229,28 +266,5 @@ public class Matiere implements Serializable {
 	 */
 	public void setListeRegles(ArrayList<Regle> listeRegles) {
 		this.listeRegles = listeRegles;
-	}
-	
-	/* Autre. */
-	
-	/**
-	 * Méthode permettant de calculer la note finale de la matière.
-	 * 
-	 * @return La note finale de la matière.
-	 */
-	public double getNoteFinale() {
-		double res = -1;
-		
-		if (this.listeNotesCC.size() > 0) {
-			res = 0;
-		} else {
-			if (this.noteSession2.getNote() != -1) {
-				res = this.noteSession2.getNote();
-			} else {
-				res = this.noteSession1.getNote();
-			}
-		}
-		
-		return res;
 	}
 }

@@ -21,6 +21,17 @@
             android:text="Détails de l&apos;année"
             android:textColor="#FFFFFF"
             android:textSize="20sp" />
+        
+        <ImageView
+            android:id="@+id/stats_annee_export"
+            android:onClick="export"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="15dp"
+            android:layout_centerInParent="true"
+            android:contentDescription="@string/desc_img"
+            android:src="@drawable/email" />
     </RelativeLayout>
 
     <TextView

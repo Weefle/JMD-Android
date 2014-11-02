@@ -11,7 +11,9 @@ import org.apache.http.client.methods.HttpPut;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.gl.jmd.Constantes;
 import org.gl.jmd.R;
+import org.gl.jmd.model.Annee;
 import org.gl.jmd.model.UE;
+import org.gl.jmd.model.enumeration.DecoupageYearType;
 import org.gl.jmd.utils.*;
 import org.gl.jmd.view.Accueil;
 
@@ -33,11 +35,9 @@ public class CreationUE extends Activity {
 
 	private Toast toast;
 	
-	private Intent lastIntent;
+	private Annee a = null;
 	
-	private String decoupage = "";
-	
-	private String idAnnee = "";
+	private String decoupage = null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -49,10 +49,8 @@ public class CreationUE extends Activity {
 		activity = this;
 		toast = Toast.makeText(activity, "", Toast.LENGTH_SHORT);
 		
-		lastIntent = getIntent();
-		
-		idAnnee = lastIntent.getExtras().getString("idAnnee");
-		decoupage = lastIntent.getExtras().getString("decoupage");
+		a = (Annee) getIntent().getExtras().getSerializable("annee");
+		decoupage = getIntent().getExtras().getString("decoupage");
 	}
 	
 	/**
@@ -78,18 +76,17 @@ public class CreationUE extends Activity {
 			
 			UE ue = new UE();
 			ue.setNom(NOM.getText().toString());
-			
-			String URL = Constantes.URL_SERVER + "ue" +
-					"?nom=" + URLEncoder.encode(ue.getNom()) +
-					"&yearType=" + decoupage +
-					"&idAnnee=" + idAnnee +
-					"&token=" + FileUtils.lireFichier("/sdcard/cacheJMD/token.jmd") + 
-					"&pseudo=" + FileUtils.lireFichier("/sdcard/cacheJMD/pseudo.jmd") +
-					"&timestamp=" + new java.util.Date().getTime();	
+			ue.setDecoupage(DecoupageYearType.valueOf(decoupage));
 			
 			ProgressDialog progress = new ProgressDialog(activity);
 			progress.setMessage("Chargement...");
-			new CreerUE(progress, URL).execute(); 
+			new CreerUE(progress, Constantes.URL_SERVER + "ue" +
+					"?nom=" + URLEncoder.encode(ue.getNom()) +
+					"&yearType=" + ue.getDecoupage().name() +
+					"&idAnnee=" + a.getId() +
+					"&token=" + FileUtils.lireFichier("/sdcard/cacheJMD/token.jmd") + 
+					"&pseudo=" + FileUtils.lireFichier("/sdcard/cacheJMD/pseudo.jmd") +
+					"&timestamp=" + new java.util.Date().getTime()).execute(); 
 		} else {
 			NOM.setBackgroundResource(R.drawable.border_edittext_error);
 			

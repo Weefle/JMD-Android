@@ -1,6 +1,8 @@
 package org.gl.jmd.view.admin;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.*;
@@ -19,11 +21,13 @@ import android.content.*;
 import android.content.res.Configuration;
 import android.graphics.*;
 import android.os.*;
+import android.support.v4.widget.DrawerLayout;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.*;
 import android.widget.*;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.TabHost.*;
 
 /**
@@ -110,6 +114,46 @@ public class AccueilA extends TabActivity {
 		
 		activity = this;
 		toast = Toast.makeText(activity, "", Toast.LENGTH_SHORT);
+		
+		initSlideMenu();
+	}
+	
+	private void initSlideMenu() {		
+		final DrawerLayout dLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        final ListView dList = (ListView) findViewById(R.id.left_drawer);
+
+        final ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
+        HashMap<String, String> map;
+		
+        map = new HashMap<String, String>();
+		map.put("titre", "Déconnexion");
+		listItem.add(map);
+		
+		map = new HashMap<String, String>();
+		map.put("titre", "Nommer un admin");
+		listItem.add(map);
+        
+        dList.setAdapter(new SimpleAdapter(getBaseContext(), listItem, R.layout.slide_menu_simple_list, new String[] {"titre"}, new int[] {R.id.titre}));
+		
+        dList.setOnItemClickListener(new OnItemClickListener(){
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View v, int position, long id) {
+				dLayout.closeDrawers();					
+				
+				if (listItem.get(position).get("titre").equals("Déconnexion")) {
+					String URL = Constantes.URL_SERVER + "admin/logout" +
+							"?token=" + FileUtils.lireFichier("/sdcard/cacheJMD/token.jmd") + 
+							"&pseudo=" + FileUtils.lireFichier("/sdcard/cacheJMD/pseudo.jmd") +
+							"&timestamp=" + new java.util.Date().getTime();			
+
+					ProgressDialog progress = new ProgressDialog(activity);
+					progress.setMessage("Chargement...");
+					new SeDeco(progress, URL).execute(); 
+        		} else if (listItem.get(position).get("titre").equals("Nommer un admin")) {
+        			startActivity(new Intent(AccueilA.this, AjouterAdminA.class));			
+        		}
+			}
+        });
 	}
 	
     private void setupTab(String name, String tag, Intent intent) {
@@ -122,6 +166,11 @@ public class AccueilA extends TabActivity {
 		tv.setText(text);
  
 		return view;
+	}
+	
+	public void navigateToAccueil(View view) {
+		finish();
+		startActivity(new Intent(AccueilA.this, InitApp.class));		
 	}
 
 	/**
@@ -138,7 +187,7 @@ public class AccueilA extends TabActivity {
 	 * 
 	 * @param view La vue lors du click sur le bouton "plus".
 	 */
-	public void openPopupCreation(View view) {
+	public void create(View view) {
 		if (currentTab == 0) {
 			startActivity(new Intent(AccueilA.this, CreationEtablissement.class));	
 		} else if (currentTab == 1) {
@@ -242,55 +291,6 @@ public class AccueilA extends TabActivity {
 	}
 
 	/* Méthodes héritées de la classe Activity. */
-
-	/**
-	 * Méthode permettant d'afficher le menu de la vue.
-	 * 
-	 * @param menu Le menu à afficher.
-	 */
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.menu_admin_view, menu);
-
-		return true;
-	}
-
-	/**
-	 * Méthode déclenchée lors du click sur un élément du menu de l'application.
-	 * 
-	 * @item L'élément du menu sélectionné.
-	 */
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch(item.getItemId()) {
-		
-		case R.id.menu_accueil:
-			finish();
-			startActivity(new Intent(AccueilA.this, InitApp.class));		
-
-			return true;
-
-		case R.id.menu_deconnexion:
-			String URL = Constantes.URL_SERVER + "admin/logout" +
-					"?token=" + FileUtils.lireFichier("/sdcard/cacheJMD/token.jmd") + 
-					"&pseudo=" + FileUtils.lireFichier("/sdcard/cacheJMD/pseudo.jmd") +
-					"&timestamp=" + new java.util.Date().getTime();			
-
-			ProgressDialog progress = new ProgressDialog(activity);
-			progress.setMessage("Chargement...");
-			new SeDeco(progress, URL).execute(); 
-
-			return true;
-
-		case R.id.menu_nommer_admin:
-			startActivity(new Intent(AccueilA.this, AjouterAdminA.class));				
-
-			return true;
-		}
-
-		return false;
-	}
 
 	/**
 	 * Méthode permettant d'empécher la reconstruction de la vue lors de la rotation de l'écran. 

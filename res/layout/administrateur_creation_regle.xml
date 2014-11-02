@@ -21,6 +21,19 @@
             android:text="@string/administrateur_creation_regle_titre_texte"
             android:textColor="#FFFFFF"
             android:textSize="20sp" />
+        
+        <TextView
+            android:id="@+id/admin_crea_regle_btn_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
+            android:layout_marginRight="30dp"
+            android:clickable="true"
+            android:onClick="creerRegle"
+            android:text="OK"
+            android:textColor="@drawable/button_color_selector" 
+            android:textSize="18dp" />
     </RelativeLayout>
     
     <Spinner
@@ -74,17 +87,5 @@
         android:hint="Valeur"
         android:inputType="number"
         android:singleLine="true" />
-
-    <Button
-        android:id="@+id/crea_ue_regle_creer"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/button_style"
-        android:onClick="creerRegle"
-        android:padding="10dp"
-        android:text="@string/bout_creer_txt"
-        android:textColor="@drawable/button_color_selector" />
     
 </LinearLayout>

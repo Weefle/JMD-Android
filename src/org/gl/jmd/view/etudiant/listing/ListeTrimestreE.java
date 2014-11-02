@@ -17,9 +17,9 @@ import android.widget.*;
  */
 public class ListeTrimestreE extends Activity {
 	
-	private int idAnnee = 0;
+	private int positionDip = 0;
 	
-	private int idDiplome = 0;
+	private int positionAnn = 0;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -28,8 +28,8 @@ public class ListeTrimestreE extends Activity {
 		setContentView(R.layout.etudiant_liste_trimestre);
 		overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
 		
-		idAnnee = getIntent().getExtras().getInt("idAnnee");
-		idDiplome = getIntent().getExtras().getInt("idDiplome");
+		positionDip = getIntent().getExtras().getInt("positionDip");
+		positionAnn = getIntent().getExtras().getInt("positionAnn");
 		
 		initListe();
 	}
@@ -57,19 +57,15 @@ public class ListeTrimestreE extends Activity {
 		map.put("decoupage", "TR3");
 		
 		listItem.add(map);	
-
-		final SimpleAdapter mSchedule = new SimpleAdapter (getBaseContext(), listItem, R.layout.etudiant_simple_list, new String[] {"titre"}, new int[] {R.id.titre});
-
-		liste.setAdapter(mSchedule); 
+		
+		liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.etudiant_simple_list, new String[] {"titre"}, new int[] {R.id.titre})); 
 
 		liste.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			public void onItemClick(AdapterView<?> arg0, View arg1, final int position, long arg3) {
 				Intent newIntent = new Intent(ListeTrimestreE.this, ListeUEE.class);
-
-				newIntent.putExtra("idDiplome", idDiplome);
-				newIntent.putExtra("idAnnee", idAnnee);
+				newIntent.putExtra("positionDip", positionDip);
+				newIntent.putExtra("positionDip", positionAnn);
 				newIntent.putExtra("decoupage", listItem.get(position).get("decoupage"));
-				newIntent.putExtra("titre", listItem.get(position).get("titre"));
 				
 				startActivity(newIntent);
 			}

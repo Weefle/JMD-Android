@@ -3,10 +3,6 @@
     <item
         android:id="@+id/menu_deconnexion"
         android:title="@string/menu_deconnexion"/>
-    
-    <item
-        android:id="@+id/menu_accueil"
-        android:title="@string/menu_accueil" />
 
     <item
         android:id="@+id/menu_nommer_admin"

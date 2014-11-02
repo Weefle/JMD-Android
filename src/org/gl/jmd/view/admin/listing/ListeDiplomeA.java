@@ -63,16 +63,13 @@ public class ListeDiplomeA extends Activity {
 
 			for(int s = 0; s < listeDiplomes.size(); s++) {
 				map = new HashMap<String, String>();
-
 				map.put("id", "" + listeDiplomes.get(s).getId());
 				map.put("titre", listeDiplomes.get(s).getNom());
 
 				listItem.add(map);		
 			}
 
-			final SimpleAdapter mSchedule = new SimpleAdapter (getBaseContext(), listItem, R.layout.admin_simple_list, new String[] {"titre"}, new int[] {R.id.titre});
-
-			liste.setAdapter(mSchedule); 
+			liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.admin_simple_list, new String[] {"titre"}, new int[] {R.id.titre})); 
 
 			liste.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 				public void onItemClick(AdapterView<?> arg0, View arg1, final int position, long arg3) {
@@ -91,15 +88,13 @@ public class ListeDiplomeA extends Activity {
 					confirmQuitter.setCancelable(false);
 					confirmQuitter.setPositiveButton("Oui", new AlertDialog.OnClickListener() {
 						public void onClick(DialogInterface dialog, int id) {
-							String URL = Constantes.URL_SERVER + "diplome" +
+							ProgressDialog progress = new ProgressDialog(activity);
+							progress.setMessage("Chargement...");
+							new DeleteDiplome(progress, Constantes.URL_SERVER + "diplome" +
 									"?id=" + listItem.get(arg2).get("id") +
 									"&token=" + FileUtils.lireFichier("/sdcard/cacheJMD/token.jmd") + 
 									"&pseudo=" + FileUtils.lireFichier("/sdcard/cacheJMD/pseudo.jmd") +
-									"&timestamp=" + new java.util.Date().getTime();	
-
-							ProgressDialog progress = new ProgressDialog(activity);
-							progress.setMessage("Chargement...");
-							new DeleteDiplome(progress, URL).execute();
+									"&timestamp=" + new java.util.Date().getTime()).execute();
 						}
 					});
 					
@@ -108,28 +103,20 @@ public class ListeDiplomeA extends Activity {
 
 					return true;
 				}
-
 			}); 
 		} else {
-			final ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
-			HashMap<String, String> map;
-
-			map = new HashMap<String, String>();
+			HashMap<String, String> map = new HashMap<String, String>();
 			map.put("titre", "Aucun diplôme.");
-
+			
+			ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
 			listItem.add(map);
-
-			SimpleAdapter mSchedule = new SimpleAdapter (getBaseContext(), listItem, R.layout.admin_simple_list, new String[] {"titre"}, new int[] {R.id.titre});
-
-			liste.setAdapter(mSchedule); 
+			
+			liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.admin_simple_list, new String[] {"titre"}, new int[] {R.id.titre})); 
 		}
 	}
+	
+	/* Classes internes. */
 
-	/**
-	 * Classe interne représentant une tâche asynchrone (lister les diplômes d'un établissement présents en base) qui sera effectuée en fond pendant un rond de chargement.
-	 * 
-	 * @author Jordi CHARPENTIER & Yoann VANHOESERLANDE
-	 */
 	private class ListerDiplomes extends AsyncTask<Void, Void, Void> {
 		private ProgressDialog progress;
 		private String pathUrl;
@@ -176,17 +163,28 @@ public class ListeDiplomeA extends Activity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-            } 
+            } else {
+            	ListeDiplomeA.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(ListeDiplomeA.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								ListeDiplomeA.this.finish();
+							}
+						});
+
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+            }
 
 			return null;
 		}
 	}
 
-	/**
-	 * Classe interne représentant une tâche asynchrone (suppression d'un diplôme) qui sera effectuée en fond pendant un rond de chargement.
-	 * 
-	 * @author Jordi CHARPENTIER & Yoann VANHOESERLANDE
-	 */
 	private class DeleteDiplome extends AsyncTask<Void, Void, Void> {
 		private ProgressDialog progress;
 		private String pathUrl;
@@ -276,10 +274,6 @@ public class ListeDiplomeA extends Activity {
 
 			return null;
 		}
-	}
-	
-	public void finishAllActivities(){
-		this.finishAffinity();
 	}
 
 	/* Méthodes héritées de la classe Activity. */

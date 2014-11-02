@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerInParent="true"
-            android:layout_marginRight="15dp"
+            android:layout_marginRight="20dp"
             android:contentDescription="@string/desc_img"
             android:onClick="modifierListe"
             android:src="@drawable/plus" />

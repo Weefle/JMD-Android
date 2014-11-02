@@ -57,7 +57,7 @@ public class CreationAnnee extends Activity {
 		activity = this;
 		toast = Toast.makeText(activity, "", Toast.LENGTH_SHORT);
 		
-		LAST_YEAR = (CheckBox) findViewById(R.id.admin_creation_annee_is_last_year);		
+		LAST_YEAR = (CheckBox) findViewById(R.id.administrateur_creation_annee_is_last_year);		
 		NOM = (EditText) findViewById(R.id.admin_creation_annee_nom);		
 		ETA = (EditText) findViewById(R.id.admin_creation_annee_nom_eta);
 		
@@ -249,10 +249,7 @@ public class CreationAnnee extends Activity {
 					    
 					    dialog.setContentView(listView);
 					    dialog.show();
-					} else {						
-						Button button = (Button) findViewById(R.id.crea_annee_bout_creer);
-						button.setEnabled(false);
-					}
+					} 
 				}
 			});
 

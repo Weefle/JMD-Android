@@ -5,7 +5,7 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="15" />
+        android:minSdkVersion="16" />
     
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -15,8 +15,7 @@
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:label="@string/app_name" >
 
         <activity
             android:name="org.gl.jmd.view.Accueil"
@@ -110,22 +109,6 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/etudiant_saisie_note_titre_view_name" 
             android:windowSoftInputMode="adjustPan"
-            android:theme="@android:style/Theme.NoTitleBar" >
-        </activity>
-        
-        <!-- Menu -->
-        
-        <activity
-            android:name="org.gl.jmd.view.menu.etudiant.FaqE"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/etudiant_faq_view_name" 
-            android:theme="@android:style/Theme.NoTitleBar" >
-        </activity>
-        
-        <activity
-            android:name="org.gl.jmd.view.etudiant.ProfilView"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/etudiant_profil_view_name" 
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
         
@@ -250,32 +233,18 @@
         <!-- Menu -->
         
         <activity
-            android:name="org.gl.jmd.view.menu.admin.ConnexionA"
+            android:name="org.gl.jmd.view.admin.ConnexionA"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/administrateur_connexion_view_name" 
             android:theme="@android:style/Theme.NoTitleBar" >
          </activity>
          
          <activity
-            android:name="org.gl.jmd.view.menu.admin.InscriptionA"
+            android:name="org.gl.jmd.view.admin.InscriptionA"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/administrateur_inscription_view_name" 
             android:theme="@android:style/Theme.NoTitleBar" >
          </activity>
-        
-        <activity
-            android:name="org.gl.jmd.view.menu.APropos"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/menu_a_propos_titre" 
-            android:theme="@android:style/Theme.NoTitleBar" >
-        </activity>
-        
-        <activity
-            android:name="org.gl.jmd.view.menu.admin.FaqA"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/admin_faq_view_name" 
-            android:theme="@android:style/Theme.NoTitleBar" >
-        </activity>
         
         <activity
             android:name="org.gl.jmd.view.menu.admin.AjouterAdminA"

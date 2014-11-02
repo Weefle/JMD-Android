@@ -19,8 +19,21 @@
             android:layout_marginLeft="30dp"
             android:layout_centerInParent="true"
             android:textColor="#FFFFFF"
-            android:text="@string/administrateur_creation_diplome_titre_texte"
+            android:text="Nouveau diplôme"
             android:textSize="20sp" />
+        
+        <TextView
+            android:id="@+id/admin_crea_diplome_btn_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
+            android:layout_marginRight="30dp"
+            android:clickable="true"
+            android:onClick="creerDiplome"
+            android:text="OK"
+            android:textColor="@drawable/button_color_selector" 
+            android:textSize="18dp" />
     </RelativeLayout>
 
     <EditText
@@ -32,17 +45,5 @@
         android:layout_marginTop="30dp"
         android:inputType="text"
         android:singleLine="true" />
-
-    <Button
-        android:id="@+id/crea_diplome_bout_creer"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/button_style"
-        android:textColor="@drawable/button_color_selector" 
-        android:padding="10dp"
-        android:onClick="creerDiplome"
-        android:text="@string/bout_creer_txt" />
 
 </LinearLayout>

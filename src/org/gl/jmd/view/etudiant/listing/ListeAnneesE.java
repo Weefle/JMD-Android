@@ -4,6 +4,7 @@ import java.util.*;
 
 import org.gl.jmd.R;
 import org.gl.jmd.dao.EtudiantDAO;
+import org.gl.jmd.model.Diplome;
 import org.gl.jmd.model.enumeration.DecoupageType;
 import org.gl.jmd.model.user.Etudiant;
 import org.gl.jmd.view.etudiant.create.AjouterAnneeE;
@@ -22,10 +23,10 @@ import android.content.res.Configuration;
  */
 public class ListeAnneesE extends Activity {
 
-	private int idDiplome = 0;
+	private Diplome d = null;
 
-	private String nomDiplome = "";
-
+	private int positionDip = 0;
+	
 	private Etudiant etud = EtudiantDAO.load();
 
 	@Override
@@ -34,33 +35,23 @@ public class ListeAnneesE extends Activity {
 
 		setContentView(R.layout.etudiant_liste_annees);
 		overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-
-		idDiplome = getIntent().getExtras().getInt("idDiplome");
-		nomDiplome = getIntent().getExtras().getString("nomDiplome");
-
+		
+		positionDip = Integer.parseInt(getIntent().getExtras().getString("positionDip"));
+		d = etud.getListeDiplomes().get(positionDip);
+		
 		initListe();
 		initTxtTitre();
 	}
 
 	private void initListe() {
-		int pos = 0;
-
-		for (int i = 0; i < this.etud.getListeDiplomes().size(); i++) {
-			if (this.etud.getListeDiplomes().get(i).getId() == this.idDiplome) {
-				pos = i;
-			}
-		}
-
-		final int posFin = pos;
-
-		if (etud.getListeDiplomes().get(pos).getListeAnnees().isEmpty()) {
-			ListView liste = (ListView) findViewById(android.R.id.list);
-			ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
-
+		if (etud.getListeDiplomes().get(positionDip).getListeAnnees().isEmpty()) {
 			HashMap<String, String> map = new HashMap<String, String>();
 			map.put("titre", "Aucune année.");
-
-			listItem.add(map);		
+			
+			ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
+			listItem.add(map);
+			
+			ListView liste = (ListView) findViewById(android.R.id.list);
 			liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.etudiant_simple_list, new String[] {"titre"}, new int[] {R.id.titre})); 
 		} else {
 			final ListView liste = (ListView) findViewById(android.R.id.list);
@@ -68,43 +59,37 @@ public class ListeAnneesE extends Activity {
 			final ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
 			HashMap<String, String> map;	
 
-			for(int s = 0; s < etud.getListeDiplomes().get(pos).getListeAnnees().size(); s++) {
+			for(int s = 0; s < etud.getListeDiplomes().get(positionDip).getListeAnnees().size(); s++) {
 				map = new HashMap<String, String>();
 
-				map.put("titre", etud.getListeDiplomes().get(pos).getListeAnnees().get(s).getNom());
-				map.put("description", etud.getListeDiplomes().get(pos).getListeAnnees().get(s).getEtablissement().getNom());
-				map.put("decoupage", etud.getListeDiplomes().get(pos).getListeAnnees().get(s).getDecoupage().name());
-
-				if (etud.getListeDiplomes().get(pos).getListeAnnees().get(s).getMoyenne() != -1) {
-					map.put("note", "" + etud.getListeDiplomes().get(pos).getListeAnnees().get(s).getMoyenne());
-				} else {
-					map.put("note", "-1");
-				}
-
+				map.put("titre", etud.getListeDiplomes().get(positionDip).getListeAnnees().get(s).getNom());
+				map.put("description", etud.getListeDiplomes().get(positionDip).getListeAnnees().get(s).getEtablissement().getNom());
+				map.put("decoupage", etud.getListeDiplomes().get(positionDip).getListeAnnees().get(s).getDecoupage().name());
+				map.put("note", "" + etud.getListeDiplomes().get(positionDip).getListeAnnees().get(s).getMoyenne());
+				map.put("positionAnn", "" + s);
+				
 				listItem.add(map);		
 			}
 
-			final SimpleAdapter mSchedule = new SimpleAdapter (getBaseContext(), listItem, R.layout.etudiant_liste_annees_list, new String[] {"titre", "description", "note"}, new int[] {R.id.titre, R.id.description, R.id.note});
-
-			liste.setAdapter(mSchedule); 
+			liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.etudiant_liste_annees_list, new String[] {"titre", "description", "note"}, new int[] {R.id.titre, R.id.description, R.id.note})); 
 
 			liste.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 				public void onItemClick(AdapterView<?> arg0, View arg1, final int position, long arg3) {
-					Intent newIntent = null;
-
+					Class<?> c = null;
+					
 					if (listItem.get(position).get("decoupage").equals(DecoupageType.NULL.name())) {
-						newIntent = new Intent(ListeAnneesE.this, ListeUEE.class);
-						newIntent.putExtra("decoupage", "NULL");
-						newIntent.putExtra("titre", listItem.get(position).get("titre"));
+						c = ListeUEE.class;
 					} else if (listItem.get(position).get("decoupage").equals(DecoupageType.SEMESTRE.name())) {
-						newIntent = new Intent(ListeAnneesE.this, ListeSemestreE.class);
+						c = ListeSemestreE.class;
 					} else if (listItem.get(position).get("decoupage").equals(DecoupageType.TRIMESTRE.name())) {
-						newIntent = new Intent(ListeAnneesE.this, ListeTrimestreE.class);
+						c = ListeTrimestreE.class;
 					} 
 
-					newIntent.putExtra("idDiplome", idDiplome);
-					newIntent.putExtra("idAnnee", etud.getListeDiplomes().get(posFin).getListeAnnees().get(position).getId());
-
+					Intent newIntent = new Intent(ListeAnneesE.this, c);
+					newIntent.putExtra("positionDip", positionDip);
+					newIntent.putExtra("positionAnn", Integer.parseInt(listItem.get(position).get("positionAnn")));
+					newIntent.putExtra("decoupage", "NULL");
+					
 					startActivity(newIntent);
 				}
 			});
@@ -117,7 +102,7 @@ public class ListeAnneesE extends Activity {
 						View tempView = (View) liste.getChildAt(i);
 						TextView badgeNote = (TextView) tempView.findViewById(R.id.note);
 						
-						if (badgeNote.getText().toString().equals("-1")) {							
+						if (badgeNote.getText().toString().equals("-1.0")) {							
 							badgeNote.setVisibility(View.GONE);
 						}
 					}
@@ -129,7 +114,7 @@ public class ListeAnneesE extends Activity {
 	private void initTxtTitre() {
 		// On donne comme titre à la vue le nom du diplôme choisi.
 		TextView tvTitre = (TextView) findViewById(R.id.etudiant_liste_annees_titre);
-		tvTitre.setText(nomDiplome);
+		tvTitre.setText(d.getNom());
 	}
 
 	/**
@@ -139,7 +124,7 @@ public class ListeAnneesE extends Activity {
 	 */
 	public void modifierListe(View view) {
 		Intent act = new Intent(ListeAnneesE.this, AjouterAnneeE.class);
-		act.putExtra("idDiplome", idDiplome);
+		act.putExtra("idDiplome", d.getId());
 
 		startActivity(act);
 	}

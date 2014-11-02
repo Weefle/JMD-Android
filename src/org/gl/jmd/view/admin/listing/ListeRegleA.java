@@ -8,6 +8,7 @@ import org.apache.http.client.*;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.gl.jmd.*;
+import org.gl.jmd.model.Annee;
 import org.gl.jmd.model.Regle;
 import org.gl.jmd.model.enumeration.OperateurType;
 import org.gl.jmd.utils.*;
@@ -30,9 +31,11 @@ public class ListeRegleA extends Activity {
 
 	private Activity activity;
 
-	private String idAnnee = "";
+	private Annee a = null;
 
 	private Toast toast;
+	
+	private ArrayList<Regle> listeRegles = new ArrayList<Regle>();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +44,7 @@ public class ListeRegleA extends Activity {
 		setContentView(R.layout.administrateur_liste_regle);
 		overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
 
-		idAnnee = getIntent().getExtras().getString("idAnnee");
+		a = (Annee) getIntent().getExtras().getSerializable("annee");
 
 		activity = this;
 		toast = Toast.makeText(getBaseContext(), "", Toast.LENGTH_SHORT);
@@ -50,12 +53,15 @@ public class ListeRegleA extends Activity {
 	}
 
 	private void actualiserListe() {
+		listeRegles.clear();
+		
 		ProgressDialog progress = new ProgressDialog(this);
 		progress.setMessage("Chargement...");
-		new ListerRegles(progress, Constantes.URL_SERVER + "regle/getAllByAnnee?idAnnee=" + idAnnee).execute();	
+		new ListerRegles(progress, Constantes.URL_SERVER + "regle/getAllByAnnee" +
+										"?idAnnee=" + a.getId()).execute();	
 	}
 
-	private void initListe(final ArrayList<Regle> listeRegles) {
+	private void initListe() {
 		final ListView liste = (ListView) findViewById(android.R.id.list);
 
 		if (listeRegles.size() > 0) {
@@ -121,15 +127,12 @@ public class ListeRegleA extends Activity {
 
 				map.put("idUE", "" + listeRegles.get(s).getIdUE());
 				map.put("idMatiere", "" + listeRegles.get(s).getIdMatiere());
-
 				map.put("value", "" + listeRegles.get(s).getValeur());
 
 				listItem.add(map);		
 			}
 
-			final SimpleAdapter mSchedule = new SimpleAdapter (getBaseContext(), listItem, R.layout.administrateur_liste_regle_list, new String[] {"titre", "description"}, new int[] {R.id.titre, R.id.description});
-
-			liste.setAdapter(mSchedule); 
+			liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.administrateur_liste_regle_list, new String[] {"titre", "description"}, new int[] {R.id.titre, R.id.description})); 
 
 			liste.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 				public boolean onItemLongClick(AdapterView<?> arg0, View arg1, final int arg2, final long arg3) {
@@ -143,7 +146,7 @@ public class ListeRegleA extends Activity {
 								ProgressDialog progress = new ProgressDialog(activity);
 								progress.setMessage("Chargement...");
 								new DeleteRegle(progress, Constantes.URL_SERVER + "regle" +
-										"?id=" + listItem.get(arg2).get("id") +
+										"?id=" + listeRegles.get(arg2).getId() +
 										"&token=" + FileUtils.lireFichier("/sdcard/cacheJMD/token.jmd") + 
 										"&pseudo=" + FileUtils.lireFichier("/sdcard/cacheJMD/pseudo.jmd") +
 										"&timestamp=" + new java.util.Date().getTime()).execute();
@@ -156,20 +159,15 @@ public class ListeRegleA extends Activity {
 
 					return true;
 				}
-
 			}); 
 		} else {
-			final ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
-			HashMap<String, String> map;
-
-			map = new HashMap<String, String>();
+			HashMap<String, String> map = new HashMap<String, String>();
 			map.put("titre", "Aucune règle.");
 
+			ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
 			listItem.add(map);
 
-			SimpleAdapter mSchedule = new SimpleAdapter (getBaseContext(), listItem, R.layout.admin_simple_list, new String[] {"titre"}, new int[] {R.id.titre});
-
-			liste.setAdapter(mSchedule); 
+			liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.admin_simple_list, new String[] {"titre"}, new int[] {R.id.titre})); 
 		}
 	}
 
@@ -196,7 +194,6 @@ public class ListeRegleA extends Activity {
 			ServiceHandler sh = new ServiceHandler();
             String jsonStr = sh.makeServiceCall(pathUrl, ServiceHandler.GET);
             
-            final ArrayList<Regle> listeRegles = new ArrayList<Regle>();
             Regle r = null;
             
             if (jsonStr != null) {            	
@@ -220,13 +217,29 @@ public class ListeRegleA extends Activity {
                     
                     ListeRegleA.this.runOnUiThread(new Runnable() {
     					public void run() {    						
-    						initListe(listeRegles);
+    						initListe();
     					}
     				});
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-            } 
+            } else {
+            	ListeRegleA.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(ListeRegleA.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								ListeRegleA.this.finish();
+							}
+						});
+
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+            }
 
 			return null;
 		}

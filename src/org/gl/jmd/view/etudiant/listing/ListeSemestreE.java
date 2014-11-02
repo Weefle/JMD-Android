@@ -18,11 +18,9 @@ import android.widget.*;
  */
 public class ListeSemestreE extends Activity {
 	
-	private Intent lastIntent;
+	private int positionDip = 0;
 	
-	private String idAnnee = "";
-	
-	private String idDiplome = "";
+	private int positionAnn = 0;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -31,18 +29,15 @@ public class ListeSemestreE extends Activity {
 		setContentView(R.layout.etudiant_liste_semestre);
 		overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
 		
-		lastIntent = getIntent();
-		
-		idAnnee = lastIntent.getExtras().getString("idAnnee");
-		idDiplome = lastIntent.getExtras().getString("idDiplome");
+		positionDip = getIntent().getExtras().getInt("positionDip");
+		positionAnn = getIntent().getExtras().getInt("positionAnn");
 		
 		initListe();
 	}
 	
-	public void initListe() {
-		final ListView liste = (ListView) findViewById(android.R.id.list);
-
+	private void initListe() {
 		final ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
+		
 		HashMap<String, String> map;
 
 		map = new HashMap<String, String>();
@@ -56,19 +51,17 @@ public class ListeSemestreE extends Activity {
 		map.put("decoupage", "SEM2");
 		
 		listItem.add(map);		
+		
+		ListView liste = (ListView) findViewById(android.R.id.list);
 
-		final SimpleAdapter mSchedule = new SimpleAdapter (getBaseContext(), listItem, R.layout.etudiant_simple_list, new String[] {"titre"}, new int[] {R.id.titre});
-
-		liste.setAdapter(mSchedule); 
+		liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.etudiant_simple_list, new String[] {"titre"}, new int[] {R.id.titre})); 
 
 		liste.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			public void onItemClick(AdapterView<?> arg0, View arg1, final int position, long arg3) {
 				Intent newIntent = new Intent(ListeSemestreE.this, ListeUEE.class);
-				
-				newIntent.putExtra("idDiplome", "" + idDiplome);
-				newIntent.putExtra("idAnnee", "" + idAnnee);
+				newIntent.putExtra("positionDip", positionDip);
+				newIntent.putExtra("positionDip", positionAnn);
 				newIntent.putExtra("decoupage", listItem.get(position).get("decoupage"));
-				newIntent.putExtra("titre", listItem.get(position).get("titre"));
 				
 				startActivity(newIntent);
 			}

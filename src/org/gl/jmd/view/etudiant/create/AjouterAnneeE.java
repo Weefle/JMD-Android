@@ -177,10 +177,7 @@ public class AjouterAnneeE extends Activity {
 
 						dialog.setContentView(listView);
 						dialog.show();
-					} else {						
-						Button button = (Button) findViewById(R.id.crea_annee_bout_creer);
-						button.setEnabled(false);
-					}
+					} 
 				}
 			});
 

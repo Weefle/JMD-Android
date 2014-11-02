@@ -8,7 +8,6 @@ import org.gl.jmd.model.*;
 import org.gl.jmd.model.enumeration.ParamType;
 import org.gl.jmd.view.admin.*;
 import org.gl.jmd.view.etudiant.AccueilE;
-import org.gl.jmd.view.menu.admin.ConnexionA;
 
 import android.app.*;
 import android.content.*;
@@ -28,6 +27,10 @@ public class Accueil extends Activity {
 		setContentView(R.layout.accueil);
 		overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
 		
+		initView();
+	}
+	
+	private void initView() {
 		/*
 		 *  Va dispatcher l'utilisateur sur le bon accueil : si un fichier login est trouvé, c'est un admin. 
 		 *  Sinon, un étudiant.

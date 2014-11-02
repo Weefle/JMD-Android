@@ -18,9 +18,22 @@
             android:layout_alignParentLeft="true"
             android:layout_centerInParent="true"
             android:layout_marginLeft="30dp"
-            android:text="@string/administrateur_creation_ue_titre_texte"
+            android:text="Nouvelle UE"
             android:textColor="#FFFFFF"
             android:textSize="20sp" />
+        
+        <TextView
+            android:id="@+id/admin_crea_ue_btn_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
+            android:layout_marginRight="30dp"
+            android:clickable="true"
+            android:onClick="creerUE"
+            android:text="OK"
+            android:textColor="@drawable/button_color_selector" 
+            android:textSize="18dp" />
     </RelativeLayout>
 
     <EditText
@@ -32,17 +45,5 @@
         android:hint="@string/admin_crea_ue_hint_nom"
         android:inputType="text"
         android:singleLine="true" />
-
-    <Button
-        android:id="@+id/crea_ue_bout_creer"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/button_style"
-        android:onClick="creerUE"
-        android:padding="10dp"
-        android:text="@string/bout_creer_txt"
-        android:textColor="@drawable/button_color_selector" />
 
 </LinearLayout>

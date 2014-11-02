@@ -101,18 +101,16 @@ public class CreationEtablissement extends Activity {
 			
 			Etablissement e = new Etablissement();
 			e.setNom(NOM.getText().toString());
-			e.setVille(VILLE.getText().toString());
+			e.setVille(VILLE.getText().toString());	
 			
-			String URL = Constantes.URL_SERVER + "etablissement" +
+			ProgressDialog progress = new ProgressDialog(activity);
+			progress.setMessage("Chargement...");
+			new CreerEtablissement(progress, Constantes.URL_SERVER + "etablissement" +
 					"?nom=" + URLEncoder.encode(e.getNom()) +
 					"&ville=" + URLEncoder.encode(e.getVille()) +
 					"&token=" + FileUtils.lireFichier("/sdcard/cacheJMD/token.jmd") + 
 					"&pseudo=" + FileUtils.lireFichier("/sdcard/cacheJMD/pseudo.jmd") +
-					"&timestamp=" + new java.util.Date().getTime();			
-			
-			ProgressDialog progress = new ProgressDialog(activity);
-			progress.setMessage("Chargement...");
-			new CreerEtablissement(progress, URL).execute();	
+					"&timestamp=" + new java.util.Date().getTime()).execute();	
 		} else {
 			boolean isNomOK = true;
 			boolean isVilleOK = true;

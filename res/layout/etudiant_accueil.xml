@@ -10,14 +10,25 @@
         android:layout_height="60dp"
         android:background="#FF5E3A"
         android:orientation="horizontal" >
+        
+        <ImageView
+            android:id="@+id/etudiant_accueil_img_previous"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="10dp"
+            android:contentDescription="@string/desc_img"
+            android:onClick="navigateToAccueil"
+            android:src="@drawable/previous" />
 
         <TextView
             android:id="@+id/accueil_bienvenue"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
             android:textSize="20sp"
             android:textColor="#FFFFFF"
+            android:gravity="center_horizontal"
             android:layout_centerInParent="true"
             android:layout_alignParentLeft="true"
             android:text="@string/etudiant_accueil_bienvenue" />
@@ -28,21 +39,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="70dp"
+            android:layout_marginRight="20dp"
             android:layout_centerInParent="true"
             android:contentDescription="@string/desc_img"
             android:src="@drawable/plus" />
-        
-        <ImageView
-            android:id="@+id/etudiant_accueil_img_menu"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerInParent="true"
-            android:layout_marginRight="20dp"
-            android:contentDescription="@string/desc_img"
-            android:onClick="openMenu"
-            android:src="@drawable/menu" />
+
     </RelativeLayout>
     
     <ListView

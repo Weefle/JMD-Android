@@ -43,21 +43,10 @@
         android:layout_marginTop="20dp" >
     </ListView>
 
-    <Button
-        android:id="@+id/etudiant_saisie_note_btn_add"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="20dp"
-        android:background="@android:color/transparent"
-        android:drawableLeft="@drawable/ajouter"
-        android:padding="10dp"
-        android:text="Ajouter une note" />
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="150dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="30dp"
         android:fillViewport="true"
         android:gravity="center" >
 

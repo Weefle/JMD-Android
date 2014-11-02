@@ -33,9 +33,7 @@ public class CreationRegle extends Activity {
 
 	private Toast toast;
 	
-	private String idAnnee;
-	
-	private String decoupage = "";
+	private Annee a = null;
 
 	private RegleType selectedTypeRegle = RegleType.NOTE_MINIMALE;
 
@@ -65,8 +63,7 @@ public class CreationRegle extends Activity {
 		activity = this;
 		toast = Toast.makeText(activity, "", Toast.LENGTH_SHORT);
 		
-		idAnnee = getIntent().getExtras().getString("idAnnee");
-		decoupage = getIntent().getExtras().getString("decoupage");
+		a = (Annee) getIntent().getExtras().getSerializable("annee");
 		
 		VALUE = (EditText) findViewById(R.id.admin_creation_regle_value);
 
@@ -108,7 +105,7 @@ public class CreationRegle extends Activity {
 					"?regle=" + r.getRegle() +
 					"&operateur=" + r.getOperateur() +
 					"&valeur=" + r.getValeur() +
-					"&idAnnee=" + idAnnee +
+					"&idAnnee=" + a.getId() +
 					"&idUE=" + selectedUE_ID +
 					"&idMatiere=" + selectedMatiere_ID +
 					"&token=" + FileUtils.lireFichier("/sdcard/cacheJMD/token.jmd") + 
@@ -175,14 +172,14 @@ public class CreationRegle extends Activity {
 		ProgressDialog progress = new ProgressDialog(activity);
 		progress.setMessage("Chargement...");
 		new GetUE(progress, Constantes.URL_SERVER + "ue/getAllUEOfAnneeByYearType" +
-									"?idAnnee=" + idAnnee +
-									"&yearType=" + decoupage).execute(); 
+									"?idAnnee=" + a.getId() +
+									"&yearType=" + a.getDecoupage().name()).execute(); 
 		
 		// Liste des matières de l'année
 		ProgressDialog progress2 = new ProgressDialog(activity);
 		progress2.setMessage("Chargement...");
 		new GetMatieres(progress2, Constantes.URL_SERVER + "matiere/getAllMatiereOfYear" +
-				"?idAnnee=" + idAnnee).execute(); 
+				"?idAnnee=" + a.getId()).execute(); 
 	}
 	
 	private void finishAllActivities(){
@@ -263,7 +260,6 @@ public class CreationRegle extends Activity {
 									selectedMatiere_ID = listeMatiere_ID.get(i);
 								}
 							}
-							
 						}
 					}
 

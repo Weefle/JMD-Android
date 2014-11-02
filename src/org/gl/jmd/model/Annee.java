@@ -30,6 +30,9 @@ public class Annee implements Serializable {
 	 */
 	private Etablissement etablissement;
 	
+	/**
+	 * Le diplome où l'année est rattachée.
+	 */
 	private Diplome d;
 	
 	/**
@@ -47,6 +50,9 @@ public class Annee implements Serializable {
 	 */
 	private List<UE> listeUE = new ArrayList<UE>();
 	
+	/**
+	 * La liste des règles de l'année.
+	 */
 	private ArrayList<Regle> listeRegles = new ArrayList<Regle>();
 	
 	/**
@@ -56,29 +62,38 @@ public class Annee implements Serializable {
 		
 	}
 	
+	/**
+	 * Méthode permettant de retourner l'avancement (en %) de l'année.
+	 * L'avancement correspond au pourcentage de matière ayant été "passées", donc ayant au moins une note.
+	 * 
+	 * @return L'avancement de l'année.
+	 */
 	public float getAvancement() {
 		float res = 0;
 		
 		float sommeCoeffEntrees = 0;
 		float sommeCoeff = 0;
 		
-		/* for (int i = 0; i < this.listeUE.size(); i++) {
+		for (int i = 0; i < this.listeUE.size(); i++) {
 			for (int j = 0; j < this.listeUE.get(i).getListeMatieres().size(); j++) {
-				for (int k = 0; k < this.listeUE.get(i).getListeMatieres().get(j).getListeNotes().size(); k++) {
-					if (this.listeUE.get(i).getListeMatieres().get(j).getListeNotes().get(k).getNoteType() == NoteType.SESSION_1) {
-						sommeCoeffEntrees += this.listeUE.get(i).getListeMatieres().get(j).getCoefficient();
-					}
+				if (this.listeUE.get(i).getListeMatieres().get(j).getNoteSession1().getNote() != -1.0 ) {
+					sommeCoeffEntrees += this.listeUE.get(i).getListeMatieres().get(j).getCoefficient();
 				}
 				
 				sommeCoeff += this.listeUE.get(i).getListeMatieres().get(j).getCoefficient();
 			}
-		} */
+		} 
 		
 		res = (sommeCoeffEntrees / sommeCoeff) * 100;
 		
 		return res;
 	}
 	
+	/**
+	 * Méthode retournant la mention de l'année.
+	 * 
+	 * @return La mention de l'année.
+	 */
 	public String getMention() {
 		if ((getMoyenne() >= 10.0) && (getMoyenne() < 12.0)) {
 			return "Passable";
@@ -106,17 +121,15 @@ public class Annee implements Serializable {
 			float sommeCoeffEntrees = 0;
 			boolean hasNote = false;
 			
-			/* for (int i = 0; i < this.listeUE.size(); i++) {
+			for (int i = 0; i < this.listeUE.size(); i++) {				
 				for (int j = 0; j < this.listeUE.get(i).getListeMatieres().size(); j++) {
-					for (int k = 0; k < this.listeUE.get(i).getListeMatieres().get(j).getListeNotes().size(); k++) {
-						if (this.listeUE.get(i).getListeMatieres().get(j).getListeNotes().get(k).getNote() != -1) {
-							sommeCoeffEntrees += this.listeUE.get(i).getListeMatieres().get(j).getCoefficient();
-							hasNote = true;
-							resNULL += this.listeUE.get(i).getListeMatieres().get(j).getCoefficient() * this.listeUE.get(i).getListeMatieres().get(j).getNoteFinale();
-						}
+					if (this.listeUE.get(i).getListeMatieres().get(j).getNoteFinale() != -1.0) {
+						sommeCoeffEntrees += this.listeUE.get(i).getListeMatieres().get(j).getCoefficient();
+						hasNote = true;
+						resNULL += this.listeUE.get(i).getListeMatieres().get(j).getCoefficient() * this.listeUE.get(i).getListeMatieres().get(j).getNoteFinale();
 					}
 				}
-			} */
+			} 
 			
 			if (hasNote) {
 				resNULL = resNULL / sommeCoeffEntrees;
@@ -279,21 +292,6 @@ public class Annee implements Serializable {
 		return res;
 	}
 	
-	public boolean isValid() {
-		boolean result = true;
-		double moyenne = getMoyenne();
-		
-		for (int i = 0; i < this.listeRegles.size(); i++) {
-			if (this.listeRegles.get(i).equals(RegleType.NOTE_MINIMALE)) {
-				if (moyenne < this.listeRegles.get(i).getValeur()) {
-					result = false;
-				}
-			}
-		}
-		
-		return result;
-	}
-	
 	/* Getters. */
 	
 	/**
@@ -332,10 +330,21 @@ public class Annee implements Serializable {
 		return this.decoupage;
 	}
 	
+	/**
+	 * Méthode retournant le diplôme où l'année est rattachée.
+	 * 
+	 * @return Le diplôme où l'année est rattachée.
+	 */
 	public Diplome getDiplome() {
 		return this.d;
 	}
 	
+	/**
+	 * Méthode retournant le booléen qui identifie si l'année est la dernière du diplôme, ou non.
+	 * 
+	 * @return <b>true</b> si l'année est la dernière du diplôme.
+	 * <b>false</b> sinon.
+	 */
 	public boolean isLast() {
 		return this.isLast;
 	}
@@ -349,6 +358,11 @@ public class Annee implements Serializable {
 		return this.listeUE;
 	}
 	
+	/**
+	 * Méthode retournant la liste des règles de l'année.
+	 * 
+	 * @return La liste des règles de l'année.
+	 */
 	public ArrayList<Regle> getListeRegles() {
 		return this.listeRegles;
 	}
@@ -391,10 +405,20 @@ public class Annee implements Serializable {
 		this.decoupage = decoupage;
 	}
 	
+	/**
+	 * Méthode permettant de modifier le diplôme où l'année est rattachée.
+	 * 
+	 * @param d Le nouveau diplôme où l'année sera rattachée.
+	 */
 	public void setDiplome(Diplome d) {
 		this.d = d;
 	}
 	
+	/**
+	 * Méthode permettant de modifier le booléen qui identifie si l'année est la dernière du diplôme, ou non.
+	 * 
+	 * @param isLast Le nouveau booléen pour savoir si l'année est la dernière du diplôme, ou non.
+	 */
 	public void setIsLast(boolean isLast) {
 		this.isLast = isLast;
 	}
@@ -408,6 +432,11 @@ public class Annee implements Serializable {
 		this.listeUE = listeUE;
 	}
 	
+	/**
+	 * Méthode permettant de modifier la liste des règles de l'année.
+	 * 
+	 * @param listeRegles La nouvelle liste des règles de l'année.
+	 */
 	public void setListeRegles(ArrayList<Regle> listeRegles) {
 		this.listeRegles = listeRegles;
 	}

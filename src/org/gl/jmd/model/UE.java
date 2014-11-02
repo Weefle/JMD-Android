@@ -30,6 +30,9 @@ public class UE implements Serializable {
 	 */
 	private DecoupageYearType decoupageYearType;
 	
+	/**
+	 * L'identifiant de l'année liée à l'UE.
+	 */
 	private int idAnnee;
 	
 	/**
@@ -60,18 +63,12 @@ public class UE implements Serializable {
 		int coeffGlobalUE = 0;
 		double produitMatiereCoeff = 0.0;
 		
-		for (int i = 0; i < this.listeMatieres.size(); i++) {
-			/* if (this.listeMatieres.get(i).getNoteFinale() == -2) {
-				res = -2;
-				
-				return res;
-			} */
-			
+		for (int i = 0; i < this.listeMatieres.size(); i++) {			
 			coeffGlobalUE += this.listeMatieres.get(i).getCoefficient();
-			// produitMatiereCoeff += this.listeMatieres.get(i).getNoteFinale() * this.listeMatieres.get(i).getCoefficient();
+			produitMatiereCoeff += this.listeMatieres.get(i).getNoteFinale() * this.listeMatieres.get(i).getCoefficient();
 		}
 		
-		// res = produitMatiereCoeff / coeffGlobalUE;
+		res = produitMatiereCoeff / coeffGlobalUE;
 		res = NumberUtils.round(res, 2);
 		
 		return res;
@@ -107,16 +104,21 @@ public class UE implements Serializable {
 	}
 	
 	/**
+	 * Méthode retournant l'identifiant de l'année liée à l'UE.
+	 * 
+	 * @return L'identifiant de l'année liée à l'UE.
+	 */
+	public int getIdAnnee() {
+		return this.idAnnee;
+	}
+	
+	/**
 	 * Méthode retournant la liste des matières de l'UE.
 	 * 
 	 * @return La liste des matières de l'UE.
 	 */
 	public ArrayList<Matiere> getListeMatieres() {
 		return this.listeMatieres;
-	}
-	
-	public int getIdAnnee() {
-		return this.idAnnee;
 	}
 	
 	/**
@@ -157,6 +159,11 @@ public class UE implements Serializable {
 		this.decoupageYearType = decoupageYearType;
 	}
 	
+	/**
+	 * Méthode permettant de modifier l'identifiant de l'année liée à l'UE.
+	 * 
+	 * @param idAnnee Le nouvel identifiant de l'année liée à l'UE.
+	 */
 	public void setIdAnnee(int idAnnee) {
 		this.idAnnee = idAnnee;
 	}

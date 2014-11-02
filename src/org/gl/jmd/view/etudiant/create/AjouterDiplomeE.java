@@ -76,7 +76,7 @@ public class AjouterDiplomeE extends Activity {
 
 			liste.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 				public void onItemClick(AdapterView<?> arg0, View arg1, final int position, long arg3) {
-					String nom = listItem.get(position).get("description");
+					String nom = listItem.get(position).get("titre");
 					int id = Integer.parseInt(listItem.get(position).get("id"));
 					
 					Diplome dip = new Diplome();
@@ -109,18 +109,13 @@ public class AjouterDiplomeE extends Activity {
 				}
 			});
 		} else {
-			final ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
-			HashMap<String, String> map;
-
-			map = new HashMap<String, String>();
-			
+			HashMap<String, String> map = new HashMap<String, String>();
 			map.put("titre", "Aucun résultat.");
-
+			
+			ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
 			listItem.add(map);		
 
-			final SimpleAdapter mSchedule = new SimpleAdapter (getBaseContext(), listItem, R.layout.etudiant_simple_list, new String[] {"titre"}, new int[] {R.id.titre});
-
-			liste.setAdapter(mSchedule); 
+			liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.etudiant_simple_list, new String[] {"titre"}, new int[] {R.id.titre})); 
 		}
 	}
 
