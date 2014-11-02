@@ -119,6 +119,9 @@ public class ListeAnneeA extends Activity {
 												adapter.notifyDataSetChanged();
 											}
 										});
+										
+										confirmSuppr.setNegativeButton("Non", null);
+										confirmSuppr.show();
 									}
 									
 									adapter.notifyDataSetChanged();
