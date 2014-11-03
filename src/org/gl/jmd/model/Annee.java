@@ -46,6 +46,11 @@ public class Annee implements Serializable {
 	private boolean isLast;
 	
 	/**
+	 * Booléen permettant de savoir si l'année est suivie par l'admin ou non.
+	 */
+	private boolean isFollowed;
+	
+	/**
 	 * La liste des UE de l'année.
 	 */
 	private List<UE> listeUE = new ArrayList<UE>();
@@ -349,6 +354,10 @@ public class Annee implements Serializable {
 		return this.isLast;
 	}
 	
+	public boolean isFollowed() {
+		return this.isFollowed;
+	}
+	
 	/**
 	 * Méthode retournant la liste des UE de l'année.
 	 * 
@@ -421,6 +430,10 @@ public class Annee implements Serializable {
 	 */
 	public void setIsLast(boolean isLast) {
 		this.isLast = isLast;
+	}
+	
+	public void setIsFollowed(boolean isFollowed) {
+		this.isFollowed = isFollowed;
 	}
 	
 	/**

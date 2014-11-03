@@ -3,10 +3,12 @@ package org.gl.jmd.view.admin.listing;
 import java.io.*;
 import java.util.*;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.*;
 import org.apache.http.client.methods.*;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.gl.jmd.*;
 import org.gl.jmd.model.*;
 import org.gl.jmd.model.enumeration.DecoupageType;
@@ -65,7 +67,11 @@ public class ListeAnneeA extends Activity {
 
 		ProgressDialog progress = new ProgressDialog(this);
 		progress.setMessage("Chargement...");
-		new ListerAnnees(progress, Constantes.URL_SERVER + "annee/getAnneesByDiplome?idDiplome=" + d.getId()).execute();	
+		new ListerAnnees(progress, Constantes.URL_SERVER + "annee/getAnneesFollowedByDiplome" +
+				"?idDiplome=" + d.getId() +
+				"&token=" + FileUtils.lireFichier("/sdcard/cacheJMD/token.jmd") + 
+				"&pseudo=" + FileUtils.lireFichier("/sdcard/cacheJMD/pseudo.jmd") +
+				"&timestamp=" + new java.util.Date().getTime()).execute();	
 	}
 
 	private void initListe() {
@@ -84,10 +90,16 @@ public class ListeAnneeA extends Activity {
 				map.put("description", listeAnnees.get(s).getEtablissement().getNom() + " - " + listeAnnees.get(s).getEtablissement().getVille());
 				map.put("isLastYear", "" + listeAnnees.get(s).isLast());
 
+				if (listeAnnees.get(s).isFollowed()) {
+					map.put("img", String.valueOf(R.drawable.star));
+				} else {
+					map.put("img", null);
+				}
+				
 				listItem.add(map);		
 			}
 
-			final SimpleAdapter adapter = new SimpleAdapter (getBaseContext(), listItem, R.layout.administrateur_liste_annee_list, new String[] {"titre", "description"}, new int[] {R.id.titre, R.id.description});
+			final SimpleAdapter adapter = new SimpleAdapter (getBaseContext(), listItem, R.layout.administrateur_liste_annee_list, new String[] {"titre", "description", "img"}, new int[] {R.id.titre, R.id.description, R.id.img});
 
 			liste.setAdapter(adapter); 
 
@@ -163,7 +175,7 @@ public class ListeAnneeA extends Activity {
 							ProgressDialog progress = new ProgressDialog(activity);
 							progress.setMessage("Chargement...");
 							new FollowAnnee(progress, Constantes.URL_SERVER + "admin/follow" +
-									"?idAnnee=" + d.getId() +
+									"?idAnnee=" + listeAnnees.get(arg2).getId() +
 									"&token=" + FileUtils.lireFichier("/sdcard/cacheJMD/token.jmd") + 
 									"&pseudo=" + FileUtils.lireFichier("/sdcard/cacheJMD/pseudo.jmd") +
 									"&timestamp=" + new java.util.Date().getTime()).execute();	
@@ -214,15 +226,40 @@ public class ListeAnneeA extends Activity {
 		}
 
 		protected Void doInBackground(Void... arg0) {			
-			ServiceHandler sh = new ServiceHandler();
-			String jsonStr = sh.makeServiceCall(pathUrl, ServiceHandler.GET);
-
-			Annee a = null;
-
-			if (jsonStr != null) {            	
+			DefaultHttpClient httpClient = new DefaultHttpClient();
+			HttpEntity httpEntity = null;
+			HttpResponse httpResponse = null;
+			
+			HttpGet httpGet = null;
+			String response = null;
+			
+			try {
+				httpGet = new HttpGet(pathUrl);
+				httpResponse = httpClient.execute(httpGet);
+				
+				httpEntity = httpResponse.getEntity();
+				response = EntityUtils.toString(httpEntity);
+				
+				if (httpEntity != null) {
+				    try {
+				        httpEntity.consumeContent();
+				    } catch (IOException e) {
+				        e.printStackTrace();
+				    }
+				}
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			} catch (ClientProtocolException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			if (httpResponse.getStatusLine().getStatusCode() == 200) {            	
 				try {
-					JSONArray annees = new JSONArray(jsonStr);
-
+					JSONArray annees = new JSONArray(response);
+					Annee a = null;
+					
 					for (int i = 0; i < annees.length(); i++) {
 						JSONObject c = annees.getJSONObject(i);
 
@@ -231,7 +268,8 @@ public class ListeAnneeA extends Activity {
 						a.setNom(c.getString("nom"));
 						a.setIsLast(c.getBoolean("isLastYear"));
 						a.setDecoupage(DecoupageType.valueOf(c.getString("decoupage")));
-
+						a.setIsFollowed(c.getBoolean("isFollowed"));
+						
 						JSONObject etaFromAnnee = c.getJSONObject("etablissement");
 						Etablissement e = new Etablissement();
 						e.setId(etaFromAnnee.getInt("idEtablissement"));
@@ -251,22 +289,18 @@ public class ListeAnneeA extends Activity {
 				} catch (JSONException ex) {
 					ex.printStackTrace();
 				}
-			} else {
-				ListeAnneeA.this.runOnUiThread(new Runnable() {
-					public void run() {
-						AlertDialog.Builder builder = new AlertDialog.Builder(ListeAnneeA.this);
-						builder.setMessage("Erreur - Vérifiez votre connexion");
-						builder.setCancelable(false);
-						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int which) {
-								ListeAnneeA.this.finish();
-							}
-						});
+			} else if (httpResponse.getStatusLine().getStatusCode() == 401) { 
+				File filePseudo = new File("/sdcard/cacheJMD/pseudo.jmd");
+	        	File fileToken = new File("/sdcard/cacheJMD/token.jmd");
 
-						AlertDialog error = builder.create();
-						error.show();
-					}
-				});
+	        	filePseudo.delete();
+	        	fileToken.delete();
+
+	        	activity.finishAffinity();
+	        	startActivity(new Intent(ListeAnneeA.this, Accueil.class));	
+
+	        	toast.setText("Session expirée.");	
+	        	toast.show();
 			}
 
 			return null;
@@ -396,6 +430,12 @@ public class ListeAnneeA extends Activity {
 				ListeAnneeA.this.runOnUiThread(new Runnable() {
 					public void run() {    			
 						if (response.getStatusLine().getStatusCode() == 200) {
+							ListeAnneeA.this.runOnUiThread(new Runnable() {
+								public void run() {    						
+									actualiserListe();
+								}
+							});
+							
 							toast.setText("Vous suivez désormais cette année.");
 							toast.show();
 						} else if (response.getStatusLine().getStatusCode() == 401) {

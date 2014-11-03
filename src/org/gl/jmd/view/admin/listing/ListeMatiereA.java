@@ -61,6 +61,8 @@ public class ListeMatiereA extends Activity {
 	}
 	
 	private void actualiserListe() {	
+		listeMatieres.clear();
+		
 		ProgressDialog progress = new ProgressDialog(this);
 		progress.setMessage("Chargement...");
 		new ListerMatieres(progress, Constantes.URL_SERVER + "matiere/getAllMatieretOfUE" +

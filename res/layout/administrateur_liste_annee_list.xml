@@ -1,27 +1,32 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:orientation="vertical"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
 
     <TextView
-    	android:id="@+id/titre"
-    	android:layout_height="wrap_content"
-    	android:layout_width="fill_parent"
-    	android:layout_marginLeft="30dp"
-    	android:layout_marginTop="10dp"
-    	android:textColor="#000000"
-    	android:textAppearance="?android:attr/textAppearanceMedium">
+        android:id="@+id/titre"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#000000" >
     </TextView>
 
     <TextView
-    	android:id="@+id/description"
-    	android:layout_marginLeft="30dp"
-    	android:layout_marginBottom="10dp"
-    	android:layout_width="fill_parent"
-    	android:layout_height="wrap_content"
+        android:id="@+id/description"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="30dp"
         android:textColor="#92928E" >
     </TextView>
 
-</LinearLayout>
+    <ImageView
+        android:id="@+id/img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="20dp"
+        android:layout_centerInParent="true" />
+
+</RelativeLayout>
