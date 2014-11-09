@@ -4,11 +4,18 @@ import java.util.*;
 
 import org.gl.jmd.R;
 import org.gl.jmd.dao.EtudiantDAO;
+import org.gl.jmd.model.Annee;
 import org.gl.jmd.model.Diplome;
+import org.gl.jmd.model.enumeration.DecoupageType;
 import org.gl.jmd.model.user.Etudiant;
 import org.gl.jmd.view.*;
-import org.gl.jmd.view.etudiant.create.AjouterDiplomeE;
-import org.gl.jmd.view.etudiant.listing.ListeAnneesE;
+import org.gl.jmd.view.admin.listing.ListeDiplomeA;
+import org.gl.jmd.view.etudiant.create.AjouterAnneeE;
+import org.gl.jmd.view.etudiant.listing.*;
+import org.gl.jmd.view.list.Header;
+import org.gl.jmd.view.list.Item;
+import org.gl.jmd.view.list.ListItem;
+import org.gl.jmd.view.list.TwoTextArrayAdapter;
 
 import android.os.Bundle;
 import android.view.*;
@@ -41,13 +48,13 @@ public class AccueilE extends Activity {
 		
 		activity = this;
 		toast = Toast.makeText(activity, "", Toast.LENGTH_SHORT);
-
+		
 		initListe();
 	}
 
 	private void initListe() {			
 		if (etud.getListeDiplomes().isEmpty()) {
-			ListView liste = (ListView) findViewById(android.R.id.list);
+			ListView liste = (ListView) findViewById(R.id.listAccueilEtud);
 			ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
 			
 			HashMap<String, String> map = new HashMap<String, String>();
@@ -58,25 +65,44 @@ public class AccueilE extends Activity {
 			liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.etudiant_simple_list, new String[] {"titre"}, new int[] {R.id.titre}));
 			liste.setOnItemClickListener(null);
 		} else {
-			final ListView liste = (ListView) findViewById(android.R.id.list);
-			final ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
+			List<Item> items = new ArrayList<Item>();
 			
-			HashMap<String, String> map;	
-
 			for(int s = 0; s < etud.getListeDiplomes().size(); s++) {
-				map = new HashMap<String, String>();
-				map.put("titre", etud.getListeDiplomes().get(s).getNom());
-				map.put("positionDip", "" + s);
+				items.add(new Header(etud.getListeDiplomes().get(s).getNom()));
 				
-				listItem.add(map);		
+				if (etud.getListeDiplomes().get(s).getListeAnnees().size() > 0) {
+					for(int p = 0; p < etud.getListeDiplomes().get(s).getListeAnnees().size(); p++) {
+						items.add(new ListItem(etud.getListeDiplomes().get(s).getListeAnnees().get(p), s, p));	
+					}
+				} else {
+					items.add(new ListItem());	
+				}
 			}
 
-			liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.etudiant_simple_list, new String[] {"titre"}, new int[] {R.id.titre})); 
+	        final TwoTextArrayAdapter adapter = new TwoTextArrayAdapter(this, items);
+
+	        final ListView liste = (ListView) findViewById(R.id.listAccueilEtud);
+	        
+	        liste.setAdapter(adapter);
 
 			liste.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 				public void onItemClick(AdapterView<?> arg0, View arg1, final int position, long arg3) {
-					Intent act = new Intent(AccueilE.this, ListeAnneesE.class);
-					act.putExtra("positionDip", listItem.get(position).get("positionDip"));
+					String decoupage = ((ListItem) adapter.getItem(position)).getAnnee().getDecoupage().name();
+					
+					Class<?> c = null;
+					
+					if (decoupage.equals(DecoupageType.NULL.name())) {
+						c = ListeUEE.class;
+					} else if (decoupage.equals(DecoupageType.SEMESTRE.name())) {
+						c = ListeSemestreE.class;
+					} else if (decoupage.equals(DecoupageType.TRIMESTRE.name())) {
+						c = ListeTrimestreE.class;
+					} 
+
+					Intent act = new Intent(AccueilE.this, c);
+					act.putExtra("positionDip", ((ListItem) adapter.getItem(position)).getPosDip());
+					act.putExtra("positionAnn", ((ListItem) adapter.getItem(position)).getPosAnnee());
+					act.putExtra("decoupage", ((ListItem) adapter.getItem(position)).getAnnee().getDecoupage().name());
 					
 					startActivity(act);
 				}
@@ -84,29 +110,36 @@ public class AccueilE extends Activity {
 
 			liste.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 				public boolean onItemLongClick(AdapterView<?> arg0, View arg1, final int arg2, final long arg3) {
-					if (listItem.get(arg2).get("img") == null) {
-						AlertDialog.Builder confirmQuitter = new AlertDialog.Builder(AccueilE.this);
-						confirmQuitter.setTitle("Suppression");
-						confirmQuitter.setMessage("Voulez-vous vraiment supprimer ce diplôme ?");
-						confirmQuitter.setCancelable(false);
-						confirmQuitter.setPositiveButton("Oui", new AlertDialog.OnClickListener() {
-							public void onClick(DialogInterface dialog, int id) {								
-								ArrayList<Diplome> listeDiplomes = etud.getListeDiplomes();
-								listeDiplomes.remove(arg2);
-								
-								etud.setListeDiplomes(listeDiplomes);
-								EtudiantDAO.save(etud);
-								
-								toast.setText("Le diplôme a bien été supprimé.");
-								toast.show();
-								
-								initListe();
-							}
-						});
-						
-						confirmQuitter.setNegativeButton("Non", null);
-						confirmQuitter.show();
-					}
+					AlertDialog.Builder confirmQuitter = new AlertDialog.Builder(AccueilE.this);
+					confirmQuitter.setTitle("Suppression");
+					confirmQuitter.setMessage("Voulez-vous vraiment supprimer cette année ?");
+					confirmQuitter.setCancelable(false);
+					confirmQuitter.setPositiveButton("Oui", new AlertDialog.OnClickListener() {
+						public void onClick(DialogInterface dialog, int id) {								
+							ArrayList<Diplome> listeDiplomes = etud.getListeDiplomes();
+							Diplome d = listeDiplomes.get(((ListItem) adapter.getItem(arg2)).getPosDip());
+							
+							ArrayList<Annee> listeAnnees = d.getListeAnnees();
+							listeAnnees.remove(((ListItem) adapter.getItem(arg2)).getPosAnnee());
+							
+							d.setListeAnnees(listeAnnees);
+							
+							listeDiplomes.remove(((ListItem) adapter.getItem(arg2)).getPosDip());
+							listeDiplomes.add(d);
+							
+							etud.setListeDiplomes(listeDiplomes);
+
+							EtudiantDAO.save(etud);
+
+							toast.setText("L'année a bien été supprimé.");
+							toast.show();
+
+							initListe(); 
+						}
+					});
+
+					confirmQuitter.setNegativeButton("Non", null);
+					confirmQuitter.show();
 
 					return true;
 				}
@@ -120,7 +153,7 @@ public class AccueilE extends Activity {
 	 * @param view La vue lors du click sur le bouton de modification.
 	 */
 	public void modifierListe(View view) {
-		startActivity(new Intent(AccueilE.this, AjouterDiplomeE.class));	
+		startActivity(new Intent(AccueilE.this, AjouterAnneeE.class));	
 	}
 	
 	public void navigateToAccueil(View view) {

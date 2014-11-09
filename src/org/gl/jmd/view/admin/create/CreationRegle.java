@@ -35,7 +35,7 @@ public class CreationRegle extends Activity {
 	
 	private Annee a = null;
 
-	private RegleType selectedTypeRegle = RegleType.NOTE_MINIMALE;
+	private int selectedTypeRegle = RegleType.NOTE_MINIMALE;
 
 	private OperateurType selectedOperateur = OperateurType.EGAL;
 
@@ -79,10 +79,10 @@ public class CreationRegle extends Activity {
 		if (VALUE.getText().toString().length() != 0) {
 			Regle r = new Regle();
 
-			if (selectedTypeRegle == RegleType.NB_OPT_MINI) {
-				r.setRegle(1);
+			if (selectedTypeRegle == 1) {
+				r.setRegle(RegleType.NOTE_MINIMALE);
 			} else if (selectedTypeRegle == RegleType.NOTE_MINIMALE) {
-				r.setRegle(2);
+				r.setRegle(RegleType.NB_OPT_MINI);
 			}
 
 			if (selectedOperateur == OperateurType.SUPERIEUR) {

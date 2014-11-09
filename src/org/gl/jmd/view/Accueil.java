@@ -2,7 +2,6 @@ package org.gl.jmd.view;
 
 import java.io.File;
 
-import org.gl.jmd.R;
 import org.gl.jmd.dao.ParametreDAO;
 import org.gl.jmd.model.*;
 import org.gl.jmd.model.enumeration.ParamType;
@@ -23,9 +22,6 @@ public class Accueil extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
-		setContentView(R.layout.accueil);
-		overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
 		
 		initView();
 	}

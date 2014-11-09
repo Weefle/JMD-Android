@@ -53,22 +53,16 @@
     <string name="administrateur_connexion_view_name">Connexion</string>
     <string name="admin_faq_view_name">FAQ</string>
     <string name="administrateur_inscription_view_name">Inscription</string>
-    <string name="administrateur_recup_mdp_view_name">Récupération d\'un mot de passe</string>
+    <string name="administrateur_recup_mdp_view_name">Mot de passe oublié</string>
     
 	<!-- Menu -->
 	
 	<string name="menu_connexion">Connexion</string>
 	<string name="menu_deconnexion">Déconnexion</string>
-	<string name="menu_faq">FAQ</string>
 	<string name="menu_nommer_admin">Nommer un admin</string>
-	<string name="menu_contact">Contact</string>
-	<string name="menu_a_propos">A propos</string>
 	<string name="menu_accueil">Accueil</string>
 	<string name="menu_profil">Profil</string>
-	
-	<string name="menu_contact_message">Message</string>
-	<string name="menu_contact_sujet">Sujet</string>
-	
+
 	<!-- Connexion / inscription -->
 	
 	<string name="connex_texte_mdp_oublie"><u>Mot de passe oublié ?</u></string>
@@ -141,7 +135,7 @@
     <string name="administrateur_creation_matiere_titre_texte">Création d\'une matière</string>
     <string name="administrateur_creation_regle_titre_texte">Création d\'une règle</string>
         
-    <string name="administrateur_mdp_oublie_titre_texte">Récupération du mot de passe</string>
+    <string name="administrateur_mdp_oublie_titre_texte">Password oublié</string>
     <string name="administrateur_ajout_admin_titre_texte">Ajouter un administrateur</string>
     <string name="administrateur_connexion_titre_texte">Connexion</string>
     <string name="administrateur_inscription_titre_texte">Inscription</string>

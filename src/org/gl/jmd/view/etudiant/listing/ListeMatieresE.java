@@ -145,8 +145,15 @@ public class ListeMatieresE extends Activity {
 						View tempView = (View) liste.getChildAt(i);
 						TextView badgeNote = (TextView) tempView.findViewById(R.id.note);
 
-						if (badgeNote.getText().toString().equals("-1.0")) {							
-							badgeNote.setVisibility(View.GONE);
+						if (etud.getListeDiplomes().get(posDipFin).getListeAnnees().get(posAnnFin).getListeUE().get(posUeFin).getListeMatieres().get(i).getNoteFinale() >= 10) {							
+							badgeNote.setBackgroundResource(R.drawable.badge_moyenne_ok);
+						} else if ((etud.getListeDiplomes().get(posDipFin).getListeAnnees().get(posAnnFin).getListeUE().get(posUeFin).getListeMatieres().get(i).getNoteFinale() < 10) && 
+								(etud.getListeDiplomes().get(posDipFin).getListeAnnees().get(posAnnFin).getListeUE().get(posUeFin).getListeMatieres().get(i).getNoteFinale() >= 0)) {
+							
+							badgeNote.setBackgroundResource(R.drawable.badge_moyenne_nok);
+						} else {
+							badgeNote.setText("0 note");
+							badgeNote.setBackgroundResource(R.drawable.badge_note);
 						}
 					}
 				}

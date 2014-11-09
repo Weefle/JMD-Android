@@ -5,9 +5,13 @@ package org.gl.jmd.model.enumeration;
  * 
  * @author Jordi CHARPENTIER & Yoann VANHOESERLANDE
  */
-public enum RegleType {
+public class RegleType {
 
-	NOTE_MINIMALE,
+	private RegleType() {
+		
+	}
 	
-	NB_OPT_MINI,
+	public static int NOTE_MINIMALE = 1;
+	
+	public static int NB_OPT_MINI = 2;
 }

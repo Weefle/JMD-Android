@@ -3,7 +3,9 @@ package org.gl.jmd.model;
 import java.io.Serializable;
 import java.util.*;
 
-import org.gl.jmd.model.enumeration.*;
+import org.gl.jmd.model.enumeration.DecoupageType;
+import org.gl.jmd.model.enumeration.DecoupageYearType;
+import org.gl.jmd.model.enumeration.RegleType;
 import org.gl.jmd.utils.NumberUtils;
 
 /**
@@ -292,6 +294,52 @@ public class Annee implements Serializable {
 				// Moyenne des 3 trimestres
 				res = (moyenneT1 + moyenneT2 + moyenneT3) / 3;
 			}			
+		}
+		
+		return res;
+	}
+	
+	public boolean isValid() {
+		boolean res = true;
+		
+		if ((this.getMoyenne() < 10) && (this.getMoyenne() >= 0)) {
+			res = false;
+		} 
+		
+		for (int i = 0; i < this.listeRegles.size(); i++) {
+			if (this.listeRegles.get(i).getRegle() == RegleType.NOTE_MINIMALE) {
+				for (int j = 0; j < this.listeUE.size(); j++) {
+					for (int k = 0; j < this.listeUE.get(j).getListeMatieres().size(); k++) {
+						if (this.listeUE.get(j).getListeMatieres().get(k).getNoteFinale() < this.listeRegles.get(i).getValeur()) {
+							res = false;
+							break;
+						}
+					}
+				}
+			} else if (this.listeRegles.get(i).getRegle() == RegleType.NB_OPT_MINI) {
+				int nbOption = this.listeRegles.get(i).getValeur();
+				
+				for (int j = 0; j < this.listeUE.size(); j++) {
+					for (int k = 0; j < this.listeUE.get(j).getListeMatieres().size(); k++) {
+						if ((this.listeUE.get(j).getListeMatieres().get(k).isOption())
+								&& (this.listeUE.get(j).getListeMatieres().get(k).getNoteFinale() != -1.0)) {
+							
+							nbOption--;
+						}
+					}
+				}
+				
+				if (nbOption > 0) {
+					res = false;
+				}
+			}
+		}
+		
+		for (int i = 0; i < this.listeUE.size(); i++) {
+			if (!this.listeUE.get(i).isValid()) {
+				res = false;
+				break;
+			}
 		}
 		
 		return res;

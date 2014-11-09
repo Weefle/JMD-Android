@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.*;
 
 import org.gl.jmd.model.enumeration.DecoupageYearType;
+import org.gl.jmd.model.enumeration.RegleType;
 import org.gl.jmd.utils.NumberUtils;
 
 /**
@@ -70,6 +71,50 @@ public class UE implements Serializable {
 		
 		res = produitMatiereCoeff / coeffGlobalUE;
 		res = NumberUtils.round(res, 2);
+		
+		return res;
+	}
+	
+	/**
+	 * Méthode permettant de savoir si l'UE est valide (en fonction des règles de gestion associée).
+	 * 
+	 * @return <b>true</b> si l'UE est valide.<br />
+	 * <b>false</b> sinon.
+	 */
+	public boolean isValid() {
+		boolean res = true;
+		
+		for (int i = 0; i < this.listeRegles.size(); i++) {
+			if (this.listeRegles.get(i).getRegle() == RegleType.NOTE_MINIMALE) {
+				for (int j = 0; j < this.listeMatieres.size(); j++) {
+					if (this.listeMatieres.get(j).getNoteFinale() < this.listeRegles.get(i).getValeur()) {
+						res = false;
+						break;
+					}
+				}
+			} else if (this.listeRegles.get(i).getRegle() == RegleType.NB_OPT_MINI) {
+				int nbOption = this.listeRegles.get(i).getValeur();
+				
+				for (int j = 0; j < this.listeMatieres.size(); j++) {
+					if ((this.listeMatieres.get(j).isOption())
+							&& (this.listeMatieres.get(j).getNoteFinale() != -1.0)) {
+						
+						nbOption--;
+					}
+				}
+				
+				if (nbOption > 0) {
+					res = false;
+				}
+			}
+		}
+		
+		for (int i = 0; i < this.listeMatieres.size(); i++) {
+			if (!this.listeMatieres.get(i).isValid()) {
+				res = false;
+				break;
+			}
+		}
 		
 		return res;
 	}

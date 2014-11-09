@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.gl.jmd.view;
+package org.gl.jmd.view.list;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;

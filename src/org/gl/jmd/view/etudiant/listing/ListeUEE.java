@@ -57,6 +57,14 @@ public class ListeUEE extends Activity {
 	private void initTitleView() {
 		TextView tvTitre = (TextView) findViewById(R.id.etudiant_liste_ue_titre);
 		tvTitre.setText(ann.getNom().substring(0, 20) + "...");
+		
+		TextView isValid = (TextView) findViewById(R.id.txt_valid_ue);
+		
+		if (ann.isValid()) {
+			isValid.setText("L'année est validée.");
+		} else {
+			isValid.setText("L'année n'est pas validée.");
+		}
 	}
 
 	/**

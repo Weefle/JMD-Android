@@ -15,9 +15,9 @@ import org.gl.jmd.model.enumeration.DecoupageType;
 import org.gl.jmd.utils.*;
 import org.gl.jmd.view.Accueil;
 import org.gl.jmd.view.admin.create.CreationAnnee;
+import org.gl.jmd.view.list.SwipeDismissListViewTouchListener;
 import org.json.*;
 
-import org.gl.jmd.view.SwipeDismissListViewTouchListener;
 
 import android.app.*;
 import android.content.*;
@@ -166,25 +166,46 @@ public class ListeAnneeA extends Activity {
 
 			liste.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 				public boolean onItemLongClick(AdapterView<?> arg0, View arg1, final int arg2, final long arg3) {
-					AlertDialog.Builder confirmSuppr = new AlertDialog.Builder(ListeAnneeA.this);
-					confirmSuppr.setTitle("Suivre l'année");
-					confirmSuppr.setMessage("Voulez-vous vraiment suivre cette année ?");
-					confirmSuppr.setCancelable(false);
-					confirmSuppr.setPositiveButton("Oui", new AlertDialog.OnClickListener() {
-						public void onClick(DialogInterface dialog, int id) {
-							ProgressDialog progress = new ProgressDialog(activity);
-							progress.setMessage("Chargement...");
-							new FollowAnnee(progress, Constantes.URL_SERVER + "admin/follow" +
-									"?idAnnee=" + listeAnnees.get(arg2).getId() +
-									"&token=" + FileUtils.lireFichier("/sdcard/cacheJMD/token.jmd") + 
-									"&pseudo=" + FileUtils.lireFichier("/sdcard/cacheJMD/pseudo.jmd") +
-									"&timestamp=" + new java.util.Date().getTime()).execute();	
-						}
-					});
-
-					confirmSuppr.setNegativeButton("Non", null);
-					confirmSuppr.show();
-
+					if (listItem.get(arg2).get("img") == null) {
+						AlertDialog.Builder confirmSuppr = new AlertDialog.Builder(ListeAnneeA.this);
+						confirmSuppr.setTitle("Suivre l'année");
+						confirmSuppr.setMessage("Voulez-vous vraiment suivre cette année ?");
+						confirmSuppr.setCancelable(false);
+						confirmSuppr.setPositiveButton("Oui", new AlertDialog.OnClickListener() {
+							public void onClick(DialogInterface dialog, int id) {
+								ProgressDialog progress = new ProgressDialog(activity);
+								progress.setMessage("Chargement...");
+								new FollowAnnee(progress, Constantes.URL_SERVER + "admin/follow" +
+										"?idAnnee=" + listeAnnees.get(arg2).getId() +
+										"&token=" + FileUtils.lireFichier("/sdcard/cacheJMD/token.jmd") + 
+										"&pseudo=" + FileUtils.lireFichier("/sdcard/cacheJMD/pseudo.jmd") +
+										"&timestamp=" + new java.util.Date().getTime()).execute();	
+							}
+						});
+	
+						confirmSuppr.setNegativeButton("Non", null);
+						confirmSuppr.show();
+					} else {
+						AlertDialog.Builder confirmSuppr = new AlertDialog.Builder(ListeAnneeA.this);
+						confirmSuppr.setTitle("Ne plus suivre l'année");
+						confirmSuppr.setMessage("Voulez-vous vraiment ne plus suivre cette année ?");
+						confirmSuppr.setCancelable(false);
+						confirmSuppr.setPositiveButton("Oui", new AlertDialog.OnClickListener() {
+							public void onClick(DialogInterface dialog, int id) {
+								ProgressDialog progress = new ProgressDialog(activity);
+								progress.setMessage("Chargement...");
+								new UnfollowAnnee(progress, Constantes.URL_SERVER + "admin/unfollow" +
+										"?idAnnee=" + listeAnnees.get(arg2).getId() +
+										"&token=" + FileUtils.lireFichier("/sdcard/cacheJMD/token.jmd") + 
+										"&pseudo=" + FileUtils.lireFichier("/sdcard/cacheJMD/pseudo.jmd") +
+										"&timestamp=" + new java.util.Date().getTime()).execute();	
+							}
+						});
+	
+						confirmSuppr.setNegativeButton("Non", null);
+						confirmSuppr.show();
+					}
+					
 					return true;
 				}
 			}); 
@@ -437,6 +458,102 @@ public class ListeAnneeA extends Activity {
 							});
 							
 							toast.setText("Vous suivez désormais cette année.");
+							toast.show();
+						} else if (response.getStatusLine().getStatusCode() == 401) {
+							File filePseudo = new File("/sdcard/cacheJMD/pseudo.jmd");
+							File fileToken = new File("/sdcard/cacheJMD/token.jmd");
+
+							filePseudo.delete();
+							fileToken.delete();
+
+							activity.finishAffinity();
+							startActivity(new Intent(ListeAnneeA.this, Accueil.class));	
+
+							toast.setText("Session expirée.");	
+							toast.show();
+						} else if (response.getStatusLine().getStatusCode() == 500) {				        	
+							toast.setText("Une erreur est survenue au niveau de la BDD.");	
+							toast.show();
+						} else {
+							toast.setText("Erreur inconnue. Veuillez réessayer.");	
+							toast.show();
+						}
+
+						return;
+					}
+				});
+			} catch (ClientProtocolException e) {
+				ListeAnneeA.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(ListeAnneeA.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								ListeAnneeA.this.finish();
+							}
+						});
+
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+			} catch (IOException e) {
+				ListeAnneeA.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(ListeAnneeA.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								ListeAnneeA.this.finish();
+							}
+						});
+
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+			}
+
+			return null;
+		}
+	}
+	
+	private class UnfollowAnnee extends AsyncTask<Void, Void, Void> {
+		private ProgressDialog progress;
+		private String pathUrl;
+
+		public UnfollowAnnee(ProgressDialog progress, String pathUrl) {
+			this.progress = progress;
+			this.pathUrl = pathUrl;
+		}
+
+		public void onPreExecute() {
+			progress.show();
+		}
+
+		public void onPostExecute(Void unused) {
+			progress.dismiss();
+		}
+
+		protected Void doInBackground(Void... arg0) {
+			HttpClient httpclient = new DefaultHttpClient();
+			HttpGet httpGet = new HttpGet(pathUrl);
+
+			try {
+				final HttpResponse response = httpclient.execute(httpGet);
+
+				ListeAnneeA.this.runOnUiThread(new Runnable() {
+					public void run() {    			
+						if (response.getStatusLine().getStatusCode() == 200) {
+							ListeAnneeA.this.runOnUiThread(new Runnable() {
+								public void run() {    						
+									actualiserListe();
+								}
+							});
+							
+							toast.setText("Vous ne suivez plus cette année.");
 							toast.show();
 						} else if (response.getStatusLine().getStatusCode() == 401) {
 							File filePseudo = new File("/sdcard/cacheJMD/pseudo.jmd");

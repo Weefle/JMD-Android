@@ -3,6 +3,7 @@ package org.gl.jmd.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import org.gl.jmd.model.enumeration.RegleType;
 import org.gl.jmd.utils.NumberUtils;
 
 /**
@@ -64,6 +65,27 @@ public class Matiere implements Serializable {
 	 */
 	public Matiere() {
 		
+	}
+	
+	/**
+	 * Méthode permettant de savoir si la matière est valide (en fonction des règles de gestion associée).
+	 * 
+	 * @return <b>true</b> si la matière est valide.<br />
+	 * <b>false</b> sinon.
+	 */
+	public boolean isValid() {
+		boolean result = true;
+		
+		for (int i = 0; i < this.listeRegles.size(); i++) {
+			if (this.listeRegles.get(i).getRegle() == RegleType.NOTE_MINIMALE) {
+				if (getNoteFinale() < this.listeRegles.get(i).getValeur()) {
+					result = false;
+					break;
+				}
+			} 
+		}
+		
+		return result;
 	}
 	
 	/**

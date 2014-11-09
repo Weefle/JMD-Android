@@ -5,12 +5,12 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="16" />
+        android:minSdkVersion="16"
+        android:targetSdkVersion="20" />
     
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -92,13 +92,6 @@
         
         <activity
             android:name="org.gl.jmd.view.etudiant.create.AjouterAnneeE"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/etudiant_ajouter_annee_ae_view_name" 
-            android:theme="@android:style/Theme.NoTitleBar" >
-        </activity>
-        
-        <activity
-            android:name="org.gl.jmd.view.etudiant.create.AjouterDiplomeE"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/etudiant_modifier_ae_view_name" 
             android:theme="@android:style/Theme.NoTitleBar" >
