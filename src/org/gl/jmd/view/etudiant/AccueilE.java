@@ -9,7 +9,6 @@ import org.gl.jmd.model.Diplome;
 import org.gl.jmd.model.enumeration.DecoupageType;
 import org.gl.jmd.model.user.Etudiant;
 import org.gl.jmd.view.*;
-import org.gl.jmd.view.admin.listing.ListeDiplomeA;
 import org.gl.jmd.view.etudiant.create.AjouterAnneeE;
 import org.gl.jmd.view.etudiant.listing.*;
 import org.gl.jmd.view.list.Header;
@@ -131,7 +130,7 @@ public class AccueilE extends Activity {
 
 							EtudiantDAO.save(etud);
 
-							toast.setText("L'année a bien été supprimé.");
+							toast.setText("L'année a bien été supprimée.");
 							toast.show();
 
 							initListe(); 

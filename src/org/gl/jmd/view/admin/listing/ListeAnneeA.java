@@ -159,7 +159,8 @@ public class ListeAnneeA extends Activity {
 
 					Intent newIntent = new Intent(ListeAnneeA.this, c);
 					newIntent.putExtra("annee", listeAnnees.get(position));
-
+					newIntent.putExtra("decoupage", listItem.get(position).get("decoupage"));
+					
 					startActivity(newIntent);
 				}
 			});

@@ -11,7 +11,7 @@ public class RegleType {
 		
 	}
 	
-	public static int NOTE_MINIMALE = 1;
+	public static int NOTE_MINIMALE = 2;
 	
-	public static int NB_OPT_MINI = 2;
+	public static int NB_OPT_MINI = 1;
 }

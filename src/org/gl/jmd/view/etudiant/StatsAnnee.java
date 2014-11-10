@@ -60,7 +60,7 @@ public class StatsAnnee extends Activity {
 		}
 			
 		email.putExtra(Intent.EXTRA_TEXT, msg);
-
+		
 		email.setType("message/rfc822");
 
 		startActivity(Intent.createChooser(email, "Choisir un client mail"));

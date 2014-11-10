@@ -42,11 +42,6 @@ public class UE implements Serializable {
 	private ArrayList<Matiere> listeMatieres = new ArrayList<Matiere>();
 	
 	/**
-	 * Les règles que devra respecter l'UE.
-	 */
-	private ArrayList<Regle> listeRegles = new ArrayList<Regle>();
-	
-	/**
 	 * Constructeur par défaut de la classe.
 	 */
 	public UE() {
@@ -75,30 +70,32 @@ public class UE implements Serializable {
 		return res;
 	}
 	
-	/**
-	 * Méthode permettant de savoir si l'UE est valide (en fonction des règles de gestion associée).
-	 * 
-	 * @return <b>true</b> si l'UE est valide.<br />
-	 * <b>false</b> sinon.
-	 */
-	public boolean isValid() {
+	public boolean isValid(ArrayList<Regle> listeRegles) {
 		boolean res = true;
 		
-		for (int i = 0; i < this.listeRegles.size(); i++) {
-			if (this.listeRegles.get(i).getRegle() == RegleType.NOTE_MINIMALE) {
-				for (int j = 0; j < this.listeMatieres.size(); j++) {
-					if (this.listeMatieres.get(j).getNoteFinale() < this.listeRegles.get(i).getValeur()) {
+		if ((this.getMoyenne() < 10) && (this.getMoyenne() >= 0)) {
+			res = false;
+		} 
+		
+		for (int i = 0; i < listeRegles.size(); i++) {
+			if ((listeRegles.get(i).getRegle() == RegleType.NOTE_MINIMALE) &&
+					(listeRegles.get(i).getIdUE() == this.id)) {
+				
+				for (int k = 0; k < this.listeMatieres.size(); k++) {
+					if (this.listeMatieres.get(k).getNoteFinale() < listeRegles.get(i).getValeur()) {
 						res = false;
 						break;
 					}
 				}
-			} else if (this.listeRegles.get(i).getRegle() == RegleType.NB_OPT_MINI) {
-				int nbOption = this.listeRegles.get(i).getValeur();
+			} else if ((listeRegles.get(i).getRegle() == RegleType.NB_OPT_MINI) &&
+					(listeRegles.get(i).getIdUE() == this.id)) {
 				
-				for (int j = 0; j < this.listeMatieres.size(); j++) {
-					if ((this.listeMatieres.get(j).isOption())
-							&& (this.listeMatieres.get(j).getNoteFinale() != -1.0)) {
-						
+				int nbOption = listeRegles.get(i).getValeur();
+				
+				for (int k = 0; k < this.listeMatieres.size(); k++) {
+					if ((this.listeMatieres.get(k).isOption())
+							&& (this.listeMatieres.get(k).getNoteFinale() != -1.0)) {
+							
 						nbOption--;
 					}
 				}
@@ -106,13 +103,6 @@ public class UE implements Serializable {
 				if (nbOption > 0) {
 					res = false;
 				}
-			}
-		}
-		
-		for (int i = 0; i < this.listeMatieres.size(); i++) {
-			if (!this.listeMatieres.get(i).isValid()) {
-				res = false;
-				break;
 			}
 		}
 		
@@ -166,15 +156,6 @@ public class UE implements Serializable {
 		return this.listeMatieres;
 	}
 	
-	/**
-	 * Méthode retournant les règles de la matière.
-	 * 
-	 * @return Les règles de la matière.
-	 */
-	public ArrayList<Regle> getListeRegles() {
-		return this.listeRegles;
-	}
-	
 	/* Setters. */
 	
 	/**
@@ -220,14 +201,5 @@ public class UE implements Serializable {
 	 */
 	public void setListeMatieres(ArrayList<Matiere> listeMatieres) {
 		this.listeMatieres = listeMatieres;
-	}
-	
-	/**
-	 * Méthode permettant de modifier les règles de la matière.
-	 * 
-	 * @param listeRegles Les nouvelle règles de la matière.
-	 */
-	public void setListeRegles(ArrayList<Regle> listeRegles) {
-		this.listeRegles = listeRegles;
 	}
 }

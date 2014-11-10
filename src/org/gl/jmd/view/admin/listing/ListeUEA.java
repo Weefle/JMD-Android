@@ -53,24 +53,8 @@ public class ListeUEA extends Activity {
 		toast = Toast.makeText(getBaseContext(), "", Toast.LENGTH_SHORT);
 		
 		actualiserListe();
-		isCreditValid();
 	}
-	
-	private void isCreditValid() {
-		int sommeCoeff = 0;
-		
-		for (int i = 0; i < this.annee.getListeUE().size(); i++) {
-			for (int j = 0; j < this.annee.getListeUE().get(i).getListeMatieres().size(); i++) {
-				sommeCoeff += this.annee.getListeUE().get(i).getListeMatieres().get(j).getCoefficient();
-			}
-		}
-		
-		if (sommeCoeff != 60) {
-			toast.setText("La somme des crédits est différente de 60.");
-			toast.show();
-		} 
-	}
-	
+
 	private void actualiserListe() {		
 		listeUE.clear();
 		

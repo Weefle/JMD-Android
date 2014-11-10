@@ -8,6 +8,7 @@ import org.gl.jmd.model.Annee;
 import org.gl.jmd.model.Diplome;
 import org.gl.jmd.model.Etablissement;
 import org.gl.jmd.model.Matiere;
+import org.gl.jmd.model.Regle;
 import org.gl.jmd.model.UE;
 import org.gl.jmd.model.enumeration.DecoupageType;
 import org.gl.jmd.model.enumeration.DecoupageYearType;
@@ -81,9 +82,13 @@ public class AjouterAnneeE extends Activity {
 	
 	private void initListe(final ArrayList<Annee> listeAnnees) {
 		final ListView liste = (ListView) findViewById(android.R.id.list);
+		
+		TextView headerListe = new TextView(activity);
+		headerListe.setText("LISTE DES ANNEES");
+		headerListe.setPadding(50, 0, 0, 20);
+		headerListe.setTextSize(16);
 
-		ImageView img_dot = (ImageView) findViewById(R.id.dotted_line_add_list);
-		img_dot.setVisibility(View.VISIBLE);
+		liste.addHeaderView(headerListe);
 		
 		if (listeAnnees.size() > 0) {			
 			final ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
@@ -107,7 +112,7 @@ public class AjouterAnneeE extends Activity {
 					ProgressDialog progress = new ProgressDialog(activity);
 					progress.setMessage("Chargement...");
 					new AjouterAnnee(progress, Constantes.URL_SERVER + "annee/getCompleteYear" +
-							"?idAnnee=" + listItem.get(position).get("id")).execute();	
+							"?idAnnee=" + listItem.get(position - 1).get("id")).execute();	
 				}
 			});
 		} else {
@@ -165,6 +170,28 @@ public class AjouterAnneeE extends Activity {
 					d.setNom(anneeJSON.getString("nomDiplome"));
 
 					a.setDiplome(d);
+					
+					// Liste des règles.
+					JSONArray reglesJSON = anneeJSON.getJSONArray("regles");
+					ArrayList<Regle> listeRegles = new ArrayList<Regle>();
+					Regle r = null;
+					
+                    for (int i = 0; i < reglesJSON.length(); i++) {
+                    	JSONObject regleJSON = reglesJSON.getJSONObject(i);
+                        
+                        r = new Regle();
+                        r.setId(regleJSON.getInt("id"));
+                        r.setIdAnnee(regleJSON.getInt("idAnnee"));
+                        r.setIdMatiere(regleJSON.getInt("idMatiere"));
+                        r.setIdUE(regleJSON.getInt("idUE"));
+                        r.setOperateur(regleJSON.getInt("operateur"));
+                        r.setRegle(regleJSON.getInt("regle"));
+                        r.setValeur(regleJSON.getInt("valeur"));
+
+                        listeRegles.add(r);
+                    }
+                    
+                    a.setListeRegles(listeRegles);
 					
 					// Liste des UE.
 					JSONArray uesJSON = anneeJSON.getJSONArray("ues");

@@ -3,7 +3,6 @@ package org.gl.jmd.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import org.gl.jmd.model.enumeration.RegleType;
 import org.gl.jmd.utils.NumberUtils;
 
 /**
@@ -56,36 +55,10 @@ public class Matiere implements Serializable {
 	private ArrayList<Note> listeNotesCC = new ArrayList<Note>();
 	
 	/**
-	 * Les règles que devra respecter la matière.
-	 */
-	private ArrayList<Regle> listeRegles = new ArrayList<Regle>();
-	
-	/**
 	 * Constructeur par défaut de la classe.
 	 */
 	public Matiere() {
 		
-	}
-	
-	/**
-	 * Méthode permettant de savoir si la matière est valide (en fonction des règles de gestion associée).
-	 * 
-	 * @return <b>true</b> si la matière est valide.<br />
-	 * <b>false</b> sinon.
-	 */
-	public boolean isValid() {
-		boolean result = true;
-		
-		for (int i = 0; i < this.listeRegles.size(); i++) {
-			if (this.listeRegles.get(i).getRegle() == RegleType.NOTE_MINIMALE) {
-				if (getNoteFinale() < this.listeRegles.get(i).getValeur()) {
-					result = false;
-					break;
-				}
-			} 
-		}
-		
-		return result;
 	}
 	
 	/**
@@ -198,15 +171,6 @@ public class Matiere implements Serializable {
 		return this.listeNotesCC;
 	}
 	
-	/**
-	 * Méthode retournant les règles de la matière.
-	 * 
-	 * @return Les règles de la matière.
-	 */
-	public ArrayList<Regle> getListeRegles() {
-		return this.listeRegles;
-	}
-	
 	/* Setters. */
 	
 	/**
@@ -279,14 +243,5 @@ public class Matiere implements Serializable {
 	 */
 	public void setListeNotesCC(ArrayList<Note> listeNotesCC) {
 		this.listeNotesCC = listeNotesCC;
-	}
-	
-	/**
-	 * Méthode permettant de modifier les règles de la matière.
-	 * 
-	 * @param listeRegles Les nouvelle règles de la matière.
-	 */
-	public void setListeRegles(ArrayList<Regle> listeRegles) {
-		this.listeRegles = listeRegles;
 	}
 }

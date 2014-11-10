@@ -30,6 +30,12 @@ public class ListeMatieresE extends Activity {
 	private String nomUE = "";
 
 	private Etudiant etud = EtudiantDAO.load();
+	
+	private int posDip = 0;
+	
+	private int posAnn = 0;
+	
+	private int posUe = 0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -44,21 +50,26 @@ public class ListeMatieresE extends Activity {
 
 		nomUE = getIntent().getExtras().getString("nomUE");
 
-		initTitre();
 		initListe();
+		initTitre();
 	}
 	
 	private void initTitre() {
 		// On donne comme titre à la vue le nom de l'UE choisie.
 		TextView tvTitre = (TextView) findViewById(R.id.etudiant_liste_matiere_titre);
 		tvTitre.setText(nomUE);
+		
+		// isUEValid
+		TextView tvIsUEValid = (TextView) findViewById(R.id.etudiant_isUEValid);
+		
+		if (etud.getListeDiplomes().get(posDip).getListeAnnees().get(posAnn).getListeUE().get(posUe).isValid(etud.getListeDiplomes().get(posDip).getListeAnnees().get(posAnn).getListeRegles())) {
+			tvIsUEValid.setText("L'UE est validée");
+		} else if (etud.getListeDiplomes().get(posDip).getListeAnnees().get(posAnn).getListeUE().get(posUe).getMoyenne() != -1.0) {
+			tvIsUEValid.setText("L'UE n'est pas validée");
+		}
 	}
 
 	private void initListe() {
-		int posDip = 0;
-		int posAnn = 0;
-		int posUe = 0;
-
 		for (int i = 0; i < this.etud.getListeDiplomes().size(); i++) {
 			if (this.etud.getListeDiplomes().get(i).getId() == this.idDiplome) {
 				posDip = i;
@@ -180,7 +191,9 @@ public class ListeMatieresE extends Activity {
 	@Override
 	public void onRestart() {
 		etud = EtudiantDAO.load();
+		
 		initListe();
+		initTitre();
 
 		super.onRestart();
 	} 
