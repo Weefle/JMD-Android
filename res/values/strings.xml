@@ -65,7 +65,7 @@
 
 	<!-- Connexion / inscription -->
 	
-	<string name="connex_texte_mdp_oublie"><u>Mot de passe oublié ?</u></string>
+	<string name="connex_texte_mdp_oublie"><u>Mot de passe oublié</u></string>
 	<string name="connex_texte_inscription"><u>Inscription</u></string>
 	
 	<string name="admin_mdp_oublie_texte_pseudo">Pseudo du compte à récupérer</string>

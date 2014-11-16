@@ -378,8 +378,8 @@ public class CreationRegle extends Activity {
 		}
 
 		protected Void doInBackground(Void... arg0) {
-			ServiceHandler sh = new ServiceHandler();
-            String jsonStr = sh.makeServiceCall(pathUrl, ServiceHandler.GET);
+			WebUtils sh = new WebUtils();
+            String jsonStr = sh.makeServiceCall(pathUrl, WebUtils.GET);
             
             final ArrayList<Matiere> listeMatieres = new ArrayList<Matiere>();
             Matiere matiere = null;
@@ -432,8 +432,8 @@ public class CreationRegle extends Activity {
 		}
 
 		protected Void doInBackground(Void... arg0) {
-			ServiceHandler sh = new ServiceHandler();
-            String jsonStr = sh.makeServiceCall(pathUrl, ServiceHandler.GET);
+			WebUtils sh = new WebUtils();
+            String jsonStr = sh.makeServiceCall(pathUrl, WebUtils.GET);
             
             final ArrayList<UE> listeUE = new ArrayList<UE>();
             UE ue = null;

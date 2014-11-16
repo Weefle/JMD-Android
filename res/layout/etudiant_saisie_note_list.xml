@@ -20,7 +20,7 @@
         android:layout_centerInParent="true"
         android:layout_gravity="right"
         android:layout_marginRight="30dp"
-        android:inputType="number"
+        android:inputType="numberDecimal"
         android:maxLength="5" >
     </EditText>
 

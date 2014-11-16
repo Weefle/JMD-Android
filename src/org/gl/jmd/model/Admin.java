@@ -1,11 +1,13 @@
-package org.gl.jmd.model.user;
+package org.gl.jmd.model;
+
+import java.io.Serializable;
 
 /**
  * Classe représentant un administrateur.
  * 
  * @author Jordi CHARPENTIER & Yoann VANHOESERLANDE
  */
-public class Admin extends Utilisateur {
+public class Admin implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	

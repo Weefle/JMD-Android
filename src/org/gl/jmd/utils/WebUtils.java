@@ -8,13 +8,13 @@ import org.apache.http.client.methods.*;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
-public class ServiceHandler {
+public class WebUtils {
 
 	private String response = null;
 
 	public final static int GET = 1;
 
-	public ServiceHandler() {
+	public WebUtils() {
 
 	}
 

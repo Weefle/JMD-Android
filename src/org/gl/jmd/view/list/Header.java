@@ -3,8 +3,7 @@ package org.gl.jmd.view.list;
 import org.gl.jmd.R;
 import org.gl.jmd.view.list.TwoTextArrayAdapter.RowType;
 
-import android.view.LayoutInflater;
-import android.view.View;
+import android.view.*;
 import android.widget.TextView;
 
 public class Header implements Item {
@@ -23,9 +22,9 @@ public class Header implements Item {
 	@Override
 	public View getView(LayoutInflater inflater, View convertView) {
 		View view;
+		
 		if (convertView == null) {
 			view = (View) inflater.inflate(R.layout.header, null);
-			// Do some initialization
 		} else {
 			view = convertView;
 		}
@@ -35,5 +34,4 @@ public class Header implements Item {
 
 		return view;
 	}
-
 }

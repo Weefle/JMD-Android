@@ -71,7 +71,7 @@ public class ListItem implements Item {
 				text3.setBackgroundResource(R.drawable.badge_note);
 			} 
 		} else {
-			view = (View) inflater.inflate(R.layout.etudiant_simple_list, null);
+			view = (View) inflater.inflate(R.layout.simple_list, null);
 
 			TextView text = (TextView) view.findViewById(R.id.titre);
 			text.setText("Aucune année.");

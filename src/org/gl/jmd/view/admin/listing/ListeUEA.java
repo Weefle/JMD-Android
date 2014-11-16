@@ -81,7 +81,7 @@ public class ListeUEA extends Activity {
 				listItem.add(map);		
 			}
 
-			liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.admin_simple_list, new String[] {"titre"}, new int[] {R.id.titre})); 
+			liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.simple_list, new String[] {"titre"}, new int[] {R.id.titre})); 
 			
 			liste.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 				public void onItemClick(AdapterView<?> arg0, View arg1, final int position, long arg3) {
@@ -123,7 +123,7 @@ public class ListeUEA extends Activity {
 			ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
 			listItem.add(map);
 
-			liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.admin_simple_list, new String[] {"titre"}, new int[] {R.id.titre})); 
+			liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.simple_list, new String[] {"titre"}, new int[] {R.id.titre})); 
 		}
 	}
 	
@@ -147,8 +147,8 @@ public class ListeUEA extends Activity {
 		}
 
 		protected Void doInBackground(Void... arg0) {			
-			ServiceHandler sh = new ServiceHandler();
-            String jsonStr = sh.makeServiceCall(pathUrl, ServiceHandler.GET);
+			WebUtils sh = new WebUtils();
+            String jsonStr = sh.makeServiceCall(pathUrl, WebUtils.GET);
             
             UE ue = null;
             

@@ -8,9 +8,9 @@ import org.apache.http.client.*;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.gl.jmd.*;
-import org.gl.jmd.model.user.Admin;
+import org.gl.jmd.model.Admin;
 import org.gl.jmd.utils.FileUtils;
-import org.gl.jmd.utils.ServiceHandler;
+import org.gl.jmd.utils.WebUtils;
 import org.gl.jmd.view.Accueil;
 import org.json.*;
 
@@ -63,7 +63,7 @@ public class AjouterAdminA extends Activity {
 				listItem.add(map);		
 			}
 
-			final SimpleAdapter mSchedule = new SimpleAdapter (getBaseContext(), listItem, R.layout.admin_simple_list, new String[] {"titre"}, new int[] {R.id.titre});
+			final SimpleAdapter mSchedule = new SimpleAdapter (getBaseContext(), listItem, R.layout.simple_list, new String[] {"titre"}, new int[] {R.id.titre});
 
 			liste.setAdapter(mSchedule); 
 
@@ -99,7 +99,7 @@ public class AjouterAdminA extends Activity {
 
 			listItem.add(map);
 
-			SimpleAdapter mSchedule = new SimpleAdapter (getBaseContext(), listItem, R.layout.admin_simple_list, new String[] {"titre"}, new int[] {R.id.titre});
+			SimpleAdapter mSchedule = new SimpleAdapter (getBaseContext(), listItem, R.layout.simple_list, new String[] {"titre"}, new int[] {R.id.titre});
 
 			liste.setAdapter(mSchedule); 
 		}
@@ -123,8 +123,8 @@ public class AjouterAdminA extends Activity {
 		}
 
 		protected Void doInBackground(Void... arg0) {
-            ServiceHandler sh = new ServiceHandler();
-            String jsonStr = sh.makeServiceCall(pathUrl, ServiceHandler.GET);
+            WebUtils sh = new WebUtils();
+            String jsonStr = sh.makeServiceCall(pathUrl, WebUtils.GET);
             
             final ArrayList<Admin> listeAdmins = new ArrayList<Admin>();
             Admin a = null;

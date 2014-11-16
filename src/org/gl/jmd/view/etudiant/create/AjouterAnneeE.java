@@ -7,13 +7,13 @@ import org.gl.jmd.dao.EtudiantDAO;
 import org.gl.jmd.model.Annee;
 import org.gl.jmd.model.Diplome;
 import org.gl.jmd.model.Etablissement;
+import org.gl.jmd.model.Etudiant;
 import org.gl.jmd.model.Matiere;
 import org.gl.jmd.model.Regle;
 import org.gl.jmd.model.UE;
 import org.gl.jmd.model.enumeration.DecoupageType;
 import org.gl.jmd.model.enumeration.DecoupageYearType;
-import org.gl.jmd.model.user.Etudiant;
-import org.gl.jmd.utils.ServiceHandler;
+import org.gl.jmd.utils.WebUtils;
 
 import org.json.*;
 
@@ -80,17 +80,23 @@ public class AjouterAnneeE extends Activity {
 		new InitDiplome(progress, Constantes.URL_SERVER + "diplome/getAll").execute();	
 	}
 	
-	private void initListe(final ArrayList<Annee> listeAnnees) {
-		final ListView liste = (ListView) findViewById(android.R.id.list);
-		
+	private TextView getHeader() {
 		TextView headerListe = new TextView(activity);
 		headerListe.setText("LISTE DES ANNEES");
 		headerListe.setPadding(50, 0, 0, 20);
 		headerListe.setTextSize(16);
-
-		liste.addHeaderView(headerListe);
 		
-		if (listeAnnees.size() > 0) {			
+		return headerListe;
+	}
+	
+	private void initListe(final ArrayList<Annee> listeAnnees) {
+		final ListView liste = (ListView) findViewById(android.R.id.list);
+
+		liste.removeHeaderView(liste.getChildAt(0));
+		liste.addHeaderView(getHeader());
+		
+		if (listeAnnees.size() > 0) {	
+			
 			final ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
 			HashMap<String, String> map;
 
@@ -103,7 +109,7 @@ public class AjouterAnneeE extends Activity {
 				listItem.add(map);		
 			}
 
-			final SimpleAdapter mSchedule = new SimpleAdapter (getBaseContext(), listItem, R.layout.etudiant_simple_list, new String[] {"titre"}, new int[] {R.id.titre});
+			final SimpleAdapter mSchedule = new SimpleAdapter (getBaseContext(), listItem, R.layout.simple_list, new String[] {"titre"}, new int[] {R.id.titre});
 
 			liste.setAdapter(mSchedule); 
 
@@ -122,7 +128,7 @@ public class AjouterAnneeE extends Activity {
 			ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
 			listItem.add(map);		
 
-			liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.etudiant_simple_list, new String[] {"titre"}, new int[] {R.id.titre})); 
+			liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.simple_list, new String[] {"titre"}, new int[] {R.id.titre})); 
 		}
 	}
 
@@ -146,8 +152,8 @@ public class AjouterAnneeE extends Activity {
 		}
 
 		protected Void doInBackground(Void... arg0) {
-			ServiceHandler sh = new ServiceHandler();
-			String jsonStr = sh.makeServiceCall(pathUrl, ServiceHandler.GET);
+			WebUtils sh = new WebUtils();
+			String jsonStr = sh.makeServiceCall(pathUrl, WebUtils.GET);
 			
 			Annee a = new Annee();
 
@@ -159,10 +165,12 @@ public class AjouterAnneeE extends Activity {
 					a.setNom(anneeJSON.getString("nom"));
 					a.setDecoupage(DecoupageType.valueOf(anneeJSON.getString("decoupage")));
 					
+					JSONObject etaJSON = anneeJSON.getJSONObject("etablissement");
 					Etablissement e = new Etablissement();
-					e.setId(anneeJSON.getInt("idEtablissement"));
-					e.setNom(anneeJSON.getString("nomEtablissement"));
-
+					e.setId(etaJSON.getInt("idEtablissement"));
+					e.setNom(etaJSON.getString("nom"));
+					e.setVille(etaJSON.getString("ville"));
+					
 					a.setEtablissement(e);
 
 					Diplome d = new Diplome();
@@ -305,8 +313,8 @@ public class AjouterAnneeE extends Activity {
 		}
 
 		protected Void doInBackground(Void... arg0) {
-			ServiceHandler sh = new ServiceHandler();
-			String jsonStr = sh.makeServiceCall(pathUrl, ServiceHandler.GET);
+			WebUtils sh = new WebUtils();
+			String jsonStr = sh.makeServiceCall(pathUrl, WebUtils.GET);
 
 			final ArrayList<Annee> listeAnnees = new ArrayList<Annee>();
 			Annee a = null;
@@ -368,8 +376,8 @@ public class AjouterAnneeE extends Activity {
 		}
 
 		protected Void doInBackground(Void... arg0) {
-			ServiceHandler sh = new ServiceHandler();
-			String jsonStr = sh.makeServiceCall(pathUrl, ServiceHandler.GET);
+			WebUtils sh = new WebUtils();
+			String jsonStr = sh.makeServiceCall(pathUrl, WebUtils.GET);
 
 			final ArrayList<Etablissement> listeEtablissements = new ArrayList<Etablissement>();
 			final ArrayList<String> listeEtablissementsString = new ArrayList<String>();
@@ -445,8 +453,8 @@ public class AjouterAnneeE extends Activity {
 		}
 
 		protected Void doInBackground(Void... arg0) {
-			ServiceHandler sh = new ServiceHandler();
-			String jsonStr = sh.makeServiceCall(pathUrl, ServiceHandler.GET);
+			WebUtils sh = new WebUtils();
+			String jsonStr = sh.makeServiceCall(pathUrl, WebUtils.GET);
 
 			final ArrayList<Diplome> listeDiplomes = new ArrayList<Diplome>();
 			final ArrayList<String> listeDiplomesString = new ArrayList<String>();

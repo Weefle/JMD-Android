@@ -49,12 +49,28 @@ public class UE implements Serializable {
 	}
 	
 	/**
+	 * Méthode permettant de récupérer la somme totale des coefficients des matières 
+	 * présentes dans l'UE.
+	 * 
+	 * @return La somme des coefficients des matières de l'UE.
+	 */
+	public double getTotalCoeff() {
+		double res = 0;
+		
+		for (int i = 0; i < this.listeMatieres.size(); i++) {
+			res += this.listeMatieres.get(i).getCoefficient();
+		}
+		
+		return res;
+	}
+	
+	/**
 	 * Méthode permettant de calculer la moyenne de l'UE.
 	 * 
 	 * @return La moyenne de l'UE.
 	 */
 	public double getMoyenne() {
-		double res = -1;
+		double res = -1.0;
 		
 		int coeffGlobalUE = 0;
 		double produitMatiereCoeff = 0.0;
@@ -70,6 +86,15 @@ public class UE implements Serializable {
 		return res;
 	}
 	
+	/**
+	 * Méthode permettant de savoir si l'UE est valide ou non.
+	 * <b>Valide</b> : elle respecte toutes les règles de gestion associées et sa moyenne est supérieure ou égale à 10.
+	 * 
+	 * @param listeRegles La liste des règles de gestion
+	 * 
+	 * @return <b>true</b> si l'UE est valide.
+	 * <b>false</b> sinon.
+	 */
 	public boolean isValid(ArrayList<Regle> listeRegles) {
 		boolean res = true;
 		

@@ -4,7 +4,7 @@ import java.util.*;
 
 import org.gl.jmd.R;
 import org.gl.jmd.dao.EtudiantDAO;
-import org.gl.jmd.model.user.Etudiant;
+import org.gl.jmd.model.Etudiant;
 import org.gl.jmd.view.etudiant.create.SaisieNoteE;
 
 import android.os.Bundle;
@@ -62,10 +62,12 @@ public class ListeMatieresE extends Activity {
 		// isUEValid
 		TextView tvIsUEValid = (TextView) findViewById(R.id.etudiant_isUEValid);
 		
-		if (etud.getListeDiplomes().get(posDip).getListeAnnees().get(posAnn).getListeUE().get(posUe).isValid(etud.getListeDiplomes().get(posDip).getListeAnnees().get(posAnn).getListeRegles())) {
-			tvIsUEValid.setText("L'UE est validée");
-		} else if (etud.getListeDiplomes().get(posDip).getListeAnnees().get(posAnn).getListeUE().get(posUe).getMoyenne() != -1.0) {
-			tvIsUEValid.setText("L'UE n'est pas validée");
+		if (etud.getListeDiplomes().get(posDip).getListeAnnees().get(posAnn).getListeUE().get(posUe).getMoyenne() != -1.0) {
+			if (etud.getListeDiplomes().get(posDip).getListeAnnees().get(posAnn).getListeUE().get(posUe).isValid(etud.getListeDiplomes().get(posDip).getListeAnnees().get(posAnn).getListeRegles())) {
+				tvIsUEValid.setText("L'UE est validée");
+			} else if (etud.getListeDiplomes().get(posDip).getListeAnnees().get(posAnn).getListeUE().get(posUe).getMoyenne() != -1.0) {
+				tvIsUEValid.setText("L'UE n'est pas validée");
+			}
 		}
 	}
 
@@ -106,7 +108,7 @@ public class ListeMatieresE extends Activity {
 			listItem.add(map);		
 			
 			ListView liste = (ListView) findViewById(android.R.id.list);
-			liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.etudiant_simple_list, new String[] {"titre"}, new int[] {R.id.titre})); 
+			liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.simple_list, new String[] {"titre"}, new int[] {R.id.titre})); 
 		} else {
 			final ListView liste = (ListView) findViewById(android.R.id.list);
 

@@ -167,11 +167,11 @@ public class InscriptionA extends Activity {
 				} 
 				
 				if (!isEmailOK) {
-					txtToast += "Le champ \"Email\" est vide.";
+					txtToast += "Le champ \"Email\" est vide.\n";
 				} 
 				
 				if (!isNomOK) {
-					txtToast += "Le champ \"Nom\" est vide.";
+					txtToast += "Le champ \"Nom\" est vide.\n";
 				} 
 				
 				if (!isPrenomOK) {

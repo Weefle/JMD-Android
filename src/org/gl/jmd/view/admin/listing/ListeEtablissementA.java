@@ -69,7 +69,7 @@ public class ListeEtablissementA extends Activity {
 				listItem.add(map);		
 			}
 
-			final SimpleAdapter mSchedule = new SimpleAdapter (getBaseContext(), listItem, R.layout.administrateur_liste_etablissement_list, new String[] {"titre", "description"}, new int[] {R.id.titre, R.id.description});
+			final SimpleAdapter mSchedule = new SimpleAdapter (getBaseContext(), listItem, R.layout.complex_list, new String[] {"titre", "description"}, new int[] {R.id.titre, R.id.description});
 
 			liste.setAdapter(mSchedule); 
 
@@ -106,7 +106,7 @@ public class ListeEtablissementA extends Activity {
 			ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
 			listItem.add(map);
 			
-			liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.admin_simple_list, new String[] {"titre"}, new int[] {R.id.titre})); 
+			liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.simple_list, new String[] {"titre"}, new int[] {R.id.titre})); 
 		}
 	}
 
@@ -130,8 +130,8 @@ public class ListeEtablissementA extends Activity {
 		}
 
 		protected Void doInBackground(Void... arg0) {			
-			ServiceHandler sh = new ServiceHandler();
-            String jsonStr = sh.makeServiceCall(pathUrl, ServiceHandler.GET);
+			WebUtils sh = new WebUtils();
+            String jsonStr = sh.makeServiceCall(pathUrl, WebUtils.GET);
             
             final ArrayList<Etablissement> listeEtablissements = new ArrayList<Etablissement>();
             Etablissement e = null;

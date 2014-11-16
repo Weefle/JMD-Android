@@ -4,7 +4,7 @@ import java.io.*;
 import java.util.ArrayList;
 
 import org.gl.jmd.model.Diplome;
-import org.gl.jmd.model.user.Etudiant;
+import org.gl.jmd.model.Etudiant;
 
 /**
  * Objet permettant de manipuler des étudiants.

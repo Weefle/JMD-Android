@@ -201,8 +201,8 @@ public class CreationAnnee extends Activity {
 		}
 
 		protected Void doInBackground(Void... arg0) {
-			ServiceHandler sh = new ServiceHandler();
-            String jsonStr = sh.makeServiceCall(pathUrl, ServiceHandler.GET);
+			WebUtils sh = new WebUtils();
+            String jsonStr = sh.makeServiceCall(pathUrl, WebUtils.GET);
             
             final ArrayList<Etablissement> listeEtablissements = new ArrayList<Etablissement>();
             final ArrayList<String> listeEtablissementsString = new ArrayList<String>();

@@ -67,13 +67,15 @@ public class Matiere implements Serializable {
 	 * @return La note finale de la matière.
 	 */
 	public double getNoteFinale() {
-		double res = -1;
+		double res = -1.0;
 		
 		if ((this.noteSession2 != null) &&
 				(this.noteSession2.getNote() > this.noteSession1.getNote())) {
 			
 			res = this.noteSession2.getNote();
-		} else if (this.noteSession1 != null) {
+		} else if ((this.noteSession1 != null) && 
+				(this.noteSession1.getNote() != -1.0)) {
+			
 			res = this.noteSession1.getNote();
 		}
 		

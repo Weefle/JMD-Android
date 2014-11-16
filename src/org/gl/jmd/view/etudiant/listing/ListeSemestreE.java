@@ -54,7 +54,7 @@ public class ListeSemestreE extends Activity {
 		
 		ListView liste = (ListView) findViewById(android.R.id.list);
 
-		liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.etudiant_simple_list, new String[] {"titre"}, new int[] {R.id.titre})); 
+		liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.simple_list, new String[] {"titre"}, new int[] {R.id.titre})); 
 
 		liste.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			public void onItemClick(AdapterView<?> arg0, View arg1, final int position, long arg3) {

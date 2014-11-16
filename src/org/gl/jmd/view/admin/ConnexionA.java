@@ -11,7 +11,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.gl.jmd.*;
-import org.gl.jmd.model.user.Admin;
+import org.gl.jmd.model.Admin;
 import org.gl.jmd.utils.*;
 import org.gl.jmd.view.InitApp;
 import org.gl.jmd.view.admin.*;

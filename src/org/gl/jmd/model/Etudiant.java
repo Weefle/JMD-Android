@@ -1,23 +1,16 @@
-package org.gl.jmd.model.user;
+package org.gl.jmd.model;
 
+import java.io.Serializable;
 import java.util.*;
-
-import org.gl.jmd.model.Diplome;
 
 /**
  * Classe représentant un étudiant.
  * 
  * @author Jordi CHARPENTIER & Yoann VANHOESERLANDE
  */
-public class Etudiant extends Utilisateur {
+public class Etudiant implements Serializable {
 	
-	private static final long serialVersionUID = -8565819799531716139L;
-
-	private String nom;
-	
-	private String prenom;
-	
-	private String mail;
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * La liste des diplômes de l'étudiant.
@@ -40,18 +33,6 @@ public class Etudiant extends Utilisateur {
 		return this.listeDiplomes;
 	}
 	
-	public String getNom() {
-		return this.nom;
-	}
-
-	public String getPrenom() {
-		return this.prenom;
-	}
-
-	public String getMail() {
-		return this.mail;
-	}
-	
 	/**
 	 * Méthode permettant de modifier la liste des diplômes de l'étudiant.
 	 * 
@@ -59,17 +40,5 @@ public class Etudiant extends Utilisateur {
 	 */
 	public void setListeDiplomes(ArrayList<Diplome> listeDiplomes) {
 		this.listeDiplomes = listeDiplomes;
-	}
-	
-	public void setNom(String nom) {
-		this.nom = nom;
-	}
-
-	public void setPrenom(String prenom) {
-		this.prenom = prenom;
-	}
-
-	public void setMail(String mail) {
-		this.mail = mail;
 	}
 }

@@ -6,8 +6,8 @@ import org.gl.jmd.R;
 import org.gl.jmd.dao.EtudiantDAO;
 import org.gl.jmd.model.Annee;
 import org.gl.jmd.model.Diplome;
+import org.gl.jmd.model.Etudiant;
 import org.gl.jmd.model.enumeration.DecoupageYearType;
-import org.gl.jmd.model.user.Etudiant;
 import org.gl.jmd.view.etudiant.StatsAnnee;
 
 import android.os.Bundle;
@@ -82,7 +82,7 @@ public class ListeUEE extends Activity {
 
 			listItem.add(map);		
 
-			liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.etudiant_simple_list, new String[] {"titre"}, new int[] {R.id.titre})); 
+			liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.simple_list, new String[] {"titre"}, new int[] {R.id.titre})); 
 		} else {
 			final ListView liste = (ListView) findViewById(android.R.id.list);
 
@@ -100,7 +100,7 @@ public class ListeUEE extends Activity {
 				}
 			}
 
-			final SimpleAdapter mSchedule = new SimpleAdapter (getBaseContext(), listItem, R.layout.etudiant_simple_list, new String[] {"titre"}, new int[] {R.id.titre});
+			final SimpleAdapter mSchedule = new SimpleAdapter (getBaseContext(), listItem, R.layout.simple_list, new String[] {"titre"}, new int[] {R.id.titre});
 
 			liste.setAdapter(mSchedule); 
 
@@ -139,5 +139,16 @@ public class ListeUEE extends Activity {
 		initListe();
 
 		super.onRestart();
+	} 
+	
+	/**
+	 * Méthode exécutée lorsque l'activité est relancée.
+	 */
+	@Override
+	public void onResume() {
+		etud = EtudiantDAO.load();
+		initListe();
+
+		super.onResume();
 	} 
 }

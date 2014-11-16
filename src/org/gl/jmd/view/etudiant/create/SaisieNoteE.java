@@ -6,12 +6,12 @@ import org.gl.jmd.R;
 import org.gl.jmd.dao.EtudiantDAO;
 import org.gl.jmd.model.*;
 import org.gl.jmd.model.enumeration.NoteType;
-import org.gl.jmd.model.user.Etudiant;
 
 import android.os.Bundle;
 import android.view.View;
 import android.widget.*;
 import android.app.*;
+import android.content.DialogInterface;
 import android.content.res.Configuration;
 
 /**
@@ -95,7 +95,7 @@ public class SaisieNoteE extends Activity {
 					noteS1.setText("" + matiere.getNoteSession1().getNote());	
 				}
 
-				if (matiere.getCoeffPartiel() != -1) {
+				if (matiere.getCoeffPartiel() != 0.0) {
 					View tempView2 = (View) liste.getChildAt(2);
 					EditText coeff = (EditText) tempView2.findViewById(R.id.noteCC);
 					coeff.setText("" + matiere.getCoeffPartiel());		
@@ -147,6 +147,15 @@ public class SaisieNoteE extends Activity {
 			@Override
 			public void run() {
 				View tempView1 = (View) liste2.getChildAt(1);
+				
+				TextView tvTitre = (TextView) tempView1.findViewById(R.id.titre);
+				
+				RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)tvTitre.getLayoutParams();
+				layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
+				layoutParams.setMargins(250, 0, 0, 0);
+				
+				tvTitre.setLayoutParams(layoutParams);
+				
 				TextView tvBadgeNote = (TextView) tempView1.findViewById(R.id.note_list);
 				tvBadgeNote.setVisibility(View.GONE);
 
@@ -189,9 +198,33 @@ public class SaisieNoteE extends Activity {
 							});
 	
 							dialog.show();
-						}
+						} 
 					}
 				});
+				
+				liste2.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+					public boolean onItemLongClick(AdapterView<?> arg0, View arg1, final int arg2, final long arg3) {
+						if (arg2 > 1) {
+							final AlertDialog.Builder confirmQuitter = new AlertDialog.Builder(SaisieNoteE.this);
+							confirmQuitter.setTitle("Suppression");
+							confirmQuitter.setMessage("Voulez-vous vraiment supprimer cette note ?");
+							confirmQuitter.setCancelable(false);
+							confirmQuitter.setPositiveButton("Oui", new AlertDialog.OnClickListener() {
+								public void onClick(DialogInterface dialog, int id) {	
+									listeNotes.remove(arg2 - 2);
+									listItem2.remove(arg2 - 1);
+									
+									mSchedule2.notifyDataSetChanged();
+								}
+							});
+	
+							confirmQuitter.setNegativeButton("Non", null);
+							confirmQuitter.show();
+						}
+						
+						return true;
+					}
+				}); 
 			}
 		});
 	}
@@ -208,10 +241,14 @@ public class SaisieNoteE extends Activity {
 		View listeCoeffPartiel = (View) liste.getChildAt(2);
 		EditText coeffPartiel = (EditText) listeCoeffPartiel.findViewById(R.id.noteCC);
 
-		Note noteS1 = new Note();
-		noteS1.setNoteType(NoteType.SESSION_1);
-		noteS1.setNote(Double.parseDouble(noteS1ET.getText().toString()));
-
+		if (noteS1ET.getText().toString().length() > 0) {
+			Note noteS1 = new Note();
+			noteS1.setNoteType(NoteType.SESSION_1);
+			noteS1.setNote(Double.parseDouble(noteS1ET.getText().toString()));
+			
+			matiere.setNoteSession1(noteS1);
+		}
+		
 		if (noteS2ET.getText().toString().length() > 0) {
 			Note noteS2 = new Note();
 			noteS2.setNoteType(NoteType.SESSION_2);
@@ -221,9 +258,11 @@ public class SaisieNoteE extends Activity {
 		}
 		
 		matiere.setListeNotesCC(listeNotes);
-		matiere.setNoteSession1(noteS1);
-		matiere.setCoeffPartiel(Double.parseDouble(coeffPartiel.getText().toString()));
-
+		
+		if (coeffPartiel.getText().toString().length() > 0) {
+			matiere.setCoeffPartiel(Double.parseDouble(coeffPartiel.getText().toString()));
+		}
+		
 		for (int i = 0; i < this.etudiant.getListeDiplomes().size(); i++) {
 			for (int j = 0; j < this.etudiant.getListeDiplomes().get(i).getListeAnnees().size(); j++) {
 				for (int k = 0; k < this.etudiant.getListeDiplomes().get(i).getListeAnnees().get(j).getListeUE().size(); k++) {

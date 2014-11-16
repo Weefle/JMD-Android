@@ -1,9 +1,12 @@
 package org.gl.jmd.view.etudiant;
 
+import java.io.File;
+
 import org.gl.jmd.R;
 import org.gl.jmd.model.Annee;
-import org.gl.jmd.utils.NumberUtils;
+import org.gl.jmd.utils.PdfUtils;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -41,28 +44,35 @@ public class StatsAnnee extends Activity {
 		}
 		
 		TextView tvAvancement = (TextView) findViewById(R.id.stats_annee_avancement_value);
-		tvAvancement.setText(NumberUtils.round(ann.getAvancement(), 2) + " %");
+		tvAvancement.setText(round(ann.getAvancement(), 2) + " %");
 		
 		TextView tvMention = (TextView) findViewById(R.id.stats_annee_mention_value);
 		tvMention.setText(ann.getMention());
 	}
 	
-	public void export(View view) {
-		Intent email = new Intent(Intent.ACTION_SEND);
-		email.putExtra(Intent.EXTRA_SUBJECT, "JMD - Moyenne d'une année");
-			
-		String msg = "Moyenne de l'année '" + ann.getNom() + "' : " + ann.getMoyenne() + "/20";
-			
-		if (ann.getMoyenne() > 10) {
-				msg += "\n\nL'année est validée.";
-		} else {
-				msg += "\n\nL'année n'est pas validée.";
-		}
-			
-		email.putExtra(Intent.EXTRA_TEXT, msg);
+	/**
+	 * Méthode permettant d'arrondir une valeur.
+	 * 
+	 * @param value La valeur à arrondir.
+	 * @param places Le nombre de décimales à garder.
+	 * 
+	 * @return La valeur, arrondie.
+	 */
+	private double round(double value, int places) {
+	    long factor = (long) Math.pow(10, places);
+	    value = value * factor;
+	    long tmp = Math.round(value);
+	    
+	    return (double) tmp / factor;
+	}
+	
+	public void export(View view) {		
+		PdfUtils.generateYearRapport(ann, this.getApplicationContext());
 		
-		email.setType("message/rfc822");
-
-		startActivity(Intent.createChooser(email, "Choisir un client mail"));
+		File file = new File("/sdcard/cacheJMD/rapport-" + ann.getId() + ".pdf");
+		Intent intent = new Intent(Intent.ACTION_VIEW);
+		intent.setDataAndType(Uri.fromFile(file), "application/pdf");
+		intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+		startActivity(intent); 
 	}
 }

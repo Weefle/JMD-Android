@@ -6,8 +6,8 @@ import org.gl.jmd.R;
 import org.gl.jmd.dao.EtudiantDAO;
 import org.gl.jmd.model.Annee;
 import org.gl.jmd.model.Diplome;
+import org.gl.jmd.model.Etudiant;
 import org.gl.jmd.model.enumeration.DecoupageType;
-import org.gl.jmd.model.user.Etudiant;
 import org.gl.jmd.view.*;
 import org.gl.jmd.view.etudiant.create.AjouterAnneeE;
 import org.gl.jmd.view.etudiant.listing.*;
@@ -61,7 +61,7 @@ public class AccueilE extends Activity {
 			
 			listItem.add(map);		
 
-			liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.etudiant_simple_list, new String[] {"titre"}, new int[] {R.id.titre}));
+			liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.simple_list, new String[] {"titre"}, new int[] {R.id.titre}));
 			liste.setOnItemClickListener(null);
 		} else {
 			List<Item> items = new ArrayList<Item>();
@@ -86,59 +86,87 @@ public class AccueilE extends Activity {
 
 			liste.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 				public void onItemClick(AdapterView<?> arg0, View arg1, final int position, long arg3) {
-					String decoupage = ((ListItem) adapter.getItem(position)).getAnnee().getDecoupage().name();
+					try {
+						Header h = ((Header) adapter.getItem(position));
+						
+						if (h != null) {
+							return;
+						}
+					} catch(Exception e) {
+						// Do nothing.
+					}
 					
-					Class<?> c = null;
-					
-					if (decoupage.equals(DecoupageType.NULL.name())) {
-						c = ListeUEE.class;
-					} else if (decoupage.equals(DecoupageType.SEMESTRE.name())) {
-						c = ListeSemestreE.class;
-					} else if (decoupage.equals(DecoupageType.TRIMESTRE.name())) {
-						c = ListeTrimestreE.class;
-					} 
-
-					Intent act = new Intent(AccueilE.this, c);
-					act.putExtra("positionDip", ((ListItem) adapter.getItem(position)).getPosDip());
-					act.putExtra("positionAnn", ((ListItem) adapter.getItem(position)).getPosAnnee());
-					act.putExtra("decoupage", ((ListItem) adapter.getItem(position)).getAnnee().getDecoupage().name());
-					
-					startActivity(act);
+					if (((ListItem) adapter.getItem(position)).getAnnee() == null) {
+						// Do nothing.
+					} else {
+						String decoupage = ((ListItem) adapter.getItem(position)).getAnnee().getDecoupage().name();
+						
+						Class<?> c = null;
+						
+						if (decoupage.equals(DecoupageType.NULL.name())) {
+							c = ListeUEE.class;
+						} else if (decoupage.equals(DecoupageType.SEMESTRE.name())) {
+							c = ListeSemestreE.class;
+						} else if (decoupage.equals(DecoupageType.TRIMESTRE.name())) {
+							c = ListeTrimestreE.class;
+						} 
+	
+						Intent act = new Intent(AccueilE.this, c);
+						act.putExtra("positionDip", ((ListItem) adapter.getItem(position)).getPosDip());
+						act.putExtra("positionAnn", ((ListItem) adapter.getItem(position)).getPosAnnee());
+						act.putExtra("decoupage", ((ListItem) adapter.getItem(position)).getAnnee().getDecoupage().name());
+						
+						startActivity(act);
+					}
 				}
 			});
 
 			liste.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 				public boolean onItemLongClick(AdapterView<?> arg0, View arg1, final int arg2, final long arg3) {
-					AlertDialog.Builder confirmQuitter = new AlertDialog.Builder(AccueilE.this);
-					confirmQuitter.setTitle("Suppression");
-					confirmQuitter.setMessage("Voulez-vous vraiment supprimer cette année ?");
-					confirmQuitter.setCancelable(false);
-					confirmQuitter.setPositiveButton("Oui", new AlertDialog.OnClickListener() {
-						public void onClick(DialogInterface dialog, int id) {								
-							ArrayList<Diplome> listeDiplomes = etud.getListeDiplomes();
-							Diplome d = listeDiplomes.get(((ListItem) adapter.getItem(arg2)).getPosDip());
-							
-							ArrayList<Annee> listeAnnees = d.getListeAnnees();
-							listeAnnees.remove(((ListItem) adapter.getItem(arg2)).getPosAnnee());
-							
-							d.setListeAnnees(listeAnnees);
-							
-							listeDiplomes.remove(((ListItem) adapter.getItem(arg2)).getPosDip());
-							listeDiplomes.add(d);
-							
-							etud.setListeDiplomes(listeDiplomes);
-
-							EtudiantDAO.save(etud);
-
-							toast.setText("L'année a bien été supprimée.");
-							toast.show();
-
-							initListe(); 
+					try {
+						Header h = ((Header) adapter.getItem(arg2));
+						
+						if (h != null) {
+							return false;
 						}
-					});
-
-					confirmQuitter.setNegativeButton("Non", null);
-					confirmQuitter.show();
+					} catch(Exception e) {
+						// Do nothing.
+					}
+					
+					if (((ListItem) adapter.getItem(arg2)).getAnnee() == null) {
+						// Do nothing.
+					} else {
+						AlertDialog.Builder confirmQuitter = new AlertDialog.Builder(AccueilE.this);
+						confirmQuitter.setTitle("Suppression");
+						confirmQuitter.setMessage("Voulez-vous vraiment supprimer cette année ?");
+						confirmQuitter.setCancelable(false);
+						confirmQuitter.setPositiveButton("Oui", new AlertDialog.OnClickListener() {
+							public void onClick(DialogInterface dialog, int id) {								
+								ArrayList<Diplome> listeDiplomes = etud.getListeDiplomes();
+								Diplome d = listeDiplomes.get(((ListItem) adapter.getItem(arg2)).getPosDip());
+								
+								ArrayList<Annee> listeAnnees = d.getListeAnnees();
+								listeAnnees.remove(((ListItem) adapter.getItem(arg2)).getPosAnnee());
+								
+								d.setListeAnnees(listeAnnees);
+								
+								listeDiplomes.remove(((ListItem) adapter.getItem(arg2)).getPosDip());
+								listeDiplomes.add(d);
+								
+								etud.setListeDiplomes(listeDiplomes);
+	
+								EtudiantDAO.save(etud);
+	
+								toast.setText("L'année a bien été supprimée.");
+								toast.show();
+	
+								initListe(); 
+							}
+						});
+	
+						confirmQuitter.setNegativeButton("Non", null);
+						confirmQuitter.show();
+					}
 
 					return true;
 				}

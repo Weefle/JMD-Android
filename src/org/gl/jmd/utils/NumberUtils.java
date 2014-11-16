@@ -1,7 +1,7 @@
 package org.gl.jmd.utils;
 
 /**
- * Classe utilitaire offrant des méthodes permettant de manipuler des chiffres plus facilement.
+ * Classe utilitaire offrant des opérations sur les nombres.
  * 
  * @author Jordi CHARPENTIER & Yoann VANHOESERLANDE
  */

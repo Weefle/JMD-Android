@@ -8,7 +8,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.gl.jmd.Constantes;
 import org.gl.jmd.R;
-import org.gl.jmd.model.user.Admin;
+import org.gl.jmd.model.Admin;
 
 import android.app.*;
 import android.content.DialogInterface;
@@ -48,6 +48,8 @@ public class RecupMDPA extends Activity {
 		final EditText PSEUDO = (EditText) findViewById(R.id.mdp_oublie_zone_pseudo);
 		
 		if (PSEUDO.getText().toString().length() != 0) {
+			PSEUDO.setBackgroundResource(R.drawable.border_edittext);
+			
 			Admin a = new Admin();
 			a.setPseudo(PSEUDO.getText().toString());
 			
@@ -58,16 +60,17 @@ public class RecupMDPA extends Activity {
 			progress.setMessage("Chargement...");
 			new RecupMDP(progress, URL).execute();	
 		} else {
-			toast.setText("Au moins un des champs est vide.");
+			if (PSEUDO.getText().toString().length() == 0) {
+				PSEUDO.setBackgroundResource(R.drawable.border_edittext_error);
+			} 
+			
+			toast.setText("Le champ \"Pseudo\" est vide.");
 			toast.show();
 		}
 	}
 	
-	/**
-	 * Classe interne représentant une tâche asynchrone qui sera effectuée en fond pendant un rond de chargement.
-	 * 
-	 * @author Jordi CHARPENTIER & Yoann VANHOESERLANDE
-	 */
+	/* Classe interne. */
+	
 	private class RecupMDP extends AsyncTask<Void, Void, Void> {
 		private ProgressDialog progress;
 		private String pathUrl;

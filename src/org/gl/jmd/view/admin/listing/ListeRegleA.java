@@ -123,7 +123,7 @@ public class ListeRegleA extends Activity {
 
 				map.put("description", 
 						"S'applique sur : UE (" + (listeRegles.get(s).getIdUE() == 1000000000 ? "toutes" : "ID : " + listeRegles.get(s).getIdUE()) + "), " +
-						"matière (" + (listeRegles.get(s).getIdMatiere() == 1000000000 ? "toutes" : "ID : " + listeRegles.get(s).getIdMatiere() + ")"));
+						"matière (" + (listeRegles.get(s).getIdMatiere() == 1000000000 ? "toutes)" : "ID : " + listeRegles.get(s).getIdMatiere() + ")"));
 
 				map.put("idUE", "" + listeRegles.get(s).getIdUE());
 				map.put("idMatiere", "" + listeRegles.get(s).getIdMatiere());
@@ -132,7 +132,7 @@ public class ListeRegleA extends Activity {
 				listItem.add(map);		
 			}
 
-			liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.administrateur_liste_regle_list, new String[] {"titre", "description"}, new int[] {R.id.titre, R.id.description})); 
+			liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.complex_list, new String[] {"titre", "description"}, new int[] {R.id.titre, R.id.description})); 
 
 			liste.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 				public boolean onItemLongClick(AdapterView<?> arg0, View arg1, final int arg2, final long arg3) {
@@ -167,7 +167,7 @@ public class ListeRegleA extends Activity {
 			ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
 			listItem.add(map);
 
-			liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.admin_simple_list, new String[] {"titre"}, new int[] {R.id.titre})); 
+			liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.simple_list, new String[] {"titre"}, new int[] {R.id.titre})); 
 		}
 	}
 
@@ -191,8 +191,8 @@ public class ListeRegleA extends Activity {
 		}
 
 		protected Void doInBackground(Void... arg0) {			
-			ServiceHandler sh = new ServiceHandler();
-            String jsonStr = sh.makeServiceCall(pathUrl, ServiceHandler.GET);
+			WebUtils sh = new WebUtils();
+            String jsonStr = sh.makeServiceCall(pathUrl, WebUtils.GET);
             
             Regle r = null;
             

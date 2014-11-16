@@ -34,40 +34,6 @@ public class Diplome implements Serializable {
 		
 	}
 	
-	/**
-	 * Méthode permettant de savoir si le diplôme est validé.
-	 * 
-	 * @return <b>true</b> si le diplôme est validé.<br />
-	 * <b>false</b> sinon.
-	 */
-	public boolean isValide() {
-		boolean res = false;
-		
-		for (int i = 0; i < this.listeAnnees.size(); i++) {			
-			if (this.listeAnnees.get(i).getMoyenne() > 10.0) {
-				res = true;
-			} else {
-				res = false;
-			}
-		}
-		
-		boolean isLastYearOK = false;
-		
-		for (int i = 0; i < this.listeAnnees.size(); i++) {
-			if (this.listeAnnees.get(i).isLast()) {
-				if (this.listeAnnees.get(i).getMoyenne() > 10.0) {
-					isLastYearOK = true;
-				} 
-			}
-		}
-		
-		if (!isLastYearOK) {
-			res = false;
-		} 
-		
-		return res;
-	}
-	
 	/* Getters. */
 	
 	/**

@@ -31,7 +31,7 @@ public class Note implements Serializable {
 	/**
 	 * La valeur de la note.
 	 */
-	private double note = -1;
+	private double note = -1.0;
 	
 	/**
 	 * Le coefficient de la note SI elle est de type "Contrôle Continu".

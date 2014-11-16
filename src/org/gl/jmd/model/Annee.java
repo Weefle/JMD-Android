@@ -119,7 +119,7 @@ public class Annee implements Serializable {
 	 * @return La moyenne de l'année.
 	 */
 	public double getMoyenne() {
-		double res = -1;
+		double res = -1.0;
 		
 		if (this.decoupage == DecoupageType.NULL) {
 			double resNULL = 0;
@@ -354,6 +354,12 @@ public class Annee implements Serializable {
 		return this.isLast;
 	}
 	
+	/**
+	 * Méthode retournant le booléen qui identifie si l'année est suivi, ou non.
+	 * 
+	 * @return <b>true</b> si l'année est suivie.
+	 * <b>false</b> sinon.
+	 */
 	public boolean isFollowed() {
 		return this.isFollowed;
 	}
@@ -432,6 +438,11 @@ public class Annee implements Serializable {
 		this.isLast = isLast;
 	}
 	
+	/**
+	 * Méthode permettant de modifier le booléen qui identifie si l'année est suivie, ou non.
+	 * 
+	 * @param isLast Le nouveau booléen pour savoir si l'année est suivie, ou non.
+	 */
 	public void setIsFollowed(boolean isFollowed) {
 		this.isFollowed = isFollowed;
 	}
