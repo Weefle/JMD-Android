@@ -63,25 +63,11 @@ public class CreationMatiere extends Activity {
 	 * @param view La vue lors du click sur le bouton de création.
 	 */
 	public void creerMatiere(View view) {
-		if ((NOM.getText().toString().length() != 0) && (COEFF.getText().toString().length() != 0)) {
-			Pattern pattern = Pattern.compile("^[a-zA-Z0-9\\s]*$");
-			Matcher matcher = pattern.matcher(NOM.getText().toString());
+		if ((NOM.getText().toString().length() != 0) && (COEFF.getText().toString().length() != 0)) {		
+			Pattern pattern = Pattern.compile("^[0-9]*$");
+			Matcher matcher = pattern.matcher(COEFF.getText().toString());
 			
 			if (!matcher.matches()) {
-				NOM.setBackgroundResource(R.drawable.border_edittext_error);
-				
-				toast.setText("Le nom ne peut contenir que des chiffres et des lettres.");
-				toast.show();
-				
-				return;
-			} else {
-				NOM.setBackgroundResource(R.drawable.border_edittext);
-			}
-			
-			Pattern pattern2 = Pattern.compile("^[0-9]*$");
-			Matcher matcher2 = pattern2.matcher(COEFF.getText().toString());
-			
-			if (!matcher2.matches()) {
 				COEFF.setBackgroundResource(R.drawable.border_edittext_error);
 				
 				toast.setText("Le coefficient doit être un nombre.");
@@ -131,9 +117,16 @@ public class CreationMatiere extends Activity {
 			
 			if (!isNomOK && !isCoeffOK) {
 				txtToast = "Les deux champs sont vides.";
-			} else if (!isCoeffOK) {
-				txtToast = "Le champ \"Coefficient\" est vide.";
-			} else if (!isNomOK) {
+				toast.show();
+				
+				return;
+			} 
+			
+			if (!isCoeffOK) {
+				txtToast = "Le champ \"Coefficient\" est vide.\n";
+			} 
+			
+			if (!isNomOK) {
 				txtToast = "Le champ \"Nom\" est vide.";
 			} 
 			
@@ -142,11 +135,8 @@ public class CreationMatiere extends Activity {
 		}
 	}
 	
-	/**
-	 * Classe interne représentant une tâche asynchrone qui sera effectuée en fond pendant un rond de chargement.
-	 * 
-	 * @author Jordi CHARPENTIER & Yoann VANHOESERLANDE
-	 */
+	/* Classes internes. */
+	
 	private class CreerMatiere extends AsyncTask<Void, Void, Void> {
 		private ProgressDialog progress;
 		private String pathUrl;
@@ -183,7 +173,7 @@ public class CreationMatiere extends Activity {
 					filePseudo.delete();
 					fileToken.delete();
 		        	
-					finishAllActivities();
+					activity.finishAffinity();
 		        	startActivity(new Intent(CreationMatiere.this, Accueil.class));	
 		        	
 		        	toast.setText("Session expirée.");	
@@ -233,10 +223,6 @@ public class CreationMatiere extends Activity {
 		}
 	}
 	
-	public void finishAllActivities(){
-		this.finishAffinity();
-	}
-	
 	/* Méthodes héritées de la classe Activity. */
 	
 	/**
@@ -257,7 +243,7 @@ public class CreationMatiere extends Activity {
 		final EditText NOM = (EditText) findViewById(R.id.admin_creation_matiere_nom);
 		final EditText COEFF = (EditText) findViewById(R.id.admin_creation_matiere_coefficient);
 		
-		if ((NOM.getText().toString().length() != 0) && (COEFF.getText().toString().length() != 0)) {
+		if ((NOM.getText().toString().length() != 0) || (COEFF.getText().toString().length() != 0)) {
 			AlertDialog.Builder confirmQuitter = new AlertDialog.Builder(this);
 			confirmQuitter.setTitle("Annulation");
 			confirmQuitter.setMessage("Voulez-vous vraiment annuler ?");

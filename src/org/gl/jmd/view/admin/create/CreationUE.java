@@ -2,17 +2,13 @@ package org.gl.jmd.view.admin.create;
 
 import java.io.*;
 import java.net.URLEncoder;
-import java.util.regex.*;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
+import org.apache.http.client.*;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.gl.jmd.Constantes;
-import org.gl.jmd.R;
-import org.gl.jmd.model.Annee;
-import org.gl.jmd.model.UE;
+import org.gl.jmd.*;
+import org.gl.jmd.model.*;
 import org.gl.jmd.model.enumeration.DecoupageYearType;
 import org.gl.jmd.utils.*;
 import org.gl.jmd.view.Accueil;
@@ -61,19 +57,7 @@ public class CreationUE extends Activity {
 	public void creerUE(View view) {
 		final EditText NOM = (EditText) findViewById(R.id.admin_creation_ue_nom);
 		
-		if (NOM.getText().toString().length() != 0) {
-			Pattern pattern = Pattern.compile("^[a-zA-Z\\s]*$");
-			Matcher matcher = pattern.matcher(NOM.getText().toString());
-			
-			if (!matcher.matches()) {
-				NOM.setBackgroundResource(R.drawable.border_edittext_error);
-				
-				toast.setText("Le nom ne peut contenir que des lettres.");
-				toast.show();
-				
-				return;
-			}
-			
+		if (NOM.getText().toString().length() != 0) {			
 			UE ue = new UE();
 			ue.setNom(NOM.getText().toString());
 			ue.setDecoupage(DecoupageYearType.valueOf(decoupage));
@@ -136,7 +120,7 @@ public class CreationUE extends Activity {
 					filePseudo.delete();
 					fileToken.delete();
 		        	
-					finishAllActivities();
+					activity.finishAffinity();
 		        	startActivity(new Intent(CreationUE.this, Accueil.class));	
 		        	
 		        	toast.setText("Session expirée.");	
@@ -186,10 +170,6 @@ public class CreationUE extends Activity {
 		}
 	}
 	
-	public void finishAllActivities(){
-		this.finishAffinity();
-	}
-	
 	/* Méthodes héritées de la classe Activity. */
 	
 	/**
@@ -199,7 +179,7 @@ public class CreationUE extends Activity {
 	 */
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
-		// Vide.
+		super.onConfigurationChanged(newConfig);
 	}
 	
 	/**

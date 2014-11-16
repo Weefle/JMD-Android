@@ -140,7 +140,7 @@ public class CreationRegle extends Activity {
 			}
 		});
 
-		// OpŽerateur
+		// Opérateur
 		ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(this, R.array.operateur_array, android.R.layout.simple_spinner_item);
 		adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
@@ -180,10 +180,6 @@ public class CreationRegle extends Activity {
 		progress2.setMessage("Chargement...");
 		new GetMatieres(progress2, Constantes.URL_SERVER + "matiere/getAllMatiereOfYear" +
 				"?idAnnee=" + a.getId()).execute(); 
-	}
-	
-	private void finishAllActivities(){
-		this.finishAffinity();
 	}
 	
 	private void initListeUE(final ArrayList<UE> listeUE) {
@@ -310,7 +306,7 @@ public class CreationRegle extends Activity {
 					filePseudo.delete();
 					fileToken.delete();
 		        	
-					finishAllActivities();
+					activity.finishAffinity();
 		        	startActivity(new Intent(CreationRegle.this, Accueil.class));	
 		        	
 		        	toast.setText("Session expirée.");	

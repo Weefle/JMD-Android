@@ -4,7 +4,7 @@ import java.io.File;
 
 import org.gl.jmd.R;
 import org.gl.jmd.model.Annee;
-import org.gl.jmd.utils.PdfUtils;
+import org.gl.jmd.utils.*;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -44,26 +44,10 @@ public class StatsAnnee extends Activity {
 		}
 		
 		TextView tvAvancement = (TextView) findViewById(R.id.stats_annee_avancement_value);
-		tvAvancement.setText(round(ann.getAvancement(), 2) + " %");
+		tvAvancement.setText(NumberUtils.round(ann.getAvancement(), 2) + " %");
 		
 		TextView tvMention = (TextView) findViewById(R.id.stats_annee_mention_value);
 		tvMention.setText(ann.getMention());
-	}
-	
-	/**
-	 * Méthode permettant d'arrondir une valeur.
-	 * 
-	 * @param value La valeur à arrondir.
-	 * @param places Le nombre de décimales à garder.
-	 * 
-	 * @return La valeur, arrondie.
-	 */
-	private double round(double value, int places) {
-	    long factor = (long) Math.pow(10, places);
-	    value = value * factor;
-	    long tmp = Math.round(value);
-	    
-	    return (double) tmp / factor;
 	}
 	
 	public void export(View view) {		

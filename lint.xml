@@ -6,4 +6,7 @@
     </issue>
     <issue id="SdCardPath" severity="ignore" />
     <issue id="ShowToast" severity="ignore" />
+    <issue id="SimpleDateFormat">
+        <ignore path="src/org/gl/jmd/utils/PdfUtils.java" />
+    </issue>
 </lint>

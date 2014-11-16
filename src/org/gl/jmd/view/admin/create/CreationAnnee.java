@@ -301,7 +301,7 @@ public class CreationAnnee extends Activity {
 					filePseudo.delete();
 					fileToken.delete();
 		        	
-					finishAllActivities();
+					activity.finishAffinity();
 		        	startActivity(new Intent(CreationAnnee.this, Accueil.class));	
 		        	
 		        	toast.setText("Session expirée.");	
@@ -349,10 +349,6 @@ public class CreationAnnee extends Activity {
 
 			return null;
 		}
-	}
-	
-	public void finishAllActivities(){
-		this.finishAffinity();
 	}
 	
 	/* Méthodes héritées de la classe Activity. */

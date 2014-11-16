@@ -7,7 +7,6 @@ import org.gl.jmd.view.admin.create.*;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
-import android.util.Log;
 import android.view.*;
 import android.widget.*;
 import android.widget.TabHost.OnTabChangeListener;

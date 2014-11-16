@@ -205,6 +205,7 @@ public class AjouterAnneeE extends Activity {
 					JSONArray uesJSON = anneeJSON.getJSONArray("ues");
 					ArrayList<UE> listeUE = new ArrayList<UE>();
 					UE ue = null;
+					double sommeCoeff = 0.0;
 					
                     for (int i = 0; i < uesJSON.length(); i++) {
                     	JSONObject ueJSON = uesJSON.getJSONObject(i);
@@ -228,6 +229,8 @@ public class AjouterAnneeE extends Activity {
 	                        	m.setCoefficient(matiereJSON.getLong("coefficient"));
 	                        	m.setNom(matiereJSON.getString("nom"));
 	                        	m.setIsOption(matiereJSON.getBoolean("isOption"));
+	                        	
+	                        	sommeCoeff += matiereJSON.getLong("coefficient");
 	                        	
 	                        	listeMatieres.add(m);
 	                        }
@@ -268,6 +271,13 @@ public class AjouterAnneeE extends Activity {
 						}
 					}
 
+					if (sommeCoeff != 60) {
+						toast.setText("L'année n'est pas complète.");
+						toast.show();
+						
+						return null;
+					}
+					
 					if (!exists) {
 						if (!diplomeExists) {
 							etud.getListeDiplomes().add(selectedDiplome);
