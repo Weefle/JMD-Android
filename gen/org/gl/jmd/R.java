@@ -33,20 +33,26 @@ public final class R {
         public static final int border_edittext_error=0x7f020005;
         public static final int button_color_selector=0x7f020006;
         public static final int button_style=0x7f020007;
-        public static final int dotted_line=0x7f020008;
-        public static final int email=0x7f020009;
-        public static final int entree=0x7f02000a;
-        public static final int ic_launcher=0x7f02000b;
-        public static final int logo_choix_user=0x7f02000c;
-        public static final int plus=0x7f02000d;
-        public static final int previous=0x7f02000e;
-        public static final int simul_moyenne=0x7f02000f;
-        public static final int spinner_item=0x7f020010;
-        public static final int star=0x7f020011;
-        public static final int tab_background=0x7f020012;
-        public static final int tab_background_selected=0x7f020013;
-        public static final int tab_bg_color_selector=0x7f020014;
-        public static final int tab_bg_selector=0x7f020015;
+        public static final int diploma=0x7f020008;
+        public static final int diploma_or=0x7f020009;
+        public static final int dotted_line=0x7f02000a;
+        public static final int email=0x7f02000b;
+        public static final int entree=0x7f02000c;
+        public static final int ic_launcher=0x7f02000d;
+        public static final int logo_choix_user=0x7f02000e;
+        public static final int plus=0x7f02000f;
+        public static final int previous=0x7f020010;
+        public static final int simul_moyenne=0x7f020011;
+        public static final int spinner_item=0x7f020012;
+        public static final int star=0x7f020013;
+        public static final int star_list=0x7f020014;
+        public static final int star_or=0x7f020015;
+        public static final int tab_background=0x7f020016;
+        public static final int tab_background_selected=0x7f020017;
+        public static final int tab_bg_color_selector=0x7f020018;
+        public static final int tab_bg_selector=0x7f020019;
+        public static final int university=0x7f02001a;
+        public static final int university_or=0x7f02001b;
     }
     public static final class id {
         public static final int accueil_bienvenue=0x7f09004d;
@@ -180,39 +186,40 @@ public final class R {
         public static final int administrateur_creation_matiere=0x7f030006;
         public static final int administrateur_creation_regle=0x7f030007;
         public static final int administrateur_creation_ue=0x7f030008;
-        public static final int administrateur_inscription=0x7f030009;
-        public static final int administrateur_liste_annee=0x7f03000a;
-        public static final int administrateur_liste_annee_list=0x7f03000b;
-        public static final int administrateur_liste_diplome=0x7f03000c;
-        public static final int administrateur_liste_etablissement=0x7f03000d;
-        public static final int administrateur_liste_matiere=0x7f03000e;
-        public static final int administrateur_liste_matiere_list=0x7f03000f;
-        public static final int administrateur_liste_regle=0x7f030010;
-        public static final int administrateur_liste_semestre=0x7f030011;
-        public static final int administrateur_liste_trimestre=0x7f030012;
-        public static final int administrateur_liste_ue=0x7f030013;
-        public static final int administrateur_liste_ue_regle=0x7f030014;
-        public static final int administrateur_mdp_oublie=0x7f030015;
-        public static final int complex_list=0x7f030016;
-        public static final int ecran_choix_user=0x7f030017;
-        public static final int etudiant_accueil=0x7f030018;
-        public static final int etudiant_accueil_list=0x7f030019;
-        public static final int etudiant_ajouter_annee=0x7f03001a;
-        public static final int etudiant_ajouter_annee_list=0x7f03001b;
-        public static final int etudiant_liste_annees_list=0x7f03001c;
-        public static final int etudiant_liste_matiere=0x7f03001d;
-        public static final int etudiant_liste_matiere_list=0x7f03001e;
-        public static final int etudiant_liste_semestre=0x7f03001f;
-        public static final int etudiant_liste_trimestre=0x7f030020;
-        public static final int etudiant_liste_ue=0x7f030021;
-        public static final int etudiant_saisie_note=0x7f030022;
-        public static final int etudiant_saisie_note_add_matiere_list=0x7f030023;
-        public static final int etudiant_saisie_note_cc=0x7f030024;
-        public static final int etudiant_saisie_note_list=0x7f030025;
-        public static final int etudiant_saisie_note_note_cc_list=0x7f030026;
-        public static final int etudiant_stats_annee=0x7f030027;
-        public static final int header=0x7f030028;
-        public static final int simple_list=0x7f030029;
+        public static final int administrateur_favori=0x7f030009;
+        public static final int administrateur_inscription=0x7f03000a;
+        public static final int administrateur_liste_annee=0x7f03000b;
+        public static final int administrateur_liste_annee_list=0x7f03000c;
+        public static final int administrateur_liste_diplome=0x7f03000d;
+        public static final int administrateur_liste_etablissement=0x7f03000e;
+        public static final int administrateur_liste_matiere=0x7f03000f;
+        public static final int administrateur_liste_matiere_list=0x7f030010;
+        public static final int administrateur_liste_regle=0x7f030011;
+        public static final int administrateur_liste_semestre=0x7f030012;
+        public static final int administrateur_liste_trimestre=0x7f030013;
+        public static final int administrateur_liste_ue=0x7f030014;
+        public static final int administrateur_liste_ue_regle=0x7f030015;
+        public static final int administrateur_mdp_oublie=0x7f030016;
+        public static final int complex_list=0x7f030017;
+        public static final int ecran_choix_user=0x7f030018;
+        public static final int etudiant_accueil=0x7f030019;
+        public static final int etudiant_accueil_list=0x7f03001a;
+        public static final int etudiant_ajouter_annee=0x7f03001b;
+        public static final int etudiant_ajouter_annee_list=0x7f03001c;
+        public static final int etudiant_liste_annees_list=0x7f03001d;
+        public static final int etudiant_liste_matiere=0x7f03001e;
+        public static final int etudiant_liste_matiere_list=0x7f03001f;
+        public static final int etudiant_liste_semestre=0x7f030020;
+        public static final int etudiant_liste_trimestre=0x7f030021;
+        public static final int etudiant_liste_ue=0x7f030022;
+        public static final int etudiant_saisie_note=0x7f030023;
+        public static final int etudiant_saisie_note_add_matiere_list=0x7f030024;
+        public static final int etudiant_saisie_note_cc=0x7f030025;
+        public static final int etudiant_saisie_note_list=0x7f030026;
+        public static final int etudiant_saisie_note_note_cc_list=0x7f030027;
+        public static final int etudiant_stats_annee=0x7f030028;
+        public static final int header=0x7f030029;
+        public static final int simple_list=0x7f03002a;
     }
     public static final class menu {
         public static final int menu_admin_view=0x7f080000;
@@ -220,45 +227,40 @@ public final class R {
         public static final int slide_menu_simple_list=0x7f080002;
     }
     public static final class string {
-        public static final int accueil_choix_user_admin_txt=0x7f060067;
-        public static final int admin_ajout_admin_bout_ajouter_texte=0x7f060035;
-        public static final int admin_ajout_admin_pseudo_txt=0x7f060043;
-        public static final int admin_bout_connexion_texte=0x7f060032;
-        public static final int admin_choix_matiere=0x7f060065;
-        public static final int admin_choix_ue=0x7f060064;
-        public static final int admin_connex_mdp=0x7f060042;
-        public static final int admin_connex_pseudo=0x7f060041;
-        public static final int admin_crea_annee_hint_etablissement=0x7f060037;
-        public static final int admin_crea_eta_hint_coeff=0x7f060039;
-        public static final int admin_crea_eta_hint_ville=0x7f060038;
-        public static final int admin_crea_mat_checkbox_option_txt=0x7f06003a;
-        public static final int admin_faq_view_name=0x7f060021;
-        public static final int admin_inscr_email=0x7f06003e;
-        public static final int admin_inscr_nom=0x7f06003f;
-        public static final int admin_inscr_password=0x7f06003c;
-        public static final int admin_inscr_password_retype=0x7f06003d;
-        public static final int admin_inscr_prenom=0x7f060040;
-        public static final int admin_inscr_pseudo=0x7f06003b;
-        public static final int admin_inscription_bout_inscription=0x7f060033;
-        public static final int admin_inscription_email_titre=0x7f06002c;
-        public static final int admin_inscription_password_titre=0x7f06002a;
-        public static final int admin_inscription_password_titre_again=0x7f06002b;
-        public static final int admin_inscription_pseudo_titre=0x7f060029;
-        public static final int admin_liste_diplome_titre=0x7f060060;
-        /**  Autres 
-         */
-        public static final int admin_liste_eta_titre_texte=0x7f06005f;
-        public static final int admin_liste_semestres_txt=0x7f060054;
-        public static final int admin_liste_trimestres_txt=0x7f060055;
-        public static final int admin_mdp_oublie_bout_texte=0x7f060034;
-        public static final int admin_mdp_oublie_pseudo_txt=0x7f060044;
-        public static final int admin_mdp_oublie_texte_pseudo=0x7f060028;
+        public static final int accueil_choix_user_admin_txt=0x7f06005b;
+        public static final int admin_ajout_admin_bout_ajouter_texte=0x7f060037;
+        public static final int admin_bout_connexion_texte=0x7f060034;
+        public static final int admin_choix_matiere=0x7f060063;
+        public static final int admin_choix_ue=0x7f060062;
+        public static final int admin_connex_mdp=0x7f060044;
+        public static final int admin_connexion_subtitle=0x7f060065;
+        public static final int admin_crea_annee_hint_etablissement=0x7f060039;
+        public static final int admin_crea_eta_hint_coeff=0x7f06003b;
+        public static final int admin_crea_eta_hint_ville=0x7f06003a;
+        public static final int admin_crea_mat_checkbox_option_txt=0x7f06003c;
+        public static final int admin_faq_view_name=0x7f060023;
+        public static final int admin_inscr_email=0x7f060040;
+        public static final int admin_inscr_nom=0x7f060041;
+        public static final int admin_inscr_password=0x7f06003e;
+        public static final int admin_inscr_password_retype=0x7f06003f;
+        public static final int admin_inscr_prenom=0x7f060042;
+        public static final int admin_inscr_pseudo=0x7f06003d;
+        public static final int admin_inscription_bout_inscription=0x7f060035;
+        public static final int admin_inscription_email_titre=0x7f06002e;
+        public static final int admin_inscription_password_titre=0x7f06002c;
+        public static final int admin_inscription_password_titre_again=0x7f06002d;
+        public static final int admin_inscription_pseudo_titre=0x7f06002b;
+        public static final int admin_liste_diplome_titre=0x7f060061;
+        public static final int admin_liste_eta_titre_texte=0x7f060060;
+        public static final int admin_mdp_oublie_bout_texte=0x7f060036;
+        public static final int admin_mdp_oublie_texte_pseudo=0x7f06002a;
         public static final int administrateur_accueil_bienvenue=0x7f060052;
+        public static final int administrateur_accueil_eta_dip_view_name=0x7f060021;
         public static final int administrateur_accueil_view_name=0x7f06001e;
         public static final int administrateur_ajout_admin_titre_texte=0x7f06004f;
         public static final int administrateur_ajout_admin_view_name=0x7f06001f;
         public static final int administrateur_connexion_titre_texte=0x7f060050;
-        public static final int administrateur_connexion_view_name=0x7f060020;
+        public static final int administrateur_connexion_view_name=0x7f060022;
         public static final int administrateur_creation_annee_titre_texte=0x7f06004a;
         public static final int administrateur_creation_annee_view_name=0x7f060013;
         /**  Titre des vues 
@@ -276,8 +278,9 @@ public final class R {
         public static final int administrateur_creation_regle_view_name=0x7f060016;
         public static final int administrateur_creation_ue_titre_texte=0x7f06004b;
         public static final int administrateur_creation_ue_view_name=0x7f060014;
+        public static final int administrateur_favori_view_name=0x7f060020;
         public static final int administrateur_inscription_titre_texte=0x7f060051;
-        public static final int administrateur_inscription_view_name=0x7f060022;
+        public static final int administrateur_inscription_view_name=0x7f060024;
         public static final int administrateur_liste_annee_view_name=0x7f060019;
         public static final int administrateur_liste_diplome_view_name=0x7f060018;
         public static final int administrateur_liste_eta_view_name=0x7f060017;
@@ -289,42 +292,44 @@ public final class R {
         public static final int administrateur_liste_ue_regle_view_name=0x7f06001c;
         public static final int administrateur_liste_ue_view_name=0x7f06001a;
         public static final int administrateur_mdp_oublie_titre_texte=0x7f06004e;
-        public static final int administrateur_recup_mdp_view_name=0x7f060023;
-        public static final int administrateur_txt=0x7f060062;
+        public static final int administrateur_recup_mdp_view_name=0x7f060025;
+        public static final int administrateur_txt=0x7f060064;
         /**  Nom de l'application 
          */
         public static final int app_name=0x7f060000;
-        public static final int bout_ajouter_txt=0x7f06002e;
+        public static final int bout_ajouter_txt=0x7f060030;
         /**  Boutons 
          */
-        public static final int bout_creer_txt=0x7f06002d;
-        public static final int bout_ok_txt=0x7f060031;
-        public static final int btn_choisir=0x7f06002f;
-        public static final int checkbox_derniere_annee=0x7f060061;
-        public static final int connex_texte_inscription=0x7f060027;
+        public static final int bout_creer_txt=0x7f06002f;
+        public static final int bout_ok_txt=0x7f060033;
+        public static final int btn_choisir=0x7f060031;
+        /**  Autres 
+         */
+        public static final int checkbox_derniere_annee=0x7f06005a;
+        public static final int connex_texte_inscription=0x7f060029;
         /**  Connexion / inscription 
          */
-        public static final int connex_texte_mdp_oublie=0x7f060026;
+        public static final int connex_texte_mdp_oublie=0x7f060028;
         /**  Spinners 
          */
-        public static final int crea_annee_decoupage=0x7f06006b;
-        public static final int crea_regle_operateur=0x7f06006e;
-        public static final int crea_regle_type=0x7f06006d;
-        public static final int crea_ue_type=0x7f06006c;
-        public static final int desc_img=0x7f06006a;
-        public static final int ecran_choix_user_checkbox_texte=0x7f060069;
-        public static final int ecran_choix_user_titre_texte=0x7f06005e;
+        public static final int crea_annee_decoupage=0x7f060067;
+        public static final int crea_regle_operateur=0x7f06006a;
+        public static final int crea_regle_type=0x7f060069;
+        public static final int crea_ue_type=0x7f060068;
+        public static final int desc_img=0x7f06005d;
+        public static final int ecran_choix_user_checkbox_texte=0x7f06005c;
+        public static final int ecran_choix_user_titre_texte=0x7f060059;
         /**  Vues 
          */
         public static final int ecran_choix_user_view_name=0x7f060001;
-        public static final int etudiant_accueil_bienvenue=0x7f060059;
+        public static final int etudiant_accueil_bienvenue=0x7f060057;
         public static final int etudiant_accueil_view_name=0x7f06000b;
         public static final int etudiant_ajout_annees_hint_nom_annee_txt=0x7f060046;
-        public static final int etudiant_ajout_diplome_bout_valider=0x7f060030;
+        public static final int etudiant_ajout_diplome_bout_valider=0x7f060032;
         public static final int etudiant_ajout_matiere_hint_nom_matiere_txt=0x7f060047;
         public static final int etudiant_ajout_ue_hint_nom_ue_txt=0x7f060045;
         public static final int etudiant_ajouter_annee_ae_view_name=0x7f060009;
-        public static final int etudiant_ajouter_diplome_titre_texte=0x7f060058;
+        public static final int etudiant_ajouter_diplome_titre_texte=0x7f060056;
         public static final int etudiant_contact_view_name=0x7f06000c;
         public static final int etudiant_faq_view_name=0x7f06000d;
         /**  Nom des vues d'un étudiant 
@@ -332,27 +337,25 @@ public final class R {
         public static final int etudiant_liste_annees_view_name=0x7f060002;
         public static final int etudiant_liste_matieres_view_name=0x7f060004;
         public static final int etudiant_liste_semestre_view_name=0x7f060008;
-        public static final int etudiant_liste_semestres_txt=0x7f060056;
         public static final int etudiant_liste_trimestre_view_name=0x7f060007;
-        public static final int etudiant_liste_trimestres_txt=0x7f060057;
         public static final int etudiant_liste_ue_view_name=0x7f060003;
-        public static final int etudiant_modifier_accueil_txt_bout_ok=0x7f060068;
+        public static final int etudiant_modifier_accueil_txt_bout_ok=0x7f06005f;
         public static final int etudiant_modifier_ae_view_name=0x7f06000a;
-        public static final int etudiant_profil_titre_txt=0x7f06005b;
         public static final int etudiant_profil_view_name=0x7f06000f;
-        public static final int etudiant_saisie_note_titre_txt=0x7f06005a;
+        public static final int etudiant_saisie_note_titre_txt=0x7f060058;
         public static final int etudiant_saisie_note_titre_view_name=0x7f06000e;
         public static final int etudiant_stats_annee_view_name=0x7f060010;
-        public static final int etudiant_txt=0x7f060063;
-        public static final int faq_titre=0x7f06005c;
+        public static final int etudiant_txt=0x7f06005e;
         /**  Hints 
          */
-        public static final int hint_nom=0x7f060036;
-        public static final int menu_a_propos_titre=0x7f06005d;
+        public static final int hint_nom=0x7f060038;
+        public static final int liste_semestres_txt=0x7f060054;
+        public static final int liste_trimestres_txt=0x7f060055;
         /**  Menu 
          */
-        public static final int menu_deconnexion=0x7f060024;
-        public static final int menu_nommer_admin=0x7f060025;
+        public static final int menu_deconnexion=0x7f060026;
+        public static final int menu_nommer_admin=0x7f060027;
+        public static final int pseudo_txt=0x7f060043;
     }
     public static final class xml {
         public static final int tab_item=0x7f040000;

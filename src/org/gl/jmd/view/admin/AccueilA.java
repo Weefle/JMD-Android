@@ -20,18 +20,19 @@ import android.app.*;
 import android.content.*;
 import android.content.res.Configuration;
 import android.graphics.*;
+import android.graphics.PorterDuff.Mode;
+import android.graphics.drawable.Drawable;
 import android.os.*;
 import android.support.v4.widget.DrawerLayout;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
-import android.util.Log;
 import android.view.*;
 import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.TabHost.*;
 
 /**
- * Activité correspondant à la vue d'acceuil de l'administrateur.
+ * ActivitÃ© correspondant Ã  la vue d'acceuil de l'administrateur.
  * 
  * @author Jordi CHARPENTIER & Yoann VANHOESERLANDE
  */
@@ -54,60 +55,112 @@ public class AccueilA extends TabActivity {
 		
 		tabHost = getTabHost();
 		
-		setupTab("Etablissements", "0", new Intent().setClass(this, ListeEtablissementA.class));
-        setupTab("Diplômes", "1", new Intent().setClass(this, ListeDiplomeA.class));
+		setupTab("Favori", "0", new Intent().setClass(this, FavoriA.class), 0);
+        setupTab("Etablissements", "1", new Intent().setClass(this, ListeEtablissementA.class), 1);
+        setupTab("DiplÃ´mes", "2", new Intent().setClass(this, ListeDiplomeA.class), 2);
 
-		tabHost.getTabWidget().getChildAt(0).getLayoutParams().height = 80;
+		tabHost.getTabWidget().getChildAt(0).getLayoutParams().height = 135;
 		tabHost.getTabWidget().getChildAt(0).setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_bg_selector)); 
 		tabHost.getTabWidget().getChildAt(0).setSelected(true);
-		
-		tabHost.getTabWidget().getChildAt(1).getLayoutParams().height = 80;
+
+		tabHost.getTabWidget().getChildAt(1).getLayoutParams().height = 135;
 		tabHost.getTabWidget().getChildAt(1).setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_bg_selector)); 
+		
+		tabHost.getTabWidget().getChildAt(2).getLayoutParams().height = 135;
+		tabHost.getTabWidget().getChildAt(2).setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_bg_selector)); 
 		
 		TextView tv = (TextView) tabHost.getTabWidget().getChildAt(0).findViewById(R.id.tabsText);
 		tv.setTextColor(Color.parseColor("#FF5E3A"));
+		tv.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.star_or, 0, 0);
 		
-		SpannableString spanString = new SpannableString("Etablissements");
+		SpannableString spanString = new SpannableString("Favori");
 		spanString.setSpan(new StyleSpan(Typeface.BOLD), 0, spanString.length(), 0);
 		
 		tv.setText(spanString);
 		
 		TextView tv2 = (TextView) tabHost.getTabWidget().getChildAt(1).findViewById(R.id.tabsText);
 		tv2.setTextColor(Color.parseColor("#FFFFFF"));
-
+		
+		TextView tv3 = (TextView) tabHost.getTabWidget().getChildAt(2).findViewById(R.id.tabsText);
+		tv3.setTextColor(Color.parseColor("#FFFFFF"));
+		
+		final ImageView buttonAdd = (ImageView) findViewById(R.id.admin_accueil_bout_modifier);
+		buttonAdd.setVisibility(View.GONE);
+		
 		tabHost.setOnTabChangedListener(new OnTabChangeListener(){
 			@Override
 			public void onTabChanged(String tabId) {	
 				TextView tv = (TextView) tabHost.getTabWidget().getChildAt(0).findViewById(R.id.tabsText);
 				TextView tv2 = (TextView) tabHost.getTabWidget().getChildAt(1).findViewById(R.id.tabsText);
+				TextView tv3 = (TextView) tabHost.getTabWidget().getChildAt(2).findViewById(R.id.tabsText);
 				
-				SpannableString spanString = new SpannableString("Etablissements");
-				SpannableString spanString2 = new SpannableString("Diplômes");
+				SpannableString spanString = new SpannableString("Favori");
+				SpannableString spanString2 = new SpannableString("Etablissements");
+				SpannableString spanString3 = new SpannableString("DiplÃ´mes");
 				
 				if (tabId.equals("0")) {
+					buttonAdd.setVisibility(View.GONE);
 					currentTab = 0;
 					
 					spanString.setSpan(new StyleSpan(Typeface.BOLD), 0, spanString.length(), 0);
 					
 					tv.setTextColor(Color.parseColor("#FF5E3A"));
 					tv.setText(spanString);
-
+					tv.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.star_or, 0, 0);
+					
 					spanString2.setSpan(new StyleSpan(Typeface.NORMAL), 0, spanString2.length(), 0);
 					
 					tv2.setTextColor(Color.parseColor("#FFFFFF"));
 					tv2.setText(spanString2);
+					tv2.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.university, 0, 0);
+					
+					spanString3.setSpan(new StyleSpan(Typeface.NORMAL), 0, spanString3.length(), 0);
+					
+					tv3.setTextColor(Color.parseColor("#FFFFFF"));
+					tv3.setText(spanString3);
+					tv3.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.diploma, 0, 0);
 				} else if (tabId.equals("1")) {
+					buttonAdd.setVisibility(View.VISIBLE);
 					currentTab = 1;
 
 					spanString.setSpan(new StyleSpan(Typeface.NORMAL), 0, spanString.length(), 0);
 
 					tv.setTextColor(Color.parseColor("#FFFFFF"));
 					tv.setText(spanString);
+					tv.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.star, 0, 0);
 
 					spanString2.setSpan(new StyleSpan(Typeface.BOLD), 0, spanString2.length(), 0);
 
 					tv2.setTextColor(Color.parseColor("#FF5E3A"));
 					tv2.setText(spanString2);
+					tv2.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.university_or, 0, 0);
+					
+					spanString3.setSpan(new StyleSpan(Typeface.NORMAL), 0, spanString3.length(), 0);
+					
+					tv3.setTextColor(Color.parseColor("#FFFFFF"));
+					tv3.setText(spanString3);
+					tv3.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.diploma, 0, 0);
+				} else if (tabId.equals("2")) {
+					buttonAdd.setVisibility(View.VISIBLE);
+					currentTab = 2;
+
+					spanString.setSpan(new StyleSpan(Typeface.NORMAL), 0, spanString.length(), 0);
+
+					tv.setTextColor(Color.parseColor("#FFFFFF"));
+					tv.setText(spanString);
+					tv.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.star, 0, 0);
+					
+					spanString2.setSpan(new StyleSpan(Typeface.NORMAL), 0, spanString2.length(), 0);
+					
+					tv2.setTextColor(Color.parseColor("#FFFFFF"));
+					tv2.setText(spanString2);
+					tv2.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.university, 0, 0);
+					
+					spanString3.setSpan(new StyleSpan(Typeface.BOLD), 0, spanString3.length(), 0);
+
+					tv3.setTextColor(Color.parseColor("#FF5E3A"));
+					tv3.setText(spanString3);
+					tv3.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.diploma_or, 0, 0);
 				}
 			}}
 		);
@@ -126,7 +179,7 @@ public class AccueilA extends TabActivity {
         HashMap<String, String> map;
 		
         map = new HashMap<String, String>();
-		map.put("titre", "Déconnexion");
+		map.put("titre", "DÃ©connexion");
 		listItem.add(map);
 		
 		map = new HashMap<String, String>();
@@ -140,7 +193,7 @@ public class AccueilA extends TabActivity {
 			public void onItemClick(AdapterView<?> arg0, View v, int position, long id) {
 				dLayout.closeDrawers();					
 				
-				if (listItem.get(position).get("titre").equals("Déconnexion")) {
+				if (listItem.get(position).get("titre").equals("DÃ©connexion")) {
 					String URL = Constantes.URL_SERVER + "admin/logout" +
 							"?token=" + FileUtils.lireFichier("/sdcard/cacheJMD/token.jmd") + 
 							"&pseudo=" + FileUtils.lireFichier("/sdcard/cacheJMD/pseudo.jmd") +
@@ -156,14 +209,26 @@ public class AccueilA extends TabActivity {
         });
 	}
 	
-    private void setupTab(String name, String tag, Intent intent) {
-		tabHost.addTab(tabHost.newTabSpec(tag).setIndicator(createTabView(tabHost.getContext(), name)).setContent(intent));
+    private void setupTab(String name, String tag, Intent intent, int i) {
+		tabHost.addTab(tabHost.newTabSpec(tag)
+				.setIndicator(createTabView(tabHost.getContext(), name, i))
+				.setContent(intent));
 	}
  
-	private View createTabView(final Context context, final String text) {
+	private View createTabView(final Context context, final String text, int i) {
 		View view = LayoutInflater.from(context).inflate(R.xml.tab_item, null);
+		
 		TextView tv = (TextView) view.findViewById(R.id.tabsText);
 		tv.setText(text);
+		tv.setCompoundDrawablePadding(2);
+		
+		if (i == 0) {
+			tv.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.star, 0, 0);
+		} else if (i == 1) {
+			tv.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.university, 0, 0);
+		} else if (i == 2) {
+			tv.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.diploma, 0, 0);
+		}
  
 		return view;
 	}
@@ -174,23 +239,14 @@ public class AccueilA extends TabActivity {
 	}
 
 	/**
-	 * Méthode permettant de faire apparaitre le menu lors du click sur le bouton de menu.
-	 * 
-	 * @param view La vue lors du click sur le bouton de menu.
-	 */
-	public void openMenu(View view) {
-		openOptionsMenu();
-	}
-
-	/**
-	 * Méthode permettant de faire apparaitre la popup lors du click sur le bouton "plus".
+	 * MÃ©thode permettant de faire apparaitre la popup lors du click sur le bouton "plus".
 	 * 
 	 * @param view La vue lors du click sur le bouton "plus".
 	 */
 	public void create(View view) {
-		if (currentTab == 0) {
+		if (currentTab == 1) {
 			startActivity(new Intent(AccueilA.this, CreationEtablissement.class));	
-		} else if (currentTab == 1) {
+		} else if (currentTab == 2) {
 			startActivity(new Intent(AccueilA.this, CreationDiplome.class));	
 		}
 	}
@@ -215,8 +271,6 @@ public class AccueilA extends TabActivity {
 		protected Void doInBackground(Void... arg0) {
 			HttpClient httpclient = new DefaultHttpClient();
 		    HttpGet httppost = new HttpGet(pathUrl);
-		    
-		    Log.e("AccueilA", pathUrl);
 
 		    try {
 		        HttpResponse response = httpclient.execute(httppost);
@@ -231,10 +285,10 @@ public class AccueilA extends TabActivity {
 					finish();
 					startActivity(new Intent(AccueilA.this, ConnexionA.class));		
 		        	
-		        	toast.setText("Déconnecté.");
+		        	toast.setText("DÃ©connectÃ©.");
 		        	toast.show();
 		        } else if (response.getStatusLine().getStatusCode() == 401) {
-					finishAllActivities();
+					activity.finishAffinity();
 		        	startActivity(new Intent(AccueilA.this, Accueil.class));	
 		        	
 		        	toast.setText("Erreur. Redirection vers l'accueil.");	
@@ -243,16 +297,14 @@ public class AccueilA extends TabActivity {
 		        	toast.setText("Une erreur est survenue au niveau de la BDD.");	
 					toast.show();
 		        } else {
-		        	toast.setText("Erreur inconnue. Veuillez réessayer.");	
+		        	toast.setText("Erreur inconnue. Veuillez rï¿½essayer.");	
 					toast.show();
 		        }
-		        
-		        Log.e("AccueilA", "" +response.getStatusLine().getStatusCode());
 		    } catch (ClientProtocolException e) {
 		    	AccueilA.this.runOnUiThread(new Runnable() {
 					public void run() {
 						AlertDialog.Builder builder = new AlertDialog.Builder(AccueilA.this);
-						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setMessage("Erreur - VÃ©rifiez votre connexion");
 						builder.setCancelable(false);
 						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int which) {
@@ -268,7 +320,7 @@ public class AccueilA extends TabActivity {
 		    	AccueilA.this.runOnUiThread(new Runnable() {
 					public void run() {
 						AlertDialog.Builder builder = new AlertDialog.Builder(AccueilA.this);
-						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setMessage("Erreur - VÃ©rifiez votre connexion");
 						builder.setCancelable(false);
 						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int which) {
@@ -285,17 +337,13 @@ public class AccueilA extends TabActivity {
 			return null;
 		}
 	}
-	
-	public void finishAllActivities(){
-		this.finishAffinity();
-	}
 
-	/* Méthodes héritées de la classe Activity. */
+	/* MÃ©thodes hÃ©ritÃ©es de la classe Activity. */
 
 	/**
-	 * Méthode permettant d'empécher la reconstruction de la vue lors de la rotation de l'écran. 
+	 * MÃ©thode permettant d'empÃ©cher la reconstruction de la vue lors de la rotation de l'Ã©cran. 
 	 * 
-	 * @param newConfig L'état de la vue avant la rotation.
+	 * @param newConfig L'Ã©tat de la vue avant la rotation.
 	 */
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {

@@ -49,6 +49,8 @@
     
     <string name="administrateur_accueil_view_name">Accueil (Administrateur)</string>
     <string name="administrateur_ajout_admin_view_name">Ajouter un administrateur</string>
+    <string name="administrateur_favori_view_name">Favori</string>
+    <string name="administrateur_accueil_eta_dip_view_name">Accueil (Administrateur)</string>
     
     <string name="administrateur_connexion_view_name">Connexion</string>
     <string name="admin_faq_view_name">FAQ</string>
@@ -101,11 +103,8 @@
     <string name="admin_inscr_nom">Nom</string>
     <string name="admin_inscr_prenom">Prénom</string>
     
-    <string name="admin_connex_pseudo">Pseudo</string>
+    <string name="pseudo_txt">Pseudo</string>    
     <string name="admin_connex_mdp">Mot de passe</string>
-    
-    <string name="admin_ajout_admin_pseudo_txt">Pseudo</string>
-    <string name="admin_mdp_oublie_pseudo_txt">Pseudo</string>
     
     <string name="etudiant_ajout_ue_hint_nom_ue_txt">Nom de l\'UE</string>
     <string name="etudiant_ajout_annees_hint_nom_annee_txt">Nom de l\'année</string>
@@ -127,39 +126,32 @@
     <string name="administrateur_accueil_bienvenue">Bienvenue</string>
     <string name="administrateur_liste_ue_regle_titre">UE</string>
     
-    <string name="admin_liste_semestres_txt">Semestres</string>
-    <string name="admin_liste_trimestres_txt">Trimestres</string>
-    
-    <string name="etudiant_liste_semestres_txt">Semestres</string>
-    <string name="etudiant_liste_trimestres_txt">Trimestres</string>
+    <string name="liste_semestres_txt">Semestres</string>
+    <string name="liste_trimestres_txt">Trimestres</string>
     
 	<string name="etudiant_ajouter_diplome_titre_texte">Ajouter un diplôme</string>
 	<string name="etudiant_accueil_bienvenue">Bienvenue</string>
 	<string name="etudiant_saisie_note_titre_txt">Saisie de notes</string>
-	<string name="etudiant_profil_titre_txt">Profil</string>
 	
-	<string name="faq_titre">FAQ</string>
-	<string name="menu_a_propos_titre">A propos</string>
 	<string name="ecran_choix_user_titre_texte">Accueil</string>
 	
 	<!-- Autres -->
-	    
+	
+	<string name="checkbox_derniere_annee">Dernière année d\'un diplôme ?</string>
+	<string name="accueil_choix_user_admin_txt">Qui êtes-vous ?</string>
+	<string name="ecran_choix_user_checkbox_texte">Se souvenir de mon choix ?</string>
+	<string name="desc_img">Description</string>
+	
+	<string name="etudiant_txt">Etudiant</string>
+	<string name="etudiant_modifier_accueil_txt_bout_ok">OK</string>
 	<string name="admin_liste_eta_titre_texte">Liste des établissements</string>
 	<string name="admin_liste_diplome_titre">Liste des diplômes</string>
 	
-	<string name="checkbox_derniere_annee">Dernière année d\'un diplôme ?</string>
-	
-	<string name="administrateur_txt">Administrateur</string>
-	<string name="etudiant_txt">Etudiant</string>
-	
 	<string name="admin_choix_ue">Choisir une UE</string>
 	<string name="admin_choix_matiere">Choisir une matière</string>
-	
+	<string name="administrateur_txt">Administrateur</string>
+	<string name="admin_connexion_subtitle">Connectez-vous à votre compte Administrateur</string>
 	<string name="administrateur_creation_matiere_coefficient_tv">Coefficient</string>
-	<string name="accueil_choix_user_admin_txt">Qui êtes-vous ?</string>
-	<string name="etudiant_modifier_accueil_txt_bout_ok">OK</string>
-	<string name="ecran_choix_user_checkbox_texte">Se souvenir de mon choix ?</string>
-	<string name="desc_img">Description</string>
 	
 	<!-- Spinners -->
 	

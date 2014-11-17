@@ -114,6 +114,20 @@
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
         
+        <activity
+            android:name="org.gl.jmd.view.admin.AccueilEtaDipA"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/administrateur_accueil_eta_dip_view_name" 
+            android:theme="@android:style/Theme.NoTitleBar" >
+        </activity>
+        
+        <activity
+            android:name="org.gl.jmd.view.admin.FavoriA"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/administrateur_favori_view_name" 
+            android:theme="@android:style/Theme.NoTitleBar" >
+        </activity>
+        
         <!-- Création -->
         
         <activity

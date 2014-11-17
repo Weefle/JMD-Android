@@ -15,27 +15,27 @@
             android:id="@+id/admin_inscription_titre"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_centerInParent="true"
-            android:layout_marginLeft="30dp"
+            android:layout_marginStart="30sp"
             android:text="@string/administrateur_inscription_titre_texte"
             android:textColor="#FFFFFF"
             android:textSize="20sp" />
-        
+
         <TextView
             android:id="@+id/admin_inscription_btn_save"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_centerInParent="true"
-            android:layout_marginRight="30dp"
+            android:layout_marginEnd="30sp"
             android:clickable="true"
             android:onClick="inscription"
-            android:text="OK"
-            android:textColor="@drawable/button_color_selector" 
-            android:textSize="18dp" />
+            android:text="@string/bout_ok_txt"
+            android:textColor="@drawable/button_color_selector"
+            android:textSize="18sp" />
     </RelativeLayout>
-    
+
     <EditText
         android:id="@+id/admin_inscription_ta_nom"
         android:layout_width="fill_parent"
@@ -44,7 +44,7 @@
         android:layout_marginTop="20dp"
         android:hint="@string/admin_inscr_nom"
         android:inputType="text" />
-    
+
     <EditText
         android:id="@+id/admin_inscription_ta_prenom"
         android:layout_width="fill_parent"
@@ -62,7 +62,7 @@
         android:layout_marginTop="20dp"
         android:hint="@string/admin_inscr_email"
         android:inputType="textEmailAddress" />
-    
+
     <EditText
         android:id="@+id/admin_inscription_ta_pseudo"
         android:layout_width="fill_parent"
@@ -78,6 +78,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="20dp"
+        android:fontFamily="sans-serif"
         android:hint="@string/admin_inscr_password"
         android:inputType="textPassword" />
 
@@ -87,6 +88,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="20dp"
+        android:fontFamily="sans-serif"
         android:hint="@string/admin_inscr_password_retype"
         android:inputType="textPassword" />
 

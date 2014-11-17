@@ -1,23 +1,23 @@
-package org.gl.jmd.view.admin.listing;
+package org.gl.jmd.view.admin;
 
 import java.io.*;
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
+import org.apache.http.*;
 import org.apache.http.client.*;
 import org.apache.http.client.methods.*;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
-import org.gl.jmd.*;
+import org.gl.jmd.Constantes;
+import org.gl.jmd.R;
 import org.gl.jmd.model.*;
 import org.gl.jmd.model.enumeration.DecoupageType;
-import org.gl.jmd.utils.*;
+import org.gl.jmd.utils.FileUtils;
 import org.gl.jmd.view.Accueil;
-import org.gl.jmd.view.admin.create.CreationAnnee;
+import org.gl.jmd.view.admin.listing.*;
 import org.gl.jmd.view.list.SwipeDismissListViewTouchListener;
 import org.json.*;
-
 
 import android.app.*;
 import android.content.*;
@@ -26,54 +26,38 @@ import android.os.*;
 import android.view.View;
 import android.widget.*;
 
-/**
- * Activité correspondant à la vue de listing des années d'un diplôme.
- * 
- * @author Jordi CHARPENTIER & Yoann VANHOESERLANDE
- */
-public class ListeAnneeA extends Activity {
-
+public class FavoriA extends Activity {
+	
 	private Activity activity;
-
-	private Diplome d = null;
-
+	
 	private Toast toast;
-
+	
+	private long back_pressed;
+	
 	private ArrayList<Annee> listeAnnees = new ArrayList<Annee>();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		setContentView(R.layout.administrateur_liste_annee);
+		setContentView(R.layout.administrateur_favori);
 		overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-
-		d = (Diplome) getIntent().getExtras().getSerializable("diplome");
-
+		
 		activity = this;
-		toast = Toast.makeText(getBaseContext(), "", Toast.LENGTH_SHORT);
-
-		initTextView();
+		toast = Toast.makeText(activity, "", Toast.LENGTH_SHORT);
+		
 		actualiserListe();
 	}
-
-	private void initTextView() {
-		TextView tvTitre = (TextView) findViewById(R.id.admin_liste_annee_titre);
-		tvTitre.setText(d.getNom());
-	}
-
+	
 	private void actualiserListe() {	
-		listeAnnees.clear();
-
 		ProgressDialog progress = new ProgressDialog(this);
 		progress.setMessage("Chargement...");
-		new ListerAnnees(progress, Constantes.URL_SERVER + "annee/getAnneesFollowedByDiplome" +
-				"?idDiplome=" + d.getId() +
-				"&token=" + FileUtils.lireFichier("/sdcard/cacheJMD/token.jmd") + 
+		new ListerAnnees(progress, Constantes.URL_SERVER + "annee/getFavorites" +
+				"?token=" + FileUtils.lireFichier("/sdcard/cacheJMD/token.jmd") + 
 				"&pseudo=" + FileUtils.lireFichier("/sdcard/cacheJMD/pseudo.jmd") +
 				"&timestamp=" + new java.util.Date().getTime()).execute();	
 	}
-
+	
 	private void initListe() {
 		final ListView liste = (ListView) findViewById(android.R.id.list);
 
@@ -114,7 +98,7 @@ public class ListeAnneeA extends Activity {
 								@Override
 								public void onDismiss(ListView listView, int[] reverseSortedPositions) {
 									for (final int position : reverseSortedPositions) {
-										AlertDialog.Builder confirmSuppr = new AlertDialog.Builder(ListeAnneeA.this);
+										AlertDialog.Builder confirmSuppr = new AlertDialog.Builder(FavoriA.this);
 										confirmSuppr.setTitle("Suppression");
 										confirmSuppr.setMessage("Voulez-vous vraiment supprimer cet élément ?");
 										confirmSuppr.setCancelable(false);
@@ -157,7 +141,7 @@ public class ListeAnneeA extends Activity {
 						c = ListeTrimestreA.class;
 					} 
 
-					Intent newIntent = new Intent(ListeAnneeA.this, c);
+					Intent newIntent = new Intent(FavoriA.this, c);
 					newIntent.putExtra("annee", listeAnnees.get(position));
 					newIntent.putExtra("decoupage", listItem.get(position).get("decoupage"));
 					
@@ -168,7 +152,7 @@ public class ListeAnneeA extends Activity {
 			liste.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 				public boolean onItemLongClick(AdapterView<?> arg0, View arg1, final int arg2, final long arg3) {
 					if (listItem.get(arg2).get("img") == null) {
-						AlertDialog.Builder confirmSuppr = new AlertDialog.Builder(ListeAnneeA.this);
+						AlertDialog.Builder confirmSuppr = new AlertDialog.Builder(FavoriA.this);
 						confirmSuppr.setTitle("Suivre l'année");
 						confirmSuppr.setMessage("Voulez-vous vraiment suivre cette année ?");
 						confirmSuppr.setCancelable(false);
@@ -187,7 +171,7 @@ public class ListeAnneeA extends Activity {
 						confirmSuppr.setNegativeButton("Non", null);
 						confirmSuppr.show();
 					} else {
-						AlertDialog.Builder confirmSuppr = new AlertDialog.Builder(ListeAnneeA.this);
+						AlertDialog.Builder confirmSuppr = new AlertDialog.Builder(FavoriA.this);
 						confirmSuppr.setTitle("Ne plus suivre l'année");
 						confirmSuppr.setMessage("Voulez-vous vraiment ne plus suivre cette année ?");
 						confirmSuppr.setCancelable(false);
@@ -220,15 +204,300 @@ public class ListeAnneeA extends Activity {
 			liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.simple_list, new String[] {"titre"}, new int[] {R.id.titre})); 
 		}
 	}
+	
+	private void finishAllActivities() {
+		this.finishAffinity();
+	}
+	
+	/* Classes internes. */
+	
+	private class DeleteAnnee extends AsyncTask<Void, Void, Void> {
+		private ProgressDialog progress;
+		private String pathUrl;
 
-	public void creerAnnee(View view) {
-		Intent newIntent = new Intent(ListeAnneeA.this, CreationAnnee.class);
-		newIntent.putExtra("idDiplome", d.getId());
+		public DeleteAnnee(ProgressDialog progress, String pathUrl) {
+			this.progress = progress;
+			this.pathUrl = pathUrl;
+		}
 
-		startActivity(newIntent);
+		public void onPreExecute() {
+			progress.show();
+		}
+
+		public void onPostExecute(Void unused) {
+			progress.dismiss();
+		}
+
+		protected Void doInBackground(Void... arg0) {
+			HttpClient httpclient = new DefaultHttpClient();
+			HttpDelete httpDelete = new HttpDelete(pathUrl);
+
+			try {
+				final HttpResponse response = httpclient.execute(httpDelete);
+
+				FavoriA.this.runOnUiThread(new Runnable() {
+					public void run() {    			
+						if (response.getStatusLine().getStatusCode() == 200) {
+							FavoriA.this.runOnUiThread(new Runnable() {
+								public void run() {    						
+									actualiserListe();
+								}
+							});
+
+							toast.setText("Année supprimée.");
+							toast.show();
+						} else if (response.getStatusLine().getStatusCode() == 401) {
+							File filePseudo = new File("/sdcard/cacheJMD/pseudo.jmd");
+							File fileToken = new File("/sdcard/cacheJMD/token.jmd");
+
+							filePseudo.delete();
+							fileToken.delete();
+
+							activity.finishAffinity();
+							startActivity(new Intent(FavoriA.this, Accueil.class));	
+
+							toast.setText("Session expirée.");	
+							toast.show();
+						} else if (response.getStatusLine().getStatusCode() == 500) {				        	
+							toast.setText("Une erreur est survenue au niveau de la BDD.");	
+							toast.show();
+						} else {
+							toast.setText("Erreur inconnue. Veuillez réessayer.");	
+							toast.show();
+						}
+
+						return;
+					}
+				});
+			} catch (ClientProtocolException e) {
+				FavoriA.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(FavoriA.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								FavoriA.this.finish();
+							}
+						});
+
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+			} catch (IOException e) {
+				FavoriA.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(FavoriA.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								FavoriA.this.finish();
+							}
+						});
+
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+			}
+
+			return null;
+		}
 	}
 
-	/* Classes internes. */
+	private class FollowAnnee extends AsyncTask<Void, Void, Void> {
+		private ProgressDialog progress;
+		private String pathUrl;
+
+		public FollowAnnee(ProgressDialog progress, String pathUrl) {
+			this.progress = progress;
+			this.pathUrl = pathUrl;
+		}
+
+		public void onPreExecute() {
+			progress.show();
+		}
+
+		public void onPostExecute(Void unused) {
+			progress.dismiss();
+		}
+
+		protected Void doInBackground(Void... arg0) {
+			HttpClient httpclient = new DefaultHttpClient();
+			HttpGet httpGet = new HttpGet(pathUrl);
+
+			try {
+				final HttpResponse response = httpclient.execute(httpGet);
+
+				FavoriA.this.runOnUiThread(new Runnable() {
+					public void run() {    			
+						if (response.getStatusLine().getStatusCode() == 200) {
+							FavoriA.this.runOnUiThread(new Runnable() {
+								public void run() {    						
+									actualiserListe();
+								}
+							});
+							
+							toast.setText("Vous suivez désormais cette année.");
+							toast.show();
+						} else if (response.getStatusLine().getStatusCode() == 401) {
+							File filePseudo = new File("/sdcard/cacheJMD/pseudo.jmd");
+							File fileToken = new File("/sdcard/cacheJMD/token.jmd");
+
+							filePseudo.delete();
+							fileToken.delete();
+
+							activity.finishAffinity();
+							startActivity(new Intent(FavoriA.this, Accueil.class));	
+
+							toast.setText("Session expirée.");	
+							toast.show();
+						} else if (response.getStatusLine().getStatusCode() == 500) {				        	
+							toast.setText("Une erreur est survenue au niveau de la BDD.");	
+							toast.show();
+						} else {
+							toast.setText("Erreur inconnue. Veuillez réessayer.");	
+							toast.show();
+						}
+
+						return;
+					}
+				});
+			} catch (ClientProtocolException e) {
+				FavoriA.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(FavoriA.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								FavoriA.this.finish();
+							}
+						});
+
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+			} catch (IOException e) {
+				FavoriA.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(FavoriA.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								FavoriA.this.finish();
+							}
+						});
+
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+			}
+
+			return null;
+		}
+	}
+	
+	private class UnfollowAnnee extends AsyncTask<Void, Void, Void> {
+		private ProgressDialog progress;
+		private String pathUrl;
+
+		public UnfollowAnnee(ProgressDialog progress, String pathUrl) {
+			this.progress = progress;
+			this.pathUrl = pathUrl;
+		}
+
+		public void onPreExecute() {
+			progress.show();
+		}
+
+		public void onPostExecute(Void unused) {
+			progress.dismiss();
+		}
+
+		protected Void doInBackground(Void... arg0) {
+			HttpClient httpclient = new DefaultHttpClient();
+			HttpGet httpGet = new HttpGet(pathUrl);
+
+			try {
+				final HttpResponse response = httpclient.execute(httpGet);
+
+				FavoriA.this.runOnUiThread(new Runnable() {
+					public void run() {    			
+						if (response.getStatusLine().getStatusCode() == 200) {
+							FavoriA.this.runOnUiThread(new Runnable() {
+								public void run() {    						
+									actualiserListe();
+								}
+							});
+							
+							toast.setText("Vous ne suivez plus cette année.");
+							toast.show();
+						} else if (response.getStatusLine().getStatusCode() == 401) {
+							File filePseudo = new File("/sdcard/cacheJMD/pseudo.jmd");
+							File fileToken = new File("/sdcard/cacheJMD/token.jmd");
+
+							filePseudo.delete();
+							fileToken.delete();
+
+							activity.finishAffinity();
+							startActivity(new Intent(FavoriA.this, Accueil.class));	
+
+							toast.setText("Session expirée.");	
+							toast.show();
+						} else if (response.getStatusLine().getStatusCode() == 500) {				        	
+							toast.setText("Une erreur est survenue au niveau de la BDD.");	
+							toast.show();
+						} else {
+							toast.setText("Erreur inconnue. Veuillez réessayer.");	
+							toast.show();
+						}
+
+						return;
+					}
+				});
+			} catch (ClientProtocolException e) {
+				FavoriA.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(FavoriA.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								FavoriA.this.finish();
+							}
+						});
+
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+			} catch (IOException e) {
+				FavoriA.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(FavoriA.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								FavoriA.this.finish();
+							}
+						});
+
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+			}
+
+			return null;
+		}
+	}
 
 	private class ListerAnnees extends AsyncTask<Void, Void, Void> {
 		private ProgressDialog progress;
@@ -276,7 +545,7 @@ public class ListeAnneeA extends Activity {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			
+
 			if (httpResponse.getStatusLine().getStatusCode() == 200) {            	
 				try {
 					JSONArray annees = new JSONArray(response);
@@ -303,7 +572,7 @@ public class ListeAnneeA extends Activity {
 						listeAnnees.add(a);
 					}
 
-					ListeAnneeA.this.runOnUiThread(new Runnable() {
+					FavoriA.this.runOnUiThread(new Runnable() {
 						public void run() {    						
 							initListe();
 						}
@@ -318,8 +587,8 @@ public class ListeAnneeA extends Activity {
 	        	filePseudo.delete();
 	        	fileToken.delete();
 
-	        	activity.finishAffinity();
-	        	startActivity(new Intent(ListeAnneeA.this, Accueil.class));	
+	        	finishAllActivities();
+	        	startActivity(new Intent(FavoriA.this, Accueil.class));	
 
 	        	toast.setText("Session expirée.");	
 	        	toast.show();
@@ -329,295 +598,7 @@ public class ListeAnneeA extends Activity {
 		}
 	}
 
-	private class DeleteAnnee extends AsyncTask<Void, Void, Void> {
-		private ProgressDialog progress;
-		private String pathUrl;
-
-		public DeleteAnnee(ProgressDialog progress, String pathUrl) {
-			this.progress = progress;
-			this.pathUrl = pathUrl;
-		}
-
-		public void onPreExecute() {
-			progress.show();
-		}
-
-		public void onPostExecute(Void unused) {
-			progress.dismiss();
-		}
-
-		protected Void doInBackground(Void... arg0) {
-			HttpClient httpclient = new DefaultHttpClient();
-			HttpDelete httpDelete = new HttpDelete(pathUrl);
-
-			try {
-				final HttpResponse response = httpclient.execute(httpDelete);
-
-				ListeAnneeA.this.runOnUiThread(new Runnable() {
-					public void run() {    			
-						if (response.getStatusLine().getStatusCode() == 200) {
-							ListeAnneeA.this.runOnUiThread(new Runnable() {
-								public void run() {    						
-									actualiserListe();
-								}
-							});
-
-							toast.setText("Année supprimée.");
-							toast.show();
-						} else if (response.getStatusLine().getStatusCode() == 401) {
-							File filePseudo = new File("/sdcard/cacheJMD/pseudo.jmd");
-							File fileToken = new File("/sdcard/cacheJMD/token.jmd");
-
-							filePseudo.delete();
-							fileToken.delete();
-
-							activity.finishAffinity();
-							startActivity(new Intent(ListeAnneeA.this, Accueil.class));	
-
-							toast.setText("Session expirée.");	
-							toast.show();
-						} else if (response.getStatusLine().getStatusCode() == 500) {				        	
-							toast.setText("Une erreur est survenue au niveau de la BDD.");	
-							toast.show();
-						} else {
-							toast.setText("Erreur inconnue. Veuillez réessayer.");	
-							toast.show();
-						}
-
-						return;
-					}
-				});
-			} catch (ClientProtocolException e) {
-				ListeAnneeA.this.runOnUiThread(new Runnable() {
-					public void run() {
-						AlertDialog.Builder builder = new AlertDialog.Builder(ListeAnneeA.this);
-						builder.setMessage("Erreur - Vérifiez votre connexion");
-						builder.setCancelable(false);
-						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int which) {
-								ListeAnneeA.this.finish();
-							}
-						});
-
-						AlertDialog error = builder.create();
-						error.show();
-					}
-				});
-			} catch (IOException e) {
-				ListeAnneeA.this.runOnUiThread(new Runnable() {
-					public void run() {
-						AlertDialog.Builder builder = new AlertDialog.Builder(ListeAnneeA.this);
-						builder.setMessage("Erreur - Vérifiez votre connexion");
-						builder.setCancelable(false);
-						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int which) {
-								ListeAnneeA.this.finish();
-							}
-						});
-
-						AlertDialog error = builder.create();
-						error.show();
-					}
-				});
-			}
-
-			return null;
-		}
-	}
-
-	private class FollowAnnee extends AsyncTask<Void, Void, Void> {
-		private ProgressDialog progress;
-		private String pathUrl;
-
-		public FollowAnnee(ProgressDialog progress, String pathUrl) {
-			this.progress = progress;
-			this.pathUrl = pathUrl;
-		}
-
-		public void onPreExecute() {
-			progress.show();
-		}
-
-		public void onPostExecute(Void unused) {
-			progress.dismiss();
-		}
-
-		protected Void doInBackground(Void... arg0) {
-			HttpClient httpclient = new DefaultHttpClient();
-			HttpGet httpGet = new HttpGet(pathUrl);
-
-			try {
-				final HttpResponse response = httpclient.execute(httpGet);
-
-				ListeAnneeA.this.runOnUiThread(new Runnable() {
-					public void run() {    			
-						if (response.getStatusLine().getStatusCode() == 200) {
-							ListeAnneeA.this.runOnUiThread(new Runnable() {
-								public void run() {    						
-									actualiserListe();
-								}
-							});
-							
-							toast.setText("Vous suivez désormais cette année.");
-							toast.show();
-						} else if (response.getStatusLine().getStatusCode() == 401) {
-							File filePseudo = new File("/sdcard/cacheJMD/pseudo.jmd");
-							File fileToken = new File("/sdcard/cacheJMD/token.jmd");
-
-							filePseudo.delete();
-							fileToken.delete();
-
-							activity.finishAffinity();
-							startActivity(new Intent(ListeAnneeA.this, Accueil.class));	
-
-							toast.setText("Session expirée.");	
-							toast.show();
-						} else if (response.getStatusLine().getStatusCode() == 500) {				        	
-							toast.setText("Une erreur est survenue au niveau de la BDD.");	
-							toast.show();
-						} else {
-							toast.setText("Erreur inconnue. Veuillez réessayer.");	
-							toast.show();
-						}
-
-						return;
-					}
-				});
-			} catch (ClientProtocolException e) {
-				ListeAnneeA.this.runOnUiThread(new Runnable() {
-					public void run() {
-						AlertDialog.Builder builder = new AlertDialog.Builder(ListeAnneeA.this);
-						builder.setMessage("Erreur - Vérifiez votre connexion");
-						builder.setCancelable(false);
-						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int which) {
-								ListeAnneeA.this.finish();
-							}
-						});
-
-						AlertDialog error = builder.create();
-						error.show();
-					}
-				});
-			} catch (IOException e) {
-				ListeAnneeA.this.runOnUiThread(new Runnable() {
-					public void run() {
-						AlertDialog.Builder builder = new AlertDialog.Builder(ListeAnneeA.this);
-						builder.setMessage("Erreur - Vérifiez votre connexion");
-						builder.setCancelable(false);
-						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int which) {
-								ListeAnneeA.this.finish();
-							}
-						});
-
-						AlertDialog error = builder.create();
-						error.show();
-					}
-				});
-			}
-
-			return null;
-		}
-	}
-	
-	private class UnfollowAnnee extends AsyncTask<Void, Void, Void> {
-		private ProgressDialog progress;
-		private String pathUrl;
-
-		public UnfollowAnnee(ProgressDialog progress, String pathUrl) {
-			this.progress = progress;
-			this.pathUrl = pathUrl;
-		}
-
-		public void onPreExecute() {
-			progress.show();
-		}
-
-		public void onPostExecute(Void unused) {
-			progress.dismiss();
-		}
-
-		protected Void doInBackground(Void... arg0) {
-			HttpClient httpclient = new DefaultHttpClient();
-			HttpGet httpGet = new HttpGet(pathUrl);
-
-			try {
-				final HttpResponse response = httpclient.execute(httpGet);
-
-				ListeAnneeA.this.runOnUiThread(new Runnable() {
-					public void run() {    			
-						if (response.getStatusLine().getStatusCode() == 200) {
-							ListeAnneeA.this.runOnUiThread(new Runnable() {
-								public void run() {    						
-									actualiserListe();
-								}
-							});
-							
-							toast.setText("Vous ne suivez plus cette année.");
-							toast.show();
-						} else if (response.getStatusLine().getStatusCode() == 401) {
-							File filePseudo = new File("/sdcard/cacheJMD/pseudo.jmd");
-							File fileToken = new File("/sdcard/cacheJMD/token.jmd");
-
-							filePseudo.delete();
-							fileToken.delete();
-
-							activity.finishAffinity();
-							startActivity(new Intent(ListeAnneeA.this, Accueil.class));	
-
-							toast.setText("Session expirée.");	
-							toast.show();
-						} else if (response.getStatusLine().getStatusCode() == 500) {				        	
-							toast.setText("Une erreur est survenue au niveau de la BDD.");	
-							toast.show();
-						} else {
-							toast.setText("Erreur inconnue. Veuillez réessayer.");	
-							toast.show();
-						}
-
-						return;
-					}
-				});
-			} catch (ClientProtocolException e) {
-				ListeAnneeA.this.runOnUiThread(new Runnable() {
-					public void run() {
-						AlertDialog.Builder builder = new AlertDialog.Builder(ListeAnneeA.this);
-						builder.setMessage("Erreur - Vérifiez votre connexion");
-						builder.setCancelable(false);
-						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int which) {
-								ListeAnneeA.this.finish();
-							}
-						});
-
-						AlertDialog error = builder.create();
-						error.show();
-					}
-				});
-			} catch (IOException e) {
-				ListeAnneeA.this.runOnUiThread(new Runnable() {
-					public void run() {
-						AlertDialog.Builder builder = new AlertDialog.Builder(ListeAnneeA.this);
-						builder.setMessage("Erreur - Vérifiez votre connexion");
-						builder.setCancelable(false);
-						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int which) {
-								ListeAnneeA.this.finish();
-							}
-						});
-
-						AlertDialog error = builder.create();
-						error.show();
-					}
-				});
-			}
-
-			return null;
-		}
-	}
-
-	/* Méthodes héritées de la classe Activity. */
+	/* Méthode héritée de la classe Activity. */
 
 	/**
 	 * Méthode permettant d'empécher la reconstruction de la vue lors de la rotation de l'écran. 
@@ -628,15 +609,18 @@ public class ListeAnneeA extends Activity {
 	public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
 	}
-
+	
 	/**
-	 * Méthode exécutée lorsque l'activité est relancée.<br />
-	 * Ici, ça permet d'actualiser la liste des années lorsqu'une année vient d'être créé et que l'application ramène l'utilisateur sur cette vue de listing.
+	 * Méthode déclenchée lors d'un click sur le bouton virtuel Android de retour.
 	 */
 	@Override
-	public void onRestart() {		
-		actualiserListe();
-
-		super.onRestart();
-	} 
+	public void onBackPressed() {
+		if (back_pressed + 2000 > System.currentTimeMillis()) {
+			android.os.Process.killProcess(android.os.Process.myPid());
+		} else {
+			Toast.makeText(getBaseContext(), "Appuyez encore une fois sur \"Retour\" pour quitter l'application.", Toast.LENGTH_SHORT).show();
+		}
+		
+        back_pressed = System.currentTimeMillis();
+	}
 }
