@@ -49,10 +49,10 @@ public class ListeUERegleA extends TabActivity {
 		Intent intentListeRegle = new Intent(ListeUERegleA.this, ListeRegleA.class);
 		intentListeRegle.putExtra("annee", annee);
 		intentListeRegle.putExtra("decoupage", decoupage);
-		
-		setupTab("Liste des UE", "0", intentListeUE);
-        setupTab("Règles de gestion", "1", intentListeRegle);
-
+        
+        tabHost.addTab(tabHost.newTabSpec("0").setIndicator(createTabView(tabHost.getContext(), "Liste des UE")).setContent(intentListeUE));
+        tabHost.addTab(tabHost.newTabSpec("1").setIndicator(createTabView(tabHost.getContext(), "Règles de gestion")).setContent(intentListeRegle));
+        
 		tabHost.getTabWidget().getChildAt(0).getLayoutParams().height = 80;
 		tabHost.getTabWidget().getChildAt(0).setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_bg_selector)); 
 		tabHost.getTabWidget().getChildAt(0).setSelected(true);
@@ -106,10 +106,6 @@ public class ListeUERegleA extends TabActivity {
 					tv2.setText(spanString2);
 				}
 			}});
-	}
-	
-	private void setupTab(String name, String tag, Intent intent) {
-		tabHost.addTab(tabHost.newTabSpec(tag).setIndicator(createTabView(tabHost.getContext(), name)).setContent(intent));
 	}
  
 	private View createTabView(final Context context, final String text) {

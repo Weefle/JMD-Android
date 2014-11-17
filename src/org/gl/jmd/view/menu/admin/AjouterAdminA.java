@@ -1,6 +1,7 @@
 package org.gl.jmd.view.menu.admin;
 
 import java.io.*;
+import java.net.SocketTimeoutException;
 import java.util.*;
 
 import org.apache.http.HttpResponse;
@@ -9,8 +10,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.gl.jmd.*;
 import org.gl.jmd.model.Admin;
-import org.gl.jmd.utils.FileUtils;
-import org.gl.jmd.utils.WebUtils;
+import org.gl.jmd.utils.*;
 import org.gl.jmd.view.Accueil;
 import org.json.*;
 
@@ -123,13 +123,64 @@ public class AjouterAdminA extends Activity {
 		}
 
 		protected Void doInBackground(Void... arg0) {
-            WebUtils sh = new WebUtils();
-            String jsonStr = sh.makeServiceCall(pathUrl, WebUtils.GET);
+            String jsonStr = "";
+            
+			try {
+				jsonStr = WebUtils.call(pathUrl, WebUtils.GET);
+			} catch (SocketTimeoutException e1) {
+				AjouterAdminA.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(AjouterAdminA.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								AjouterAdminA.this.finish();
+							}
+						});
+
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+			} catch (ClientProtocolException e1) {
+				AjouterAdminA.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(AjouterAdminA.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								AjouterAdminA.this.finish();
+							}
+						});
+
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+			} catch (IOException e1) {
+				AjouterAdminA.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(AjouterAdminA.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								AjouterAdminA.this.finish();
+							}
+						});
+
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+			} 
             
             final ArrayList<Admin> listeAdmins = new ArrayList<Admin>();
             Admin a = null;
             
-            if (jsonStr != null) {            	
+            if (jsonStr.length() > 0) {            	
                 try {
                     JSONArray admins = new JSONArray(jsonStr);
  

@@ -14,7 +14,7 @@ import org.gl.jmd.*;
 import org.gl.jmd.model.Admin;
 import org.gl.jmd.utils.*;
 import org.gl.jmd.view.InitApp;
-import org.gl.jmd.view.admin.*;
+import org.gl.jmd.view.etudiant.AccueilE;
 
 import android.app.*;
 import android.content.*;
@@ -79,6 +79,11 @@ public class ConnexionA extends Activity {
 		}
 	}
 	
+	public void navigateToAccueil(View view) {
+		finish();
+		startActivity(new Intent(ConnexionA.this, InitApp.class));		
+	}
+	
 	/**
 	 * Méthode permettant de rediriger l'utilisateur vers la vue de récupération du mot de passe.
 	 * 
@@ -87,6 +92,8 @@ public class ConnexionA extends Activity {
 	public void resetPassword(View view) {
 		startActivity(new Intent(ConnexionA.this, RecupMDPA.class));
 	}
+	
+	/* Classe interne. */
 	
 	/**
 	 * Classe interne représentant une tâche asynchrone qui sera effectuée en fond pendant un rond de chargement.

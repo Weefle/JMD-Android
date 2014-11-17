@@ -1,6 +1,7 @@
 package org.gl.jmd.view.admin.listing;
 
 import java.io.*;
+import java.net.SocketTimeoutException;
 import java.util.*;
 
 import org.apache.http.HttpResponse;
@@ -147,12 +148,63 @@ public class ListeUEA extends Activity {
 		}
 
 		protected Void doInBackground(Void... arg0) {			
-			WebUtils sh = new WebUtils();
-            String jsonStr = sh.makeServiceCall(pathUrl, WebUtils.GET);
+			String jsonStr = "";
+            
+			try {
+				jsonStr = WebUtils.call(pathUrl, WebUtils.GET);
+			} catch (SocketTimeoutException e1) {
+				ListeUEA.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(ListeUEA.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								ListeUEA.this.finish();
+							}
+						});
+
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+			} catch (ClientProtocolException e1) {
+				ListeUEA.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(ListeUEA.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								ListeUEA.this.finish();
+							}
+						});
+
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+			} catch (IOException e1) {
+				ListeUEA.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(ListeUEA.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								ListeUEA.this.finish();
+							}
+						});
+
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+			} 
             
             UE ue = null;
             
-            if (jsonStr != null) {            	
+            if (jsonStr.length() > 0) {            	
                 try {
                     JSONArray ues = new JSONArray(jsonStr);
  

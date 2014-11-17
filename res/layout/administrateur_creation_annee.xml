@@ -18,7 +18,7 @@
             android:layout_alignParentLeft="true"
             android:layout_centerInParent="true"
             android:layout_marginLeft="30dp"
-            android:text="Nouvelle année"
+            android:text="@string/administrateur_creation_annee_titre_texte"
             android:textColor="#FFFFFF"
             android:textSize="20sp" />
         
@@ -31,9 +31,9 @@
             android:layout_marginRight="30dp"
             android:clickable="true"
             android:onClick="creerAnnee"
-            android:text="OK"
+            android:text="@string/bout_ok_txt"
             android:textColor="@drawable/button_color_selector" 
-            android:textSize="18dp" />
+            android:textSize="18sp" />
     </RelativeLayout>
 
     <LinearLayout
@@ -43,7 +43,7 @@
 
         <EditText
             android:id="@+id/admin_creation_annee_nom_eta"
-            android:layout_width="fill_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:layout_weight="1"
@@ -60,7 +60,7 @@
             android:background="@drawable/button_style"
             android:onClick="openListEta"
             android:padding="10dp"
-            android:text="Choisir"
+            android:text="@string/btn_choisir"
             android:textColor="@drawable/button_color_selector" />
     </LinearLayout>
     
@@ -70,7 +70,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="30dp"
-        android:hint="@string/admin_crea_annee_hint_nom"
+        android:hint="@string/hint_nom"
         android:inputType="text"
         android:singleLine="true" />
     
@@ -80,7 +80,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="30dp"
-        android:text="Dernière année d'un diplôme ?"
+        android:text="@string/checkbox_derniere_annee"
         android:textColor="#000000" />
 
     <Spinner

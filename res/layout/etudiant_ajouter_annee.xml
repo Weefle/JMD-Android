@@ -29,12 +29,13 @@
 
         <EditText
             android:id="@+id/etudiant_ajout_annee_nom_dip"
-            android:layout_width="fill_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:layout_weight="1"
             android:enabled="false"
             android:hint="Diplôme"
+            android:focusable="false"
             android:singleLine="true" />
 
         <Button
@@ -57,11 +58,12 @@
 
         <EditText
             android:id="@+id/etudiant_ajout_annee_nom_eta"
-            android:layout_width="fill_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:layout_weight="1"
             android:enabled="false"
+            android:focusable="false"
             android:hint="@string/admin_crea_annee_hint_etablissement"
             android:singleLine="true" />
 

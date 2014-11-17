@@ -1,6 +1,7 @@
 package org.gl.jmd.view.admin.create;
 
 import java.io.*;
+import java.net.SocketTimeoutException;
 import java.util.*;
 
 import org.apache.http.HttpResponse;
@@ -374,13 +375,64 @@ public class CreationRegle extends Activity {
 		}
 
 		protected Void doInBackground(Void... arg0) {
-			WebUtils sh = new WebUtils();
-            String jsonStr = sh.makeServiceCall(pathUrl, WebUtils.GET);
+			String jsonStr = "";
+            
+			try {
+				jsonStr = WebUtils.call(pathUrl, WebUtils.GET);
+			} catch (SocketTimeoutException e1) {
+				CreationRegle.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(CreationRegle.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								CreationRegle.this.finish();
+							}
+						});
+
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+			} catch (ClientProtocolException e1) {
+				CreationRegle.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(CreationRegle.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								CreationRegle.this.finish();
+							}
+						});
+
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+			} catch (IOException e1) {
+				CreationRegle.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(CreationRegle.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								CreationRegle.this.finish();
+							}
+						});
+
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+			} 
             
             final ArrayList<Matiere> listeMatieres = new ArrayList<Matiere>();
             Matiere matiere = null;
             
-            if (jsonStr != null) {            	
+            if (jsonStr.length() > 0) {            	
                 try {
                     JSONArray matieres = new JSONArray(jsonStr);
  
@@ -428,13 +480,64 @@ public class CreationRegle extends Activity {
 		}
 
 		protected Void doInBackground(Void... arg0) {
-			WebUtils sh = new WebUtils();
-            String jsonStr = sh.makeServiceCall(pathUrl, WebUtils.GET);
+			String jsonStr = "";
+            
+			try {
+				jsonStr = WebUtils.call(pathUrl, WebUtils.GET);
+			} catch (SocketTimeoutException e1) {
+				CreationRegle.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(CreationRegle.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								CreationRegle.this.finish();
+							}
+						});
+
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+			} catch (ClientProtocolException e1) {
+				CreationRegle.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(CreationRegle.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								CreationRegle.this.finish();
+							}
+						});
+
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+			} catch (IOException e1) {
+				CreationRegle.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(CreationRegle.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								CreationRegle.this.finish();
+							}
+						});
+
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+			} 
             
             final ArrayList<UE> listeUE = new ArrayList<UE>();
             UE ue = null;
             
-            if (jsonStr != null) {            	
+            if (jsonStr.length() > 0) {            	
                 try {
                     JSONArray ues = new JSONArray(jsonStr);
  

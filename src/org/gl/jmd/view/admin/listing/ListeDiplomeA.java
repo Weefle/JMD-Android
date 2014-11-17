@@ -1,6 +1,7 @@
 package org.gl.jmd.view.admin.listing;
 
 import java.io.*;
+import java.net.SocketTimeoutException;
 import java.util.*;
 
 import org.apache.http.HttpResponse;
@@ -135,13 +136,64 @@ public class ListeDiplomeA extends Activity {
 		}
 
 		protected Void doInBackground(Void... arg0) {			
-			WebUtils sh = new WebUtils();
-            String jsonStr = sh.makeServiceCall(pathUrl, WebUtils.GET);
+			String jsonStr = "";
+            
+			try {
+				jsonStr = WebUtils.call(pathUrl, WebUtils.GET);
+			} catch (SocketTimeoutException e1) {
+				ListeDiplomeA.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(ListeDiplomeA.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								ListeDiplomeA.this.finish();
+							}
+						});
+
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+			} catch (ClientProtocolException e1) {
+				ListeDiplomeA.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(ListeDiplomeA.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								ListeDiplomeA.this.finish();
+							}
+						});
+
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+			} catch (IOException e1) {
+				ListeDiplomeA.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(ListeDiplomeA.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								ListeDiplomeA.this.finish();
+							}
+						});
+
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+			} 
             
             final ArrayList<Diplome> listeDiplomes = new ArrayList<Diplome>();
             Diplome d = null;
             
-            if (jsonStr != null) {            	
+            if (jsonStr.length() > 0) {            	
                 try {
                     JSONArray diplomes = new JSONArray(jsonStr);
  

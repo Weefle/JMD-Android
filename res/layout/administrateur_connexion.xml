@@ -11,23 +11,47 @@
         android:background="#FF5E3A"
         android:orientation="horizontal" >
 
+        <ImageView
+            android:id="@+id/admin_connexion_img_previous"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="10dp"
+            android:contentDescription="@string/desc_img"
+            android:onClick="navigateToAccueil"
+            android:src="@drawable/previous" />
+
         <TextView
             android:id="@+id/admin_connexion_titre"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerInParent="true"
-            android:layout_marginLeft="30dp"
+            android:gravity="center"
             android:text="@string/administrateur_connexion_titre_texte"
             android:textColor="#FFFFFF"
             android:textSize="20sp" />
     </RelativeLayout>
+
+    <TextView
+        android:id="@+id/admin_connexion_txt_subtitle"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:gravity="center"
+        android:text="Connectez-vous à votre compte Administrateur"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
     <EditText
         android:id="@+id/connex_zone_pseudo"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:layout_marginTop="30dp"
         android:hint="@string/admin_connex_pseudo"
         android:inputType="text" />
@@ -37,6 +61,8 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:layout_marginTop="30dp"
         android:hint="@string/admin_connex_mdp"
         android:inputType="textPassword" />
@@ -46,6 +72,8 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:layout_marginTop="20dp"
         android:background="@drawable/button_style"
         android:onClick="connexion"
@@ -61,20 +89,20 @@
         android:clickable="true"
         android:gravity="center"
         android:onClick="resetPassword"
-        android:textColor="#000000"
         android:text="@string/connex_texte_mdp_oublie"
+        android:textColor="#000000"
         android:textSize="15sp" />
-    
+
     <TextView
         android:id="@+id/connex_texte_inscription"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:clickable="true"
-        android:textColor="#000000"
         android:gravity="center"
         android:onClick="inscription"
         android:text="@string/connex_texte_inscription"
+        android:textColor="#000000"
         android:textSize="15sp" />
 
 </LinearLayout>

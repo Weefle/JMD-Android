@@ -133,7 +133,7 @@ public class AccueilA extends TabActivity {
 		map.put("titre", "Nommer un admin");
 		listItem.add(map);
         
-        dList.setAdapter(new SimpleAdapter(getBaseContext(), listItem, R.layout.slide_menu_simple_list, new String[] {"titre"}, new int[] {R.id.titre}));
+        dList.setAdapter(new SimpleAdapter(getBaseContext(), listItem, R.menu.slide_menu_simple_list, new String[] {"titre"}, new int[] {R.id.titre}));
 		
         dList.setOnItemClickListener(new OnItemClickListener(){
 			@Override

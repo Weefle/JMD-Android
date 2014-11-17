@@ -1,18 +1,14 @@
 package org.gl.jmd.view.etudiant.create;
 
+import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.*;
 
+import org.apache.http.client.ClientProtocolException;
 import org.gl.jmd.*;
 import org.gl.jmd.dao.EtudiantDAO;
-import org.gl.jmd.model.Annee;
-import org.gl.jmd.model.Diplome;
-import org.gl.jmd.model.Etablissement;
-import org.gl.jmd.model.Etudiant;
-import org.gl.jmd.model.Matiere;
-import org.gl.jmd.model.Regle;
-import org.gl.jmd.model.UE;
-import org.gl.jmd.model.enumeration.DecoupageType;
-import org.gl.jmd.model.enumeration.DecoupageYearType;
+import org.gl.jmd.model.*;
+import org.gl.jmd.model.enumeration.*;
 import org.gl.jmd.utils.WebUtils;
 
 import org.json.*;
@@ -21,6 +17,7 @@ import android.os.*;
 import android.view.View;
 import android.widget.*;
 import android.app.*;
+import android.content.DialogInterface;
 import android.content.res.Configuration;
 
 /**
@@ -115,10 +112,12 @@ public class AjouterAnneeE extends Activity {
 
 			liste.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 				public void onItemClick(AdapterView<?> arg0, View arg1, final int position, long arg3) {
-					ProgressDialog progress = new ProgressDialog(activity);
-					progress.setMessage("Chargement...");
-					new AjouterAnnee(progress, Constantes.URL_SERVER + "annee/getCompleteYear" +
-							"?idAnnee=" + listItem.get(position - 1).get("id")).execute();	
+					if (position != 0) {
+						ProgressDialog progress = new ProgressDialog(activity);
+						progress.setMessage("Chargement...");
+						new AjouterAnnee(progress, Constantes.URL_SERVER + "annee/getCompleteYear" +
+								"?idAnnee=" + listItem.get(position - 1).get("id")).execute();
+					}
 				}
 			});
 		} else {
@@ -152,12 +151,63 @@ public class AjouterAnneeE extends Activity {
 		}
 
 		protected Void doInBackground(Void... arg0) {
-			WebUtils sh = new WebUtils();
-			String jsonStr = sh.makeServiceCall(pathUrl, WebUtils.GET);
+			String jsonStr = "";
+            
+			try {
+				jsonStr = WebUtils.call(pathUrl, WebUtils.GET);
+			} catch (SocketTimeoutException e1) {
+				AjouterAnneeE.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(AjouterAnneeE.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								AjouterAnneeE.this.finish();
+							}
+						});
+
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+			} catch (ClientProtocolException e1) {
+				AjouterAnneeE.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(AjouterAnneeE.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								AjouterAnneeE.this.finish();
+							}
+						});
+
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+			} catch (IOException e1) {
+				AjouterAnneeE.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(AjouterAnneeE.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								AjouterAnneeE.this.finish();
+							}
+						});
+
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+			} 
 			
 			Annee a = new Annee();
 
-			if (jsonStr != null) {            	
+			if (jsonStr.length() > 0) {            	
 				try {
 					JSONObject anneeJSON = new JSONObject(jsonStr);
 
@@ -323,13 +373,64 @@ public class AjouterAnneeE extends Activity {
 		}
 
 		protected Void doInBackground(Void... arg0) {
-			WebUtils sh = new WebUtils();
-			String jsonStr = sh.makeServiceCall(pathUrl, WebUtils.GET);
+String jsonStr = "";
+            
+			try {
+				jsonStr = WebUtils.call(pathUrl, WebUtils.GET);
+			} catch (SocketTimeoutException e1) {
+				AjouterAnneeE.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(AjouterAnneeE.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								AjouterAnneeE.this.finish();
+							}
+						});
+
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+			} catch (ClientProtocolException e1) {
+				AjouterAnneeE.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(AjouterAnneeE.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								AjouterAnneeE.this.finish();
+							}
+						});
+
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+			} catch (IOException e1) {
+				AjouterAnneeE.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(AjouterAnneeE.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								AjouterAnneeE.this.finish();
+							}
+						});
+
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+			} 
 
 			final ArrayList<Annee> listeAnnees = new ArrayList<Annee>();
 			Annee a = null;
 
-			if (jsonStr != null) {            	
+			if (jsonStr.length() > 0) {            	
 				try {
 					JSONArray annees = new JSONArray(jsonStr);
 
@@ -386,14 +487,65 @@ public class AjouterAnneeE extends Activity {
 		}
 
 		protected Void doInBackground(Void... arg0) {
-			WebUtils sh = new WebUtils();
-			String jsonStr = sh.makeServiceCall(pathUrl, WebUtils.GET);
+String jsonStr = "";
+            
+			try {
+				jsonStr = WebUtils.call(pathUrl, WebUtils.GET);
+			} catch (SocketTimeoutException e1) {
+				AjouterAnneeE.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(AjouterAnneeE.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								AjouterAnneeE.this.finish();
+							}
+						});
+
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+			} catch (ClientProtocolException e1) {
+				AjouterAnneeE.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(AjouterAnneeE.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								AjouterAnneeE.this.finish();
+							}
+						});
+
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+			} catch (IOException e1) {
+				AjouterAnneeE.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(AjouterAnneeE.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								AjouterAnneeE.this.finish();
+							}
+						});
+
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+			} 
 
 			final ArrayList<Etablissement> listeEtablissements = new ArrayList<Etablissement>();
 			final ArrayList<String> listeEtablissementsString = new ArrayList<String>();
 			Etablissement e = null;
 
-			if (jsonStr != null) {            	
+			if (jsonStr.length() > 0) {            	
 				try {
 					JSONArray diplomes = new JSONArray(jsonStr);
 
@@ -463,14 +615,65 @@ public class AjouterAnneeE extends Activity {
 		}
 
 		protected Void doInBackground(Void... arg0) {
-			WebUtils sh = new WebUtils();
-			String jsonStr = sh.makeServiceCall(pathUrl, WebUtils.GET);
+String jsonStr = "";
+            
+			try {
+				jsonStr = WebUtils.call(pathUrl, WebUtils.GET);
+			} catch (SocketTimeoutException e1) {
+				AjouterAnneeE.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(AjouterAnneeE.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								AjouterAnneeE.this.finish();
+							}
+						});
+
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+			} catch (ClientProtocolException e1) {
+				AjouterAnneeE.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(AjouterAnneeE.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								AjouterAnneeE.this.finish();
+							}
+						});
+
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+			} catch (IOException e1) {
+				AjouterAnneeE.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(AjouterAnneeE.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								AjouterAnneeE.this.finish();
+							}
+						});
+
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+			} 
 
 			final ArrayList<Diplome> listeDiplomes = new ArrayList<Diplome>();
 			final ArrayList<String> listeDiplomesString = new ArrayList<String>();
 			Diplome d = null;
 
-			if (jsonStr != null) {            	
+			if (jsonStr.length() > 0) {            	
 				try {
 					JSONArray diplomes = new JSONArray(jsonStr);
 
