@@ -9,6 +9,7 @@ import org.apache.http.client.methods.HttpPut;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.gl.jmd.*;
 import org.gl.jmd.model.*;
+import org.gl.jmd.model.enumeration.DecoupageType;
 import org.gl.jmd.model.enumeration.DecoupageYearType;
 import org.gl.jmd.utils.*;
 import org.gl.jmd.view.Accueil;
@@ -19,6 +20,7 @@ import android.content.res.Configuration;
 import android.os.*;
 import android.view.View;
 import android.widget.*;
+import android.widget.AdapterView.OnItemSelectedListener;
 
 /**
  * Activité correspondant à la vue de création d'une UE.
@@ -33,7 +35,7 @@ public class CreationUE extends Activity {
 	
 	private Annee a = null;
 	
-	private String decoupage = null;
+	private DecoupageYearType decoupage = null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +48,49 @@ public class CreationUE extends Activity {
 		toast = Toast.makeText(activity, "", Toast.LENGTH_SHORT);
 		
 		a = (Annee) getIntent().getExtras().getSerializable("annee");
-		decoupage = getIntent().getExtras().getString("decoupage");
+		
+		initListeDecoupage();
+	}
+	
+	private void initListeDecoupage() {
+		Spinner spinner = (Spinner) findViewById(R.id.admin_creation_ue_spinner);
+		
+		ArrayAdapter<CharSequence> adapter = null;
+		
+		if (a.getDecoupage() == DecoupageType.SEMESTRE) {
+			adapter = ArrayAdapter.createFromResource(this, R.array.position_ue_array_2, android.R.layout.simple_spinner_item);
+		} else if (a.getDecoupage() == DecoupageType.SEMESTRE) {
+			adapter = ArrayAdapter.createFromResource(this, R.array.position_ue_array_1, android.R.layout.simple_spinner_item);
+		} else {
+			spinner.setVisibility(View.GONE);
+		}
+		
+		if (adapter != null) {
+			adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			
+	        spinner.setAdapter(adapter);
+	        spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+	        	@Override
+	        	public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+	        		if (parent.getItemAtPosition(pos).toString().equals("Trimestre 1")) {
+	        			decoupage = DecoupageYearType.TRI1;
+	        		} else if (parent.getItemAtPosition(pos).toString().equals("Trimestre 2")) {
+	        			decoupage = DecoupageYearType.TRI2;
+	        		} else if (parent.getItemAtPosition(pos).toString().equals("Trimestre 3")) {
+	        			decoupage = DecoupageYearType.TRI3;
+	        		} else if (parent.getItemAtPosition(pos).toString().equals("Semestre 1")) {
+	        			decoupage = DecoupageYearType.SEM1;
+	        		} else if (parent.getItemAtPosition(pos).toString().equals("Semestre 2")) {
+	        			decoupage = DecoupageYearType.SEM2;
+	        		}
+	        	}
+	        	
+	        	@Override
+	        	public void onNothingSelected(AdapterView<?> parent) {
+	        		// Empty
+	        	}
+			});
+		}
 	}
 	
 	/**
@@ -60,7 +104,12 @@ public class CreationUE extends Activity {
 		if (NOM.getText().toString().length() != 0) {			
 			UE ue = new UE();
 			ue.setNom(NOM.getText().toString());
-			ue.setDecoupage(DecoupageYearType.valueOf(decoupage));
+			
+			if (decoupage == null) {
+				ue.setDecoupage(DecoupageYearType.NULL);
+			} else {
+				ue.setDecoupage(decoupage);
+			}
 			
 			ProgressDialog progress = new ProgressDialog(activity);
 			progress.setMessage("Chargement...");
@@ -79,11 +128,8 @@ public class CreationUE extends Activity {
 		}
 	}
 	
-	/**
-	 * Classe interne représentant une tâche asynchrone qui sera effectuée en fond pendant un rond de chargement.
-	 * 
-	 * @author Jordi CHARPENTIER & Yoann VANHOESERLANDE
-	 */
+	/* Classes internes. */
+
 	private class CreerUE extends AsyncTask<Void, Void, Void> {
 		private ProgressDialog progress;
 		private String pathUrl;

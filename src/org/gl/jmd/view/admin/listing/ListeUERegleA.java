@@ -28,8 +28,6 @@ public class ListeUERegleA extends TabActivity {
 	
 	private Annee annee = null;
 	
-	private String decoupage = null;
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -38,17 +36,14 @@ public class ListeUERegleA extends TabActivity {
 		overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
 		
 		annee = (Annee) getIntent().getExtras().getSerializable("annee");
-		decoupage = getIntent().getExtras().getString("decoupage");
 		
 		tabHost = getTabHost();
 		
 		Intent intentListeUE = new Intent(ListeUERegleA.this, ListeUEA.class);
 		intentListeUE.putExtra("annee", annee);
-		intentListeUE.putExtra("decoupage", decoupage);
 		
 		Intent intentListeRegle = new Intent(ListeUERegleA.this, ListeRegleA.class);
 		intentListeRegle.putExtra("annee", annee);
-		intentListeRegle.putExtra("decoupage", decoupage);
         
         tabHost.addTab(tabHost.newTabSpec("0").setIndicator(createTabView(tabHost.getContext(), "Liste des UE")).setContent(intentListeUE));
         tabHost.addTab(tabHost.newTabSpec("1").setIndicator(createTabView(tabHost.getContext(), "Règles de gestion")).setContent(intentListeRegle));
@@ -132,8 +127,6 @@ public class ListeUERegleA extends TabActivity {
 		
 		Intent intent = new Intent(ListeUERegleA.this, c);
 		intent.putExtra("annee", annee);
-		intent.putExtra("decoupage", decoupage);
-		
 		startActivity(intent);	
 	}
 

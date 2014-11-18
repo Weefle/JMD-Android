@@ -132,6 +132,7 @@
 	<string name="etudiant_ajouter_diplome_titre_texte">Ajouter un diplôme</string>
 	<string name="etudiant_accueil_bienvenue">Bienvenue</string>
 	<string name="etudiant_saisie_note_titre_txt">Saisie de notes</string>
+	<string name="stats_annee_titre_txt">Détails de l\'année</string>
 	
 	<string name="ecran_choix_user_titre_texte">Accueil</string>
 	
@@ -155,6 +156,17 @@
 	
 	<!-- Spinners -->
 	
+	<string name="crea_ue_decoupage">Se trouve dans</string>
+    <string-array name="position_ue_array_1">
+        <item>Trimestre 1</item>
+        <item>Trimestre 2</item>
+        <item>Trimestre 3</item>
+    </string-array> 
+    <string-array name="position_ue_array_2">
+        <item>Semestre 1</item>
+        <item>Semestre 2</item>
+    </string-array> 
+    
 	<string name="crea_annee_decoupage">Découpage de l\'année</string>
     <string-array name="decoupage_array">
         <item>Aucun</item>

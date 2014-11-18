@@ -45,5 +45,13 @@
         android:hint="@string/hint_nom"
         android:inputType="text"
         android:singleLine="true" />
+    
+    <Spinner
+        android:id="@+id/admin_creation_ue_spinner"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:prompt="@string/crea_ue_decoupage" />
 
 </LinearLayout>

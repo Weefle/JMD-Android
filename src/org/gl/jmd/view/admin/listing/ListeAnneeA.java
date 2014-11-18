@@ -147,20 +147,8 @@ public class ListeAnneeA extends Activity {
 
 			liste.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 				public void onItemClick(AdapterView<?> arg0, View arg1, final int position, long arg3) {
-					Class<?> c = null;
-
-					if (listItem.get(position).get("decoupage").equals(DecoupageType.NULL.name())) {
-						c = ListeUERegleA.class;
-					} else if (listItem.get(position).get("decoupage").equals(DecoupageType.SEMESTRE.name())) {
-						c = ListeSemestreA.class;
-					} else if (listItem.get(position).get("decoupage").equals(DecoupageType.TRIMESTRE.name())) {
-						c = ListeTrimestreA.class;
-					} 
-
-					Intent newIntent = new Intent(ListeAnneeA.this, c);
+					Intent newIntent = new Intent(ListeAnneeA.this, ListeUERegleA.class);
 					newIntent.putExtra("annee", listeAnnees.get(position));
-					newIntent.putExtra("decoupage", listItem.get(position).get("decoupage"));
-					
 					startActivity(newIntent);
 				}
 			});

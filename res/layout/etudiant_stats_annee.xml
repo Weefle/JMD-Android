@@ -18,20 +18,20 @@
             android:layout_alignParentLeft="true"
             android:layout_centerInParent="true"
             android:layout_marginLeft="30dp"
-            android:text="Détails de l&apos;année"
+            android:text="@string/stats_annee_titre_txt"
             android:textColor="#FFFFFF"
             android:textSize="20sp" />
-        
+
         <ImageView
             android:id="@+id/stats_annee_export"
-            android:onClick="export"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="15dp"
             android:layout_centerInParent="true"
+            android:layout_marginRight="15dp"
             android:contentDescription="@string/desc_img"
-            android:src="@drawable/email" />
+            android:onClick="export"
+            android:src="@drawable/pdf" />
     </RelativeLayout>
 
     <TextView
@@ -48,16 +48,16 @@
         android:id="@+id/stats_annee_moyenne_value"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
         android:layout_marginBottom="20dp"
+        android:layout_marginTop="20dp"
         android:gravity="center"
-        android:textSize="16sp"
-        android:textColor="#000000" />
-    
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:src="@drawable/dotted_line" />
+        android:textColor="#000000"
+        android:textSize="16sp" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="0.5dp"
+        android:background="@android:color/black" />
 
     <TextView
         android:id="@+id/stats_annee_avancement_titre"
@@ -73,16 +73,16 @@
         android:id="@+id/stats_annee_avancement_value"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
         android:layout_marginBottom="20dp"
+        android:layout_marginTop="20dp"
         android:gravity="center"
-        android:textSize="16sp"
-        android:textColor="#000000" />
-    
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" 
-        android:src="@drawable/dotted_line" />
+        android:textColor="#000000"
+        android:textSize="16sp" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="0.5dp"
+        android:background="@android:color/black" />
 
     <TextView
         android:id="@+id/stats_annee_mention_titre"
@@ -100,7 +100,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:gravity="center"
-        android:textSize="16sp"
-        android:textColor="#000000" />
+        android:textColor="#000000"
+        android:textSize="16sp" />
 
 </LinearLayout>

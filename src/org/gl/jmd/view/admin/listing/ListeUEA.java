@@ -11,9 +11,11 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.gl.jmd.*;
 import org.gl.jmd.model.Annee;
 import org.gl.jmd.model.UE;
+import org.gl.jmd.model.enumeration.DecoupageType;
 import org.gl.jmd.model.enumeration.DecoupageYearType;
 import org.gl.jmd.utils.*;
 import org.gl.jmd.view.Accueil;
+import org.gl.jmd.view.list.*;
 import org.json.*;
 
 import android.app.*;
@@ -36,8 +38,6 @@ public class ListeUEA extends Activity {
 	
 	private Annee annee = null;
 	
-	private String decoupage = null;
-	
 	private ArrayList<UE> listeUE = new ArrayList<UE>();
 	
 	@Override
@@ -48,7 +48,6 @@ public class ListeUEA extends Activity {
 		overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
 		
 		annee = (Annee) getIntent().getExtras().getSerializable("annee");
-		decoupage = getIntent().getExtras().getString("decoupage");
 		
 		activity = this;
 		toast = Toast.makeText(getBaseContext(), "", Toast.LENGTH_SHORT);
@@ -61,70 +60,140 @@ public class ListeUEA extends Activity {
 		
 		ProgressDialog progress = new ProgressDialog(this);
 		progress.setMessage("Chargement...");
-		new ListerUE(progress, Constantes.URL_SERVER + "ue/getAllUEOfAnneeByYearType" +
-				"?idAnnee=" + annee.getId() + 
-				"&yearType=" + decoupage).execute();
+		new ListerUE(progress, Constantes.URL_SERVER + "ue/getAllUEOfAnnee" +
+				"?idAnnee=" + annee.getId()).execute();
 	}
 	
 	private void initListe() {
-		final ListView liste = (ListView) findViewById(android.R.id.list);
-		
-		if (listeUE.size() > 0) {
-			final ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
-			HashMap<String, String> map;	
-
-			for(int s = 0; s < listeUE.size(); s++) {
-				map = new HashMap<String, String>();
-
-				map.put("id", "" + listeUE.get(s).getId());
-				map.put("titre", listeUE.get(s).getNom());
-
-				listItem.add(map);		
-			}
-
-			liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.simple_list, new String[] {"titre"}, new int[] {R.id.titre})); 
+		if (listeUE.size() == 0) {
+			ListView liste = (ListView) findViewById(R.id.listUEAdmin);
+			ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
 			
-			liste.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-				public void onItemClick(AdapterView<?> arg0, View arg1, final int position, long arg3) {
-					Intent newIntent = new Intent(ListeUEA.this, ListeMatiereA.class);
-					newIntent.putExtra("ue", listeUE.get(position));
-					
-					startActivity(newIntent);
-				}
-			});
-			
-			liste.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-				public boolean onItemLongClick(AdapterView<?> arg0, View arg1, final int arg2, final long arg3) {
-					AlertDialog.Builder confirmSuppr = new AlertDialog.Builder(ListeUEA.this);
-					confirmSuppr.setTitle("Suppression");
-					confirmSuppr.setMessage("Voulez-vous vraiment supprimer cet élément ?");
-					confirmSuppr.setCancelable(false);
-					confirmSuppr.setPositiveButton("Oui", new AlertDialog.OnClickListener() {
-						public void onClick(DialogInterface dialog, int id) {	
-							ProgressDialog progress = new ProgressDialog(activity);
-							progress.setMessage("Chargement...");
-							new DeleteUE(progress, Constantes.URL_SERVER + "ue" +
-									"?id=" + listeUE.get(arg2).getId() +
-									"&token=" + FileUtils.lireFichier("/sdcard/cacheJMD/token.jmd") + 
-									"&pseudo=" + FileUtils.lireFichier("/sdcard/cacheJMD/pseudo.jmd") +
-									"&timestamp=" + new java.util.Date().getTime()).execute();
-						}
-					});
-						
-					confirmSuppr.setNegativeButton("Non", null);
-					confirmSuppr.show();
-	    			
-					return true;
-				}
-			}); 
-		} else {			
 			HashMap<String, String> map = new HashMap<String, String>();
 			map.put("titre", "Aucune UE.");
 			
-			ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
-			listItem.add(map);
-
-			liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.simple_list, new String[] {"titre"}, new int[] {R.id.titre})); 
+			listItem.add(map);		
+	
+			liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.simple_list, new String[] {"titre"}, new int[] {R.id.titre}));
+			liste.setOnItemClickListener(null);
+		} else {
+			List<Item> items = new ArrayList<Item>();
+			
+			if (annee.getDecoupage() == DecoupageType.NULL) {
+				items.add(new Header("CONTRÔLE CONTINU"));
+				
+				for (int s = 0; s < listeUE.size(); s++) {
+					items.add(new ListItemUE(listeUE.get(s), s));	
+				}
+			} else if (annee.getDecoupage() == DecoupageType.SEMESTRE) {
+				items.add(new Header("SEMESTRE 1"));
+				
+				for (int s = 0; s < listeUE.size(); s++) {
+					if (listeUE.get(s).getDecoupage() == DecoupageYearType.SEM1) {
+						items.add(new ListItemUE(listeUE.get(s), s));	
+					}
+				}
+				
+				items.add(new Header("SEMESTRE 2"));
+				
+				for (int s = 0; s < listeUE.size(); s++) {
+					if (listeUE.get(s).getDecoupage() == DecoupageYearType.SEM2) {
+						items.add(new ListItemUE(listeUE.get(s), s));	
+					}
+				}
+			} else if (annee.getDecoupage() == DecoupageType.TRIMESTRE) {
+				items.add(new Header("TRIMESTRE 1"));
+				
+				for (int s = 0; s < listeUE.size(); s++) {
+					if (listeUE.get(s).getDecoupage() == DecoupageYearType.TRI1) {
+						items.add(new ListItemUE(listeUE.get(s), s));	
+					}
+				}
+				
+				items.add(new Header("TRIMESTRE 2"));
+				
+				for (int s = 0; s < listeUE.size(); s++) {
+					if (listeUE.get(s).getDecoupage() == DecoupageYearType.TRI2) {
+						items.add(new ListItemUE(listeUE.get(s), s));	
+					}
+				}
+				
+				items.add(new Header("TRIMESTRE 3"));
+				
+				for (int s = 0; s < listeUE.size(); s++) {
+					if (listeUE.get(s).getDecoupage() == DecoupageYearType.TRI3) {
+						items.add(new ListItemUE(listeUE.get(s), s));	
+					}
+				}
+			}
+	
+	        final TwoTextArrayAdapter adapter = new TwoTextArrayAdapter(this, items);
+	
+	        final ListView liste = (ListView) findViewById(R.id.listUEAdmin);
+	        
+	        liste.setAdapter(adapter);
+	
+			liste.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+				public void onItemClick(AdapterView<?> arg0, View arg1, final int position, long arg3) {
+					try {
+						Header h = ((Header) adapter.getItem(position));
+						
+						if (h != null) {
+							return;
+						}
+					} catch(Exception e) {
+						// Do nothing.
+					}
+					
+					if (((ListItemUE) adapter.getItem(position)).getUE() == null) {
+						// Do nothing.
+					} else {
+						Intent newIntent = new Intent(ListeUEA.this, ListeMatiereA.class);
+						newIntent.putExtra("ue", listeUE.get(position - 1));
+						
+						startActivity(newIntent);
+					}
+				}
+			});
+	
+			liste.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+				public boolean onItemLongClick(AdapterView<?> arg0, View arg1, final int arg2, final long arg3) {
+					try {
+						Header h = ((Header) adapter.getItem(arg2));
+						
+						if (h != null) {
+							return false;
+						}
+					} catch(Exception e) {
+						// Do nothing.
+					}
+					
+					if (((ListItemUE) adapter.getItem(arg2)).getUE() == null) {
+						// Do nothing.
+					} else {
+						AlertDialog.Builder confirmQuitter = new AlertDialog.Builder(ListeUEA.this);
+						confirmQuitter.setTitle("Suppression");
+						confirmQuitter.setMessage("Voulez-vous vraiment supprimer cette UE ?");
+						confirmQuitter.setCancelable(false);
+						confirmQuitter.setPositiveButton("Oui", new AlertDialog.OnClickListener() {
+							public void onClick(DialogInterface dialog, int id) {								
+								ProgressDialog progress = new ProgressDialog(activity);
+								progress.setMessage("Chargement...");
+								new DeleteUE(progress, Constantes.URL_SERVER + "ue" +
+										"?id=" + listeUE.get(arg2).getId() +
+										"&token=" + FileUtils.lireFichier("/sdcard/cacheJMD/token.jmd") + 
+										"&pseudo=" + FileUtils.lireFichier("/sdcard/cacheJMD/pseudo.jmd") +
+										"&timestamp=" + new java.util.Date().getTime()).execute();
+							}
+						});
+	
+						confirmQuitter.setNegativeButton("Non", null);
+						confirmQuitter.show();
+					}
+	
+					return true;
+				}
+			}); 
 		}
 	}
 	

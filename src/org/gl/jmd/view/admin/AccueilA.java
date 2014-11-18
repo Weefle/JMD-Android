@@ -20,8 +20,6 @@ import android.app.*;
 import android.content.*;
 import android.content.res.Configuration;
 import android.graphics.*;
-import android.graphics.PorterDuff.Mode;
-import android.graphics.drawable.Drawable;
 import android.os.*;
 import android.support.v4.widget.DrawerLayout;
 import android.text.SpannableString;

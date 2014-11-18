@@ -30,7 +30,7 @@
             android:layout_marginRight="15dp"
             android:contentDescription="@string/desc_img"
             android:onClick="simulerObtentionAnnee"
-            android:src="@drawable/simul_moyenne" />
+            android:src="@drawable/info" />
     </RelativeLayout>
 
     <ListView

@@ -131,20 +131,8 @@ public class FavoriA extends Activity {
 
 			liste.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 				public void onItemClick(AdapterView<?> arg0, View arg1, final int position, long arg3) {
-					Class<?> c = null;
-
-					if (listItem.get(position).get("decoupage").equals(DecoupageType.NULL.name())) {
-						c = ListeUERegleA.class;
-					} else if (listItem.get(position).get("decoupage").equals(DecoupageType.SEMESTRE.name())) {
-						c = ListeSemestreA.class;
-					} else if (listItem.get(position).get("decoupage").equals(DecoupageType.TRIMESTRE.name())) {
-						c = ListeTrimestreA.class;
-					} 
-
-					Intent newIntent = new Intent(FavoriA.this, c);
+					Intent newIntent = new Intent(FavoriA.this, ListeUERegleA.class);
 					newIntent.putExtra("annee", listeAnnees.get(position));
-					newIntent.putExtra("decoupage", listItem.get(position).get("decoupage"));
-					
 					startActivity(newIntent);
 				}
 			});
@@ -203,10 +191,6 @@ public class FavoriA extends Activity {
 
 			liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.simple_list, new String[] {"titre"}, new int[] {R.id.titre})); 
 		}
-	}
-	
-	private void finishAllActivities() {
-		this.finishAffinity();
 	}
 	
 	/* Classes internes. */
@@ -587,7 +571,7 @@ public class FavoriA extends Activity {
 	        	filePseudo.delete();
 	        	fileToken.delete();
 
-	        	finishAllActivities();
+	        	finish();
 	        	startActivity(new Intent(FavoriA.this, Accueil.class));	
 
 	        	toast.setText("Session expirée.");	

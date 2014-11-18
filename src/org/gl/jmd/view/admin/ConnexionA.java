@@ -14,7 +14,6 @@ import org.gl.jmd.*;
 import org.gl.jmd.model.Admin;
 import org.gl.jmd.utils.*;
 import org.gl.jmd.view.InitApp;
-import org.gl.jmd.view.etudiant.AccueilE;
 
 import android.app.*;
 import android.content.*;
@@ -74,6 +73,19 @@ public class ConnexionA extends Activity {
 			progress.setMessage("Chargement...");
 			new SeConnecter(progress, URL).execute();	
 		} else {
+			if (PSEUDO.getText().toString().length() == 0) {
+				PSEUDO.setBackgroundResource(R.drawable.border_edittext_error);
+			} else {
+				PSEUDO.setBackgroundResource(R.drawable.border_edittext);
+			}
+			
+			if (PASSWORD.getText().toString().length() == 0) {
+				PASSWORD.setBackgroundResource(R.drawable.border_edittext_error);
+
+			} else {
+				PASSWORD.setBackgroundResource(R.drawable.border_edittext);
+			}
+			
 			toast.setText("Au moins un des champs est vide.");
 			toast.show();
 		}
