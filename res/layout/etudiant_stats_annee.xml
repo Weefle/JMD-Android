@@ -15,9 +15,9 @@
             android:id="@+id/stats_annee_titre_vue"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_centerInParent="true"
-            android:layout_marginLeft="30dp"
+            android:layout_marginStart="30dp"
             android:text="@string/stats_annee_titre_txt"
             android:textColor="#FFFFFF"
             android:textSize="20sp" />
@@ -26,9 +26,9 @@
             android:id="@+id/stats_annee_export"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_centerInParent="true"
-            android:layout_marginRight="15dp"
+            android:layout_marginEnd="15dp"
             android:contentDescription="@string/desc_img"
             android:onClick="export"
             android:src="@drawable/pdf" />
@@ -40,7 +40,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:gravity="center"
-        android:text="Moyenne"
+        android:text="@string/stats_annee_moyenne"
         android:textColor="#000000"
         android:textSize="24sp" />
 
@@ -65,7 +65,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:gravity="center"
-        android:text="Avancement"
+        android:text="@string/stats_annee_avancement"
         android:textColor="#000000"
         android:textSize="24sp" />
 
@@ -90,7 +90,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:gravity="center"
-        android:text="Mention"
+        android:text="@string/stats_annee_mention"
         android:textColor="#000000"
         android:textSize="24sp" />
 
@@ -99,8 +99,14 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
         android:gravity="center"
         android:textColor="#000000"
         android:textSize="16sp" />
+    
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="0.5dp"
+        android:background="@android:color/black" />
 
 </LinearLayout>

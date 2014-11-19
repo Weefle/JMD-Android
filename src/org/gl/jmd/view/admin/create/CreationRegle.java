@@ -113,6 +113,12 @@ public class CreationRegle extends Activity {
 					"&pseudo=" + FileUtils.lireFichier("/sdcard/cacheJMD/pseudo.jmd") +
 					"&timestamp=" + new java.util.Date().getTime()).execute();	
 		} else {
+			if (VALUE.getText().toString().length() == 0) {
+				VALUE.setBackgroundResource(R.drawable.border_edittext_error);
+			} else {
+				VALUE.setBackgroundResource(R.drawable.border_edittext);
+			}			
+			
 			toast.setText("Au moins un des champs est vide.");
 			toast.show();
 		}
@@ -180,7 +186,7 @@ public class CreationRegle extends Activity {
 		ProgressDialog progress2 = new ProgressDialog(activity);
 		progress2.setMessage("Chargement...");
 		new GetMatieres(progress2, Constantes.URL_SERVER + "matiere/getAllMatiereOfYear" +
-				"?idAnnee=" + a.getId()).execute(); 
+										"?idAnnee=" + a.getId()).execute(); 
 	}
 	
 	private void initListeUE(final ArrayList<UE> listeUE) {

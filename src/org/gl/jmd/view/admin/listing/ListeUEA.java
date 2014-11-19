@@ -87,43 +87,73 @@ public class ListeUEA extends Activity {
 				}
 			} else if (annee.getDecoupage() == DecoupageType.SEMESTRE) {
 				items.add(new Header("SEMESTRE 1"));
+				boolean hasSEM1 = false;
 				
 				for (int s = 0; s < listeUE.size(); s++) {
 					if (listeUE.get(s).getDecoupage() == DecoupageYearType.SEM1) {
+						hasSEM1 = true;
 						items.add(new ListItemUE(listeUE.get(s), s));	
 					}
+				}
+				
+				if (!hasSEM1) {
+					items.add(new ListItemUE());	
 				}
 				
 				items.add(new Header("SEMESTRE 2"));
+				boolean hasSEM2 = false;
 				
 				for (int s = 0; s < listeUE.size(); s++) {
 					if (listeUE.get(s).getDecoupage() == DecoupageYearType.SEM2) {
+						hasSEM2 = true;
 						items.add(new ListItemUE(listeUE.get(s), s));	
 					}
+				}
+				
+				if (!hasSEM2) {
+					items.add(new ListItemUE());	
 				}
 			} else if (annee.getDecoupage() == DecoupageType.TRIMESTRE) {
 				items.add(new Header("TRIMESTRE 1"));
+				boolean hasTR1 = false;
 				
 				for (int s = 0; s < listeUE.size(); s++) {
 					if (listeUE.get(s).getDecoupage() == DecoupageYearType.TRI1) {
+						hasTR1 = true;
 						items.add(new ListItemUE(listeUE.get(s), s));	
 					}
+				}
+				
+				if (!hasTR1) {
+					items.add(new ListItemUE());	
 				}
 				
 				items.add(new Header("TRIMESTRE 2"));
+				boolean hasTR2 = false;
 				
 				for (int s = 0; s < listeUE.size(); s++) {
 					if (listeUE.get(s).getDecoupage() == DecoupageYearType.TRI2) {
+						hasTR2 = true;
 						items.add(new ListItemUE(listeUE.get(s), s));	
 					}
 				}
 				
+				if (!hasTR2) {
+					items.add(new ListItemUE());	
+				}
+				
 				items.add(new Header("TRIMESTRE 3"));
+				boolean hasTR3 = false;
 				
 				for (int s = 0; s < listeUE.size(); s++) {
 					if (listeUE.get(s).getDecoupage() == DecoupageYearType.TRI3) {
+						hasTR3 = true;
 						items.add(new ListItemUE(listeUE.get(s), s));	
 					}
+				}
+				
+				if (!hasTR3) {
+					items.add(new ListItemUE());	
 				}
 			}
 	

@@ -147,6 +147,8 @@ public class ListeUEE extends Activity {
 	@Override
 	public void onResume() {
 		etud = EtudiantDAO.load();
+		ann = etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn);
+		
 		initListe();
 
 		super.onResume();

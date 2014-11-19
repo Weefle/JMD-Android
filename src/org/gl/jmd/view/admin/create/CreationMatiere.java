@@ -83,18 +83,16 @@ public class CreationMatiere extends Activity {
 			m.setCoefficient(Integer.parseInt(COEFF.getText().toString()));
 			m.setIsOption(IS_OPTION.isChecked());
 			
-			String URL = Constantes.URL_SERVER + "matiere" +
+			ProgressDialog progress = new ProgressDialog(activity);
+			progress.setMessage("Chargement...");
+			new CreerMatiere(progress, Constantes.URL_SERVER + "matiere" +
 					"?nom=" + URLEncoder.encode(m.getNom()) +
 					"&coefficient=" + m.getCoefficient() +
 					"&isOption=" + m.isOption() +
 					"&idUE=" + idUE +
 					"&token=" + FileUtils.lireFichier("/sdcard/cacheJMD/token.jmd") + 
 					"&pseudo=" + FileUtils.lireFichier("/sdcard/cacheJMD/pseudo.jmd") +
-					"&timestamp=" + new java.util.Date().getTime();	
-			
-			ProgressDialog progress = new ProgressDialog(activity);
-			progress.setMessage("Chargement...");
-			new CreerMatiere(progress, URL).execute();	
+					"&timestamp=" + new java.util.Date().getTime()).execute();	
 		} else {
 			boolean isCoeffOK = true;
 			boolean isNomOK = true;
@@ -117,16 +115,9 @@ public class CreationMatiere extends Activity {
 			
 			if (!isNomOK && !isCoeffOK) {
 				txtToast = "Les deux champs sont vides.";
-				toast.show();
-				
-				return;
-			} 
-			
-			if (!isCoeffOK) {
-				txtToast = "Le champ \"Coefficient\" est vide.\n";
-			} 
-			
-			if (!isNomOK) {
+			} else if (!isCoeffOK) {
+				txtToast = "Le champ \"Coefficient\" est vide.";
+			} else if (!isNomOK) {
 				txtToast = "Le champ \"Nom\" est vide.";
 			} 
 			

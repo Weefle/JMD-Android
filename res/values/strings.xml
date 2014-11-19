@@ -14,20 +14,13 @@
     <string name="etudiant_liste_annees_view_name">Liste des années</string>
     <string name="etudiant_liste_ue_view_name">Liste des UE</string>
     <string name="etudiant_liste_matieres_view_name">Liste des matières</string>
-    <string name="administrateur_liste_sem_view_name">Liste des semestres</string>
-    <string name="administrateur_liste_tri_view_name">Liste des trimestres</string>
-    
     <string name="etudiant_liste_trimestre_view_name">Trimestres</string>
     <string name="etudiant_liste_semestre_view_name">Semestres</string>
-    
+   
     <string name="etudiant_ajouter_annee_ae_view_name">Ajout des années</string>
-    
     <string name="etudiant_modifier_ae_view_name">Bienvenue</string>
     <string name="etudiant_accueil_view_name">Accueil (Etudiant)</string>
-    <string name="etudiant_contact_view_name">Contact</string>
-    <string name="etudiant_faq_view_name">FAQ</string>
     <string name="etudiant_saisie_note_titre_view_name">Saisie de notes</string>
-    <string name="etudiant_profil_view_name">Profil</string>
     <string name="etudiant_stats_annee_view_name">Stats sur l\'année</string>
     
     <!-- Nom des vues d'un administrateur -->
@@ -53,7 +46,6 @@
     <string name="administrateur_accueil_eta_dip_view_name">Accueil (Administrateur)</string>
     
     <string name="administrateur_connexion_view_name">Connexion</string>
-    <string name="admin_faq_view_name">FAQ</string>
     <string name="administrateur_inscription_view_name">Inscription</string>
     <string name="administrateur_recup_mdp_view_name">Mot de passe oublié</string>
     
@@ -91,6 +83,8 @@
     <!-- Hints -->
     
     <string name="hint_nom">Nom</string>
+    <string name="hint_valeur">Valeur</string>
+    
 	<string name="admin_crea_annee_hint_etablissement">Etablissement</string>
 	<string name="admin_crea_eta_hint_ville">Ville</string>
 	<string name="admin_crea_eta_hint_coeff">Coefficient</string>
@@ -100,7 +94,6 @@
     <string name="admin_inscr_password">Mot de passe</string>
     <string name="admin_inscr_password_retype">Retapez votre mot de passe</string>
     <string name="admin_inscr_email">Email</string>
-    <string name="admin_inscr_nom">Nom</string>
     <string name="admin_inscr_prenom">Prénom</string>
     
     <string name="pseudo_txt">Pseudo</string>    
@@ -126,10 +119,15 @@
     <string name="administrateur_accueil_bienvenue">Bienvenue</string>
     <string name="administrateur_liste_ue_regle_titre">UE</string>
     
+    <string name="admin_liste_eta_titre_texte">Liste des établissements</string>
+	<string name="admin_liste_diplome_titre">Liste des diplômes</string>
+    
     <string name="liste_semestres_txt">Semestres</string>
     <string name="liste_trimestres_txt">Trimestres</string>
     
 	<string name="etudiant_ajouter_diplome_titre_texte">Ajouter un diplôme</string>
+	<string name="etudiant_ajouter_annee_titre_texte">Ajouter une année</string>
+	
 	<string name="etudiant_accueil_bienvenue">Bienvenue</string>
 	<string name="etudiant_saisie_note_titre_txt">Saisie de notes</string>
 	<string name="stats_annee_titre_txt">Détails de l\'année</string>
@@ -143,14 +141,15 @@
 	<string name="ecran_choix_user_checkbox_texte">Se souvenir de mon choix ?</string>
 	<string name="desc_img">Description</string>
 	
-	<string name="etudiant_txt">Etudiant</string>
-	<string name="etudiant_modifier_accueil_txt_bout_ok">OK</string>
-	<string name="admin_liste_eta_titre_texte">Liste des établissements</string>
-	<string name="admin_liste_diplome_titre">Liste des diplômes</string>
+	<string name="stats_annee_mention">Mention</string>
+	<string name="stats_annee_avancement">Avancement</string>
+	<string name="stats_annee_moyenne">Moyenne</string>
 	
+	<string name="etudiant_txt">Etudiant</string>
+	<string name="administrateur_txt">Administrateur</string>
+
 	<string name="admin_choix_ue">Choisir une UE</string>
 	<string name="admin_choix_matiere">Choisir une matière</string>
-	<string name="administrateur_txt">Administrateur</string>
 	<string name="admin_connexion_subtitle">Connectez-vous à votre compte Administrateur</string>
 	<string name="administrateur_creation_matiere_coefficient_tv">Coefficient</string>
 	

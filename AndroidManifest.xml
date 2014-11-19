@@ -196,20 +196,6 @@
         </activity>
         
         <activity
-            android:name="org.gl.jmd.view.admin.listing.ListeTrimestreA"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/administrateur_liste_tri_view_name" 
-            android:theme="@android:style/Theme.NoTitleBar" >
-        </activity>
-        
-        <activity
-            android:name="org.gl.jmd.view.admin.listing.ListeSemestreA"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/administrateur_liste_sem_view_name" 
-            android:theme="@android:style/Theme.NoTitleBar" >
-        </activity>
-        
-        <activity
             android:name="org.gl.jmd.view.admin.listing.ListeAnneeA"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/administrateur_liste_annee_view_name" 

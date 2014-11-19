@@ -57,19 +57,20 @@ public class AccueilA extends TabActivity {
         setupTab("Etablissements", "1", new Intent().setClass(this, ListeEtablissementA.class), 1);
         setupTab("Diplômes", "2", new Intent().setClass(this, ListeDiplomeA.class), 2);
 
-		tabHost.getTabWidget().getChildAt(0).getLayoutParams().height = 135;
+		tabHost.getTabWidget().getChildAt(0).getLayoutParams().height = 125;
 		tabHost.getTabWidget().getChildAt(0).setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_bg_selector)); 
 		tabHost.getTabWidget().getChildAt(0).setSelected(true);
 
-		tabHost.getTabWidget().getChildAt(1).getLayoutParams().height = 135;
+		tabHost.getTabWidget().getChildAt(1).getLayoutParams().height = 125;
 		tabHost.getTabWidget().getChildAt(1).setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_bg_selector)); 
 		
-		tabHost.getTabWidget().getChildAt(2).getLayoutParams().height = 135;
+		tabHost.getTabWidget().getChildAt(2).getLayoutParams().height = 125;
 		tabHost.getTabWidget().getChildAt(2).setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_bg_selector)); 
 		
 		TextView tv = (TextView) tabHost.getTabWidget().getChildAt(0).findViewById(R.id.tabsText);
 		tv.setTextColor(Color.parseColor("#FF5E3A"));
 		tv.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.star_or, 0, 0);
+		tv.setTextSize(13);
 		
 		SpannableString spanString = new SpannableString("Favori");
 		spanString.setSpan(new StyleSpan(Typeface.BOLD), 0, spanString.length(), 0);
@@ -78,9 +79,11 @@ public class AccueilA extends TabActivity {
 		
 		TextView tv2 = (TextView) tabHost.getTabWidget().getChildAt(1).findViewById(R.id.tabsText);
 		tv2.setTextColor(Color.parseColor("#FFFFFF"));
+		tv2.setTextSize(13);
 		
 		TextView tv3 = (TextView) tabHost.getTabWidget().getChildAt(2).findViewById(R.id.tabsText);
 		tv3.setTextColor(Color.parseColor("#FFFFFF"));
+		tv3.setTextSize(13);
 		
 		final ImageView buttonAdd = (ImageView) findViewById(R.id.admin_accueil_bout_modifier);
 		buttonAdd.setVisibility(View.GONE);

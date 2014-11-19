@@ -55,6 +55,8 @@ public class ListeUERegleA extends TabActivity {
 		tabHost.getTabWidget().getChildAt(1).getLayoutParams().height = 80;
 		tabHost.getTabWidget().getChildAt(1).setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_bg_selector)); 
 		
+		final TextView tvTitre = (TextView) findViewById(R.id.administrateur_liste_ue_regle);
+		
 		TextView tv = (TextView) tabHost.getTabWidget().getChildAt(0).findViewById(R.id.tabsText);
 		tv.setTextColor(Color.parseColor("#FF5E3A"));
 		
@@ -76,6 +78,7 @@ public class ListeUERegleA extends TabActivity {
 				SpannableString spanString2 = new SpannableString("Règles de gestion");
 				
 				if (tabId.equals("0")) {
+					tvTitre.setText("UE");
 					currentTab = 0;
 					
 					spanString.setSpan(new StyleSpan(Typeface.BOLD), 0, spanString.length(), 0);
@@ -88,6 +91,7 @@ public class ListeUERegleA extends TabActivity {
 					tv2.setTextColor(Color.parseColor("#FFFFFF"));
 					tv2.setText(spanString2);
 				} else if (tabId.equals("1")) {
+					tvTitre.setText("Règles");
 					currentTab = 1;
 
 					spanString.setSpan(new StyleSpan(Typeface.NORMAL), 0, spanString.length(), 0);

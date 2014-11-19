@@ -75,13 +75,17 @@ public class UE implements Serializable {
 		int coeffGlobalUE = 0;
 		double produitMatiereCoeff = 0.0;
 		
-		for (int i = 0; i < this.listeMatieres.size(); i++) {			
-			coeffGlobalUE += this.listeMatieres.get(i).getCoefficient();
-			produitMatiereCoeff += this.listeMatieres.get(i).getNoteFinale() * this.listeMatieres.get(i).getCoefficient();
+		for (int i = 0; i < this.listeMatieres.size(); i++) {
+			if (this.listeMatieres.get(i).getNoteFinale() != -1.0 ) {
+				coeffGlobalUE += this.listeMatieres.get(i).getCoefficient();
+				produitMatiereCoeff += this.listeMatieres.get(i).getNoteFinale() * this.listeMatieres.get(i).getCoefficient();
+			}
 		}
 		
-		res = produitMatiereCoeff / coeffGlobalUE;
-		res = NumberUtils.round(res, 2);
+		if ((coeffGlobalUE != 0) && (produitMatiereCoeff != 0.0)) {
+			res = produitMatiereCoeff / coeffGlobalUE;
+			res = NumberUtils.round(res, 2);
+		}
 		
 		return res;
 	}
@@ -102,12 +106,14 @@ public class UE implements Serializable {
 			res = false;
 		} 
 		
-		for (int i = 0; i < listeRegles.size(); i++) {
+		for (int i = 0; i < listeRegles.size(); i++) {			
 			if ((listeRegles.get(i).getRegle() == RegleType.NOTE_MINIMALE) &&
 					(listeRegles.get(i).getIdUE() == this.id)) {
 				
-				for (int k = 0; k < this.listeMatieres.size(); k++) {
-					if (this.listeMatieres.get(k).getNoteFinale() < listeRegles.get(i).getValeur()) {
+				for (int k = 0; k < this.listeMatieres.size(); k++) {					
+					if ((this.listeMatieres.get(k).getNoteFinale() != -1.0) && 
+							(this.listeMatieres.get(k).getNoteFinale() < listeRegles.get(i).getValeur())) {
+						
 						res = false;
 						break;
 					}
