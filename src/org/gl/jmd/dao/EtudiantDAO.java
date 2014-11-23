@@ -3,8 +3,7 @@ package org.gl.jmd.dao;
 import java.io.*;
 import java.util.ArrayList;
 
-import org.gl.jmd.model.Diplome;
-import org.gl.jmd.model.Etudiant;
+import org.gl.jmd.model.*;
 
 /**
  * Objet permettant de manipuler des étudiants.
@@ -49,6 +48,16 @@ public class EtudiantDAO {
 		}
 		
 		return result;    
+	}
+	
+	/**
+	 * Méthode permettant de supprimer le profil étudiant enregistré.
+	 * 
+	 * @return <b>true</b> si le profil a bien été supprimé.<br />
+	 * <b>false</b> sinon.
+	 */
+	public static boolean deleteProfil() {
+		return fileProfil.delete();
 	}
 	
 	/**

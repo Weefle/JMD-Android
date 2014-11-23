@@ -90,8 +90,8 @@ public class CreationMatiere extends Activity {
 					"&coefficient=" + m.getCoefficient() +
 					"&isOption=" + m.isOption() +
 					"&idUE=" + idUE +
-					"&token=" + FileUtils.lireFichier("/sdcard/cacheJMD/token.jmd") + 
-					"&pseudo=" + FileUtils.lireFichier("/sdcard/cacheJMD/pseudo.jmd") +
+					"&token=" + FileUtils.readFile("/sdcard/cacheJMD/token.jmd") + 
+					"&pseudo=" + FileUtils.readFile("/sdcard/cacheJMD/pseudo.jmd") +
 					"&timestamp=" + new java.util.Date().getTime()).execute();	
 		} else {
 			boolean isCoeffOK = true;
@@ -230,10 +230,7 @@ public class CreationMatiere extends Activity {
 	 * Méthode déclenchée lors d'un click sur le bouton virtuel Android de retour.
 	 */
 	@Override
-	public void onBackPressed() {
-		final EditText NOM = (EditText) findViewById(R.id.admin_creation_matiere_nom);
-		final EditText COEFF = (EditText) findViewById(R.id.admin_creation_matiere_coefficient);
-		
+	public void onBackPressed() {		
 		if ((NOM.getText().toString().length() != 0) || (COEFF.getText().toString().length() != 0)) {
 			AlertDialog.Builder confirmQuitter = new AlertDialog.Builder(this);
 			confirmQuitter.setTitle("Annulation");

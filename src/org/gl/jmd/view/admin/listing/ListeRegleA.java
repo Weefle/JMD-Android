@@ -42,7 +42,7 @@ public class ListeRegleA extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		setContentView(R.layout.administrateur_liste_regle);
+		setContentView(R.layout.view_with_list);
 		overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
 
 		a = (Annee) getIntent().getExtras().getSerializable("annee");
@@ -148,8 +148,8 @@ public class ListeRegleA extends Activity {
 								progress.setMessage("Chargement...");
 								new DeleteRegle(progress, Constantes.URL_SERVER + "regle" +
 										"?id=" + listeRegles.get(arg2).getId() +
-										"&token=" + FileUtils.lireFichier("/sdcard/cacheJMD/token.jmd") + 
-										"&pseudo=" + FileUtils.lireFichier("/sdcard/cacheJMD/pseudo.jmd") +
+										"&token=" + FileUtils.readFile("/sdcard/cacheJMD/token.jmd") + 
+										"&pseudo=" + FileUtils.readFile("/sdcard/cacheJMD/pseudo.jmd") +
 										"&timestamp=" + new java.util.Date().getTime()).execute();
 							}
 						});

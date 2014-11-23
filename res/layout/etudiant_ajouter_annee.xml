@@ -14,9 +14,8 @@
             android:id="@+id/etudiant_ajout_diplome_titre"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
             android:layout_centerInParent="true"
-            android:layout_marginStart="30dp"
+            android:gravity="center_horizontal"
             android:text="@string/etudiant_ajouter_annee_titre_texte"
             android:textColor="#FFFFFF"
             android:textSize="20sp" />
@@ -25,8 +24,6 @@
     <LinearLayout
         android:id="@+id/linearLayoutDip"
         android:layout_width="match_parent"
-        android:layout_marginStart="10sp"
-        android:layout_marginEnd="10sp"
         android:layout_height="wrap_content" >
 
         <EditText
@@ -55,8 +52,6 @@
     
     <LinearLayout
         android:id="@+id/linearLayoutEta"
-        android:layout_marginStart="10sp"
-        android:layout_marginEnd="10sp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
 

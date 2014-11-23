@@ -20,14 +20,14 @@ public class FileUtils {
 	/**
 	 * Méthode permettant de lire un fichier et de renvoyer son contenu.
 	 * 
-	 * @param pathFichier Le chemin du fichier à lire.
+	 * @param path Le chemin du fichier à lire.
 	 * @return Le contenu du fichier, ou une chaine vide si le fichier donné en argument n'existe pas.
 	 */
-	public static String lireFichier(String pathFichier) {
+	public static String readFile(String path) {
 		String contenuFichier = "";
 
 		try {
-			FileInputStream fis = new FileInputStream(pathFichier);
+			FileInputStream fis = new FileInputStream(path);
 			int n;
 
 			while((n = fis.available()) > 0) {
@@ -40,36 +40,8 @@ public class FileUtils {
 				
 				contenuFichier = new String(b);
 			}
-		} catch (Exception err) {
-			return "";
-		} 
-
-		return contenuFichier;
-	}
-	
-	/**
-	 * Méthode permettant de lire un fichier et de renvoyer son contenu.
-	 * 
-	 * @param fichier Le fichier à lire.
-	 * @return Le contenu du fichier, ou une chaine vide si le fichier donné en argument n'existe pas.
-	 */
-	public static String lireFichier(File fichier) {
-		String contenuFichier = "";
-
-		try {
-			FileInputStream fis = new FileInputStream(fichier);
-			int n;
-
-			while((n = fis.available()) > 0) {
-				byte[] b = new byte[n]; 
-				int result = fis.read(b);
-				
-				if(result == -1) {
-					break; 
-				}
-				
-				contenuFichier = new String(b);
-			}
+			
+			fis.close();
 		} catch (Exception err) {
 			return "";
 		} 
@@ -80,23 +52,23 @@ public class FileUtils {
 	/**
 	 * Méthode permettant d'écrire un texte dans un fichier.
 	 * 
-	 * @param contenu Le contenu à écrire dans le fichier.
-	 * @param pathFichier L'adresse du fichier.
+	 * @param content Le contenu à écrire dans le fichier.
+	 * @param path L'adresse du fichier.
 	 * 
-	 * @return <b>0</b> si le texte a bien été écrit dans le fichier.<br />
-	 * <b>-1</b> sinon.
+	 * @return <b>true</b> si le texte a bien été écrit dans le fichier.<br />
+	 * <b>false</b> sinon.
 	 */
-	public static int ecrireTexteFichier(String contenu, String pathFichier) {
+	public static boolean writeFile(String content, String path) {
 		try { 
-			FileWriter lu = new FileWriter(pathFichier);
+			FileWriter lu = new FileWriter(path);
 			BufferedWriter out = new BufferedWriter(lu);
 			
-			out.write(contenu); 
+			out.write(content); 
 			out.close(); 
-		} catch (final IOException b) {
-			return -1;
+		} catch (IOException b) {
+			return false;
 		}
 
-		return 0;
+		return true;
 	}
 }

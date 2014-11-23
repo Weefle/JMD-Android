@@ -117,8 +117,8 @@ public class CreationUE extends Activity {
 					"?nom=" + URLEncoder.encode(ue.getNom()) +
 					"&yearType=" + ue.getDecoupage().name() +
 					"&idAnnee=" + a.getId() +
-					"&token=" + FileUtils.lireFichier("/sdcard/cacheJMD/token.jmd") + 
-					"&pseudo=" + FileUtils.lireFichier("/sdcard/cacheJMD/pseudo.jmd") +
+					"&token=" + FileUtils.readFile("/sdcard/cacheJMD/token.jmd") + 
+					"&pseudo=" + FileUtils.readFile("/sdcard/cacheJMD/pseudo.jmd") +
 					"&timestamp=" + new java.util.Date().getTime()).execute(); 
 		} else {
 			NOM.setBackgroundResource(R.drawable.border_edittext_error);
@@ -166,7 +166,7 @@ public class CreationUE extends Activity {
 					filePseudo.delete();
 					fileToken.delete();
 		        	
-					activity.finishAffinity();
+					finishAffinity();
 		        	startActivity(new Intent(CreationUE.this, Accueil.class));	
 		        	
 		        	toast.setText("Session expirée.");	

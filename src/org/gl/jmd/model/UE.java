@@ -3,8 +3,7 @@ package org.gl.jmd.model;
 import java.io.Serializable;
 import java.util.*;
 
-import org.gl.jmd.model.enumeration.DecoupageYearType;
-import org.gl.jmd.model.enumeration.RegleType;
+import org.gl.jmd.model.enumeration.*;
 import org.gl.jmd.utils.NumberUtils;
 
 /**
@@ -110,7 +109,7 @@ public class UE implements Serializable {
 			if ((listeRegles.get(i).getRegle() == RegleType.NOTE_MINIMALE) &&
 					(listeRegles.get(i).getIdUE() == this.id)) {
 				
-				for (int k = 0; k < this.listeMatieres.size(); k++) {					
+				for (int k = 0; k < this.listeMatieres.size(); k++) {	
 					if ((this.listeMatieres.get(k).getNoteFinale() != -1.0) && 
 							(this.listeMatieres.get(k).getNoteFinale() < listeRegles.get(i).getValeur())) {
 						

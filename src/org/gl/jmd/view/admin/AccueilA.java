@@ -43,6 +43,10 @@ public class AccueilA extends TabActivity {
 	private Activity activity;
 	
 	private Toast toast;
+	
+	private ImageView buttonAdd = null;
+	
+	private TextView tvTitre = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -51,22 +55,31 @@ public class AccueilA extends TabActivity {
 		setContentView(R.layout.administrateur_accueil);
 		overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
 		
+		activity = this;
+		toast = Toast.makeText(activity, "", Toast.LENGTH_SHORT);
+		
 		tabHost = getTabHost();
 		
+		initSlideMenu();
+		initTabs();
+		initTabHost();
+		initElements();
+	}
+	
+	private void initTabs() {
 		setupTab("Favori", "0", new Intent().setClass(this, FavoriA.class), 0);
         setupTab("Etablissements", "1", new Intent().setClass(this, ListeEtablissementA.class), 1);
         setupTab("Diplômes", "2", new Intent().setClass(this, ListeDiplomeA.class), 2);
-
-		tabHost.getTabWidget().getChildAt(0).getLayoutParams().height = 125;
-		tabHost.getTabWidget().getChildAt(0).setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_bg_selector)); 
-		tabHost.getTabWidget().getChildAt(0).setSelected(true);
-
-		tabHost.getTabWidget().getChildAt(1).getLayoutParams().height = 125;
-		tabHost.getTabWidget().getChildAt(1).setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_bg_selector)); 
+	}
+	
+	private void initElements() {
+		buttonAdd = (ImageView) findViewById(R.id.admin_accueil_bout_modifier);
+		buttonAdd.setVisibility(View.GONE);
 		
-		tabHost.getTabWidget().getChildAt(2).getLayoutParams().height = 125;
-		tabHost.getTabWidget().getChildAt(2).setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_bg_selector)); 
+		tvTitre = (TextView) findViewById(R.id.admin_accueil_bienvenue);
+		tvTitre.setText("Favori");
 		
+		// Tabs.
 		TextView tv = (TextView) tabHost.getTabWidget().getChildAt(0).findViewById(R.id.tabsText);
 		tv.setTextColor(Color.parseColor("#FF5E3A"));
 		tv.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.star_or, 0, 0);
@@ -84,9 +97,18 @@ public class AccueilA extends TabActivity {
 		TextView tv3 = (TextView) tabHost.getTabWidget().getChildAt(2).findViewById(R.id.tabsText);
 		tv3.setTextColor(Color.parseColor("#FFFFFF"));
 		tv3.setTextSize(13);
+	}
+	
+	private void initTabHost() {
+		tabHost.getTabWidget().getChildAt(0).getLayoutParams().height = 125;
+		tabHost.getTabWidget().getChildAt(0).setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_bg_selector)); 
+		tabHost.getTabWidget().getChildAt(0).setSelected(true);
+
+		tabHost.getTabWidget().getChildAt(1).getLayoutParams().height = 125;
+		tabHost.getTabWidget().getChildAt(1).setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_bg_selector)); 
 		
-		final ImageView buttonAdd = (ImageView) findViewById(R.id.admin_accueil_bout_modifier);
-		buttonAdd.setVisibility(View.GONE);
+		tabHost.getTabWidget().getChildAt(2).getLayoutParams().height = 125;
+		tabHost.getTabWidget().getChildAt(2).setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_bg_selector)); 
 		
 		tabHost.setOnTabChangedListener(new OnTabChangeListener(){
 			@Override
@@ -102,6 +124,7 @@ public class AccueilA extends TabActivity {
 				if (tabId.equals("0")) {
 					buttonAdd.setVisibility(View.GONE);
 					currentTab = 0;
+					tvTitre.setText("Favori");
 					
 					spanString.setSpan(new StyleSpan(Typeface.BOLD), 0, spanString.length(), 0);
 					
@@ -123,6 +146,7 @@ public class AccueilA extends TabActivity {
 				} else if (tabId.equals("1")) {
 					buttonAdd.setVisibility(View.VISIBLE);
 					currentTab = 1;
+					tvTitre.setText("Etablissements");
 
 					spanString.setSpan(new StyleSpan(Typeface.NORMAL), 0, spanString.length(), 0);
 
@@ -144,7 +168,8 @@ public class AccueilA extends TabActivity {
 				} else if (tabId.equals("2")) {
 					buttonAdd.setVisibility(View.VISIBLE);
 					currentTab = 2;
-
+					tvTitre.setText("Diplômes");
+					
 					spanString.setSpan(new StyleSpan(Typeface.NORMAL), 0, spanString.length(), 0);
 
 					tv.setTextColor(Color.parseColor("#FFFFFF"));
@@ -165,11 +190,6 @@ public class AccueilA extends TabActivity {
 				}
 			}}
 		);
-		
-		activity = this;
-		toast = Toast.makeText(activity, "", Toast.LENGTH_SHORT);
-		
-		initSlideMenu();
 	}
 	
 	private void initSlideMenu() {		
@@ -196,8 +216,8 @@ public class AccueilA extends TabActivity {
 				
 				if (listItem.get(position).get("titre").equals("Déconnexion")) {
 					String URL = Constantes.URL_SERVER + "admin/logout" +
-							"?token=" + FileUtils.lireFichier("/sdcard/cacheJMD/token.jmd") + 
-							"&pseudo=" + FileUtils.lireFichier("/sdcard/cacheJMD/pseudo.jmd") +
+							"?token=" + FileUtils.readFile("/sdcard/cacheJMD/token.jmd") + 
+							"&pseudo=" + FileUtils.readFile("/sdcard/cacheJMD/pseudo.jmd") +
 							"&timestamp=" + new java.util.Date().getTime();			
 
 					ProgressDialog progress = new ProgressDialog(activity);
@@ -217,7 +237,7 @@ public class AccueilA extends TabActivity {
 	}
  
 	private View createTabView(final Context context, final String text, int i) {
-		View view = LayoutInflater.from(context).inflate(R.xml.tab_item, null);
+		View view = LayoutInflater.from(context).inflate(R.layout.tab_item, null);
 		
 		TextView tv = (TextView) view.findViewById(R.id.tabsText);
 		tv.setText(text);

@@ -84,8 +84,8 @@ public class ListeEtablissementA extends Activity {
 						public void onClick(DialogInterface dialog, int id) {
 							String URL = Constantes.URL_SERVER + "etablissement" +
 									"?id=" + listItem.get(arg2).get("id") +
-									"&token=" + FileUtils.lireFichier("/sdcard/cacheJMD/token.jmd") + 
-									"&pseudo=" + FileUtils.lireFichier("/sdcard/cacheJMD/pseudo.jmd") +
+									"&token=" + FileUtils.readFile("/sdcard/cacheJMD/token.jmd") + 
+									"&pseudo=" + FileUtils.readFile("/sdcard/cacheJMD/pseudo.jmd") +
 									"&timestamp=" + new java.util.Date().getTime();	
 							
 							ProgressDialog progress = new ProgressDialog(activity);

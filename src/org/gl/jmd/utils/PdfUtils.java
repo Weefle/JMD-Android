@@ -123,9 +123,9 @@ public class PdfUtils {
 	
 				page.getCanvas().drawText("Fait à " + ann.getEtablissement().getVille() + ", le " + new SimpleDateFormat("dd/MM/yyyy").format(new Date()) + ".", 50, startY, paint);	
 			} else if (ann.getDecoupage() == DecoupageType.SEMESTRE) {
-				
+				// TODO
 			} else if (ann.getDecoupage() == DecoupageType.TRIMESTRE) {
-				
+				// TODO
 			}
 		} else {
 			page.getCanvas().drawText("Aucune note entrée.", 50, 100, paint);

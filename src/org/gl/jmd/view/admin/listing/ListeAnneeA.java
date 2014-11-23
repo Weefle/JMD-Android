@@ -69,8 +69,8 @@ public class ListeAnneeA extends Activity {
 		progress.setMessage("Chargement...");
 		new ListerAnnees(progress, Constantes.URL_SERVER + "annee/getAnneesFollowedByDiplome" +
 				"?idDiplome=" + d.getId() +
-				"&token=" + FileUtils.lireFichier("/sdcard/cacheJMD/token.jmd") + 
-				"&pseudo=" + FileUtils.lireFichier("/sdcard/cacheJMD/pseudo.jmd") +
+				"&token=" + FileUtils.readFile("/sdcard/cacheJMD/token.jmd") + 
+				"&pseudo=" + FileUtils.readFile("/sdcard/cacheJMD/pseudo.jmd") +
 				"&timestamp=" + new java.util.Date().getTime()).execute();	
 	}
 
@@ -124,8 +124,8 @@ public class ListeAnneeA extends Activity {
 												progress.setMessage("Chargement...");
 												new DeleteAnnee(progress, Constantes.URL_SERVER + "annee" +
 														"?id=" + listeAnnees.get(position).getId() +
-														"&token=" + FileUtils.lireFichier("/sdcard/cacheJMD/token.jmd") + 
-														"&pseudo=" + FileUtils.lireFichier("/sdcard/cacheJMD/pseudo.jmd") +
+														"&token=" + FileUtils.readFile("/sdcard/cacheJMD/token.jmd") + 
+														"&pseudo=" + FileUtils.readFile("/sdcard/cacheJMD/pseudo.jmd") +
 														"&timestamp=" + new java.util.Date().getTime()).execute();
 
 												adapter.notifyDataSetChanged();
@@ -166,8 +166,8 @@ public class ListeAnneeA extends Activity {
 								progress.setMessage("Chargement...");
 								new FollowAnnee(progress, Constantes.URL_SERVER + "admin/follow" +
 										"?idAnnee=" + listeAnnees.get(arg2).getId() +
-										"&token=" + FileUtils.lireFichier("/sdcard/cacheJMD/token.jmd") + 
-										"&pseudo=" + FileUtils.lireFichier("/sdcard/cacheJMD/pseudo.jmd") +
+										"&token=" + FileUtils.readFile("/sdcard/cacheJMD/token.jmd") + 
+										"&pseudo=" + FileUtils.readFile("/sdcard/cacheJMD/pseudo.jmd") +
 										"&timestamp=" + new java.util.Date().getTime()).execute();	
 							}
 						});
@@ -185,8 +185,8 @@ public class ListeAnneeA extends Activity {
 								progress.setMessage("Chargement...");
 								new UnfollowAnnee(progress, Constantes.URL_SERVER + "admin/unfollow" +
 										"?idAnnee=" + listeAnnees.get(arg2).getId() +
-										"&token=" + FileUtils.lireFichier("/sdcard/cacheJMD/token.jmd") + 
-										"&pseudo=" + FileUtils.lireFichier("/sdcard/cacheJMD/pseudo.jmd") +
+										"&token=" + FileUtils.readFile("/sdcard/cacheJMD/token.jmd") + 
+										"&pseudo=" + FileUtils.readFile("/sdcard/cacheJMD/pseudo.jmd") +
 										"&timestamp=" + new java.util.Date().getTime()).execute();	
 							}
 						});

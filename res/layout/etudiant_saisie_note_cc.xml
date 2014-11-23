@@ -10,29 +10,32 @@
         android:id="@+id/nom_epreuve"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Nom de l'épreuve" >
+        android:layout_marginBottom="5sp"
+        android:hint="@string/hint_nom_epreuve" >
     </EditText>
-    
+
     <EditText
         android:id="@+id/note_epreuve"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="number|numberDecimal"
-        android:hint="Note" >
+        android:layout_marginBottom="5sp"
+        android:hint="@string/hint_note"
+        android:inputType="number|numberDecimal" >
     </EditText>
-    
+
     <EditText
         android:id="@+id/coeff_epreuve"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="number"
-        android:hint="Coefficient" >
+        android:hint="@string/hint_coefficient"
+        android:inputType="number" >
     </EditText>
 
     <Button
         android:id="@+id/valider_bouton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Ajouter"/>
-    
+        android:layout_marginTop="15dp"
+        android:text="@string/bout_ajouter_txt" />
+
 </LinearLayout>

@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_centerInParent="true"
-            android:layout_marginStart="10sp"
+            android:layout_marginStart="20sp"
             android:contentDescription="@string/desc_img"
             android:onClick="navigateToAccueil"
             android:src="@drawable/previous" />

@@ -179,7 +179,7 @@ public class ListeUEA extends Activity {
 						// Do nothing.
 					} else {
 						Intent newIntent = new Intent(ListeUEA.this, ListeMatiereA.class);
-						newIntent.putExtra("ue", listeUE.get(position - 1));
+						newIntent.putExtra("ue", ((ListItemUE) adapter.getItem(position)).getUE());
 						
 						startActivity(newIntent);
 					}
@@ -211,8 +211,8 @@ public class ListeUEA extends Activity {
 								progress.setMessage("Chargement...");
 								new DeleteUE(progress, Constantes.URL_SERVER + "ue" +
 										"?id=" + listeUE.get(arg2).getId() +
-										"&token=" + FileUtils.lireFichier("/sdcard/cacheJMD/token.jmd") + 
-										"&pseudo=" + FileUtils.lireFichier("/sdcard/cacheJMD/pseudo.jmd") +
+										"&token=" + FileUtils.readFile("/sdcard/cacheJMD/token.jmd") + 
+										"&pseudo=" + FileUtils.readFile("/sdcard/cacheJMD/pseudo.jmd") +
 										"&timestamp=" + new java.util.Date().getTime()).execute();
 							}
 						});
@@ -460,10 +460,6 @@ public class ListeUEA extends Activity {
 		super.onConfigurationChanged(newConfig);
 	}
 	
-	/**
-	 * Méthode exécutée lorsque l'activité est relancée.<br />
-	 * Ici, ça permet d'actualiser la liste des UE lorsqu'une UE vient d'être créé et que l'application ramène l'utilisateur sur cette vue de listing.
-	 */
 	@Override
 	public void onRestart() {
 		actualiserListe();

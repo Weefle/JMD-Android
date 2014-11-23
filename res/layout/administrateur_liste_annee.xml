@@ -15,9 +15,8 @@
             android:id="@+id/admin_liste_annee_titre"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
+            android:gravity="center_horizontal"
             android:layout_centerInParent="true"
-            android:layout_marginLeft="30dp"
             android:textColor="#FFFFFF"
             android:textSize="20sp" />
 
@@ -25,9 +24,9 @@
             android:id="@+id/admin_liste_annee_bout_modifier"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_centerInParent="true"
-            android:layout_marginRight="15dp"
+            android:layout_marginEnd="15dp"
             android:contentDescription="@string/desc_img"
             android:onClick="creerAnnee"
             android:src="@drawable/plus" />

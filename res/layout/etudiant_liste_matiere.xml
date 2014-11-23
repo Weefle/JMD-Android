@@ -15,9 +15,8 @@
             android:id="@+id/etudiant_liste_matiere_titre"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
             android:layout_centerInParent="true"
-            android:layout_marginLeft="30dp"
+            android:gravity="center_horizontal"
             android:textColor="#FFFFFF"
             android:textSize="20sp" />
     </RelativeLayout>
@@ -27,7 +26,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" >
     </ListView>
-    
+
     <View
         android:layout_width="fill_parent"
         android:layout_height="0.5dp"
@@ -37,7 +36,7 @@
         android:id="@+id/etudiant_isUEValid"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="30dp"
+        android:layout_marginStart="30dp"
         android:layout_marginTop="20dp" />
 
 </LinearLayout>

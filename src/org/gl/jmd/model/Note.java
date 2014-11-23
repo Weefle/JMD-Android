@@ -2,8 +2,6 @@ package org.gl.jmd.model;
 
 import java.io.Serializable;
 
-import org.gl.jmd.model.enumeration.NoteType;
-
 /**
  * Classe représentant une note.
  * 
@@ -22,11 +20,6 @@ public class Note implements Serializable {
 	 * Le nom de l'épreuve associée à la note.
 	 */
 	private String nom;
-	
-	/**
-	 * Le type (1ère session, 2ème session, contrôle continu) de la note.
-	 */
-	private NoteType type;
 	
 	/**
 	 * La valeur de la note.
@@ -63,15 +56,6 @@ public class Note implements Serializable {
 	 */
 	public String getNom() {
 		return this.nom;
-	}
-	
-	/**
-	 * Méthode retournant le type de la note.
-	 * 
-	 * @return Le type de la note.
-	 */
-	public NoteType getNoteType() {
-		return this.type;
 	}
 
 	/**
@@ -110,15 +94,6 @@ public class Note implements Serializable {
 	 */
 	public void setNom(String nom) {
 		this.nom = nom;
-	}
-	
-	/**
-	 * Méthode permettant de modifier le type de la note.
-	 * 
-	 * @param type Le nouveau type de la note.
-	 */
-	public void setNoteType(NoteType type) {
-		this.type = type;
 	}
 
 	/**

@@ -144,8 +144,8 @@ public class CreationAnnee extends Activity {
 					"&idDiplome=" +  idDiplome +
 					"&decoupage=" + a.getDecoupage().name() +
 					"&isLastYear" + a.isLast() +
-					"&token=" + FileUtils.lireFichier("/sdcard/cacheJMD/token.jmd") + 
-					"&pseudo=" + FileUtils.lireFichier("/sdcard/cacheJMD/pseudo.jmd") +
+					"&token=" + FileUtils.readFile("/sdcard/cacheJMD/token.jmd") + 
+					"&pseudo=" + FileUtils.readFile("/sdcard/cacheJMD/pseudo.jmd") +
 					"&timestamp=" + new java.util.Date().getTime()).execute(); 
 		} else {
 			boolean isNomOK = true;
@@ -176,11 +176,8 @@ public class CreationAnnee extends Activity {
 		}
 	}
 	
-	/**
-	 * Classe interne représentant une tâche asynchrone qui sera effectuée en fond pendant un rond de chargement.
-	 * 
-	 * @author Jordi CHARPENTIER & Yoann VANHOESERLANDE
-	 */
+	/* Classes internes. */
+	
 	private class InitEtablissement extends AsyncTask<Void, Void, Void> {
 		private ProgressDialog progress;
 		private String pathUrl;
@@ -306,11 +303,6 @@ public class CreationAnnee extends Activity {
 		}
 	}
 	
-	/**
-	 * Classe interne représentant une tâche asynchrone qui sera effectuée en fond pendant un rond de chargement.
-	 * 
-	 * @author Jordi CHARPENTIER & Yoann VANHOESERLANDE
-	 */
 	private class CreerAnnee extends AsyncTask<Void, Void, Void> {
 		private ProgressDialog progress;
 		private String pathUrl;
@@ -350,7 +342,7 @@ public class CreationAnnee extends Activity {
 					filePseudo.delete();
 					fileToken.delete();
 		        	
-					activity.finishAffinity();
+					finishAffinity();
 		        	startActivity(new Intent(CreationAnnee.this, Accueil.class));	
 		        	
 		        	toast.setText("Session expirée.");	
@@ -417,8 +409,6 @@ public class CreationAnnee extends Activity {
 	 */
 	@Override
 	public void onBackPressed() {
-		final EditText NOM = (EditText) findViewById(R.id.admin_creation_annee_nom);
-		
 		if (NOM.getText().toString().length() != 0) {
 			AlertDialog.Builder confirmQuitter = new AlertDialog.Builder(this);
 			confirmQuitter.setTitle("Annulation");

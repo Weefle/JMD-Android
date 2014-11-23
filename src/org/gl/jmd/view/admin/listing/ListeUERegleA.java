@@ -28,6 +28,8 @@ public class ListeUERegleA extends TabActivity {
 	
 	private Annee annee = null;
 	
+	private TextView tvTitre = null;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -37,26 +39,16 @@ public class ListeUERegleA extends TabActivity {
 		
 		annee = (Annee) getIntent().getExtras().getSerializable("annee");
 		
+		tvTitre = (TextView) findViewById(R.id.administrateur_liste_ue_regle);
+		
 		tabHost = getTabHost();
 		
-		Intent intentListeUE = new Intent(ListeUERegleA.this, ListeUEA.class);
-		intentListeUE.putExtra("annee", annee);
-		
-		Intent intentListeRegle = new Intent(ListeUERegleA.this, ListeRegleA.class);
-		intentListeRegle.putExtra("annee", annee);
-        
-        tabHost.addTab(tabHost.newTabSpec("0").setIndicator(createTabView(tabHost.getContext(), "Liste des UE")).setContent(intentListeUE));
-        tabHost.addTab(tabHost.newTabSpec("1").setIndicator(createTabView(tabHost.getContext(), "Règles de gestion")).setContent(intentListeRegle));
-        
-		tabHost.getTabWidget().getChildAt(0).getLayoutParams().height = 80;
-		tabHost.getTabWidget().getChildAt(0).setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_bg_selector)); 
-		tabHost.getTabWidget().getChildAt(0).setSelected(true);
-		
-		tabHost.getTabWidget().getChildAt(1).getLayoutParams().height = 80;
-		tabHost.getTabWidget().getChildAt(1).setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_bg_selector)); 
-		
-		final TextView tvTitre = (TextView) findViewById(R.id.administrateur_liste_ue_regle);
-		
+		initTitle();
+		initTabs();
+		initTextViews();
+	}
+	
+	private void initTextViews() {
 		TextView tv = (TextView) tabHost.getTabWidget().getChildAt(0).findViewById(R.id.tabsText);
 		tv.setTextColor(Color.parseColor("#FF5E3A"));
 		
@@ -67,7 +59,25 @@ public class ListeUERegleA extends TabActivity {
 		
 		TextView tv2 = (TextView) tabHost.getTabWidget().getChildAt(1).findViewById(R.id.tabsText);
 		tv2.setTextColor(Color.parseColor("#FFFFFF"));
-
+	}
+	
+	private void initTabs() {
+		Intent intentListeUE = new Intent(ListeUERegleA.this, ListeUEA.class);
+		intentListeUE.putExtra("annee", annee);
+		
+		Intent intentListeRegle = new Intent(ListeUERegleA.this, ListeRegleA.class);
+		intentListeRegle.putExtra("annee", annee);
+		
+		tabHost.addTab(tabHost.newTabSpec("0").setIndicator(createTabView(tabHost.getContext(), "Liste des UE")).setContent(intentListeUE));
+        tabHost.addTab(tabHost.newTabSpec("1").setIndicator(createTabView(tabHost.getContext(), "Règles de gestion")).setContent(intentListeRegle));
+        
+		tabHost.getTabWidget().getChildAt(0).getLayoutParams().height = 80;
+		tabHost.getTabWidget().getChildAt(0).setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_bg_selector)); 
+		tabHost.getTabWidget().getChildAt(0).setSelected(true);
+		
+		tabHost.getTabWidget().getChildAt(1).getLayoutParams().height = 80;
+		tabHost.getTabWidget().getChildAt(1).setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_bg_selector)); 
+		
 		tabHost.setOnTabChangedListener(new OnTabChangeListener(){
 			@Override
 			public void onTabChanged(String tabId) {	
@@ -78,7 +88,8 @@ public class ListeUERegleA extends TabActivity {
 				SpannableString spanString2 = new SpannableString("Règles de gestion");
 				
 				if (tabId.equals("0")) {
-					tvTitre.setText("UE");
+					initTitle();
+					
 					currentTab = 0;
 					
 					spanString.setSpan(new StyleSpan(Typeface.BOLD), 0, spanString.length(), 0);
@@ -91,7 +102,7 @@ public class ListeUERegleA extends TabActivity {
 					tv2.setTextColor(Color.parseColor("#FFFFFF"));
 					tv2.setText(spanString2);
 				} else if (tabId.equals("1")) {
-					tvTitre.setText("Règles");
+					tvTitre.setText("Règles de gestion");
 					currentTab = 1;
 
 					spanString.setSpan(new StyleSpan(Typeface.NORMAL), 0, spanString.length(), 0);
@@ -106,9 +117,17 @@ public class ListeUERegleA extends TabActivity {
 				}
 			}});
 	}
+	
+	private void initTitle() {
+		if (annee.getNom().length() > 20) {
+			tvTitre.setText(annee.getNom().substring(0, 20) + "...");
+		} else {
+			tvTitre.setText(annee.getNom());
+		}
+	}
  
 	private View createTabView(final Context context, final String text) {
-		View view = LayoutInflater.from(context).inflate(R.xml.tab_item, null);
+		View view = LayoutInflater.from(context).inflate(R.layout.tab_item, null);
 		TextView tv = (TextView) view.findViewById(R.id.tabsText);
 		tv.setText(text);
  

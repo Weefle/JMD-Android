@@ -1,7 +1,6 @@
-package org.gl.jmd.view.admin;
+package org.gl.jmd.view.admin.listing;
 
 import java.io.*;
-import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 import org.apache.http.*;
@@ -15,7 +14,6 @@ import org.gl.jmd.model.*;
 import org.gl.jmd.model.enumeration.DecoupageType;
 import org.gl.jmd.utils.FileUtils;
 import org.gl.jmd.view.Accueil;
-import org.gl.jmd.view.admin.listing.*;
 import org.gl.jmd.view.list.SwipeDismissListViewTouchListener;
 import org.json.*;
 
@@ -26,6 +24,11 @@ import android.os.*;
 import android.view.View;
 import android.widget.*;
 
+/**
+ * Activité correspondant à la vue de favori (i.e années suivies) pour les administrateurs.
+ * 
+ * @author Jordi CHARPENTIER & Yoann VANHOESERLANDE
+ */
 public class FavoriA extends Activity {
 	
 	private Activity activity;
@@ -50,11 +53,13 @@ public class FavoriA extends Activity {
 	}
 	
 	private void actualiserListe() {	
+		listeAnnees.clear();
+		
 		ProgressDialog progress = new ProgressDialog(this);
 		progress.setMessage("Chargement...");
 		new ListerAnnees(progress, Constantes.URL_SERVER + "annee/getFavorites" +
-				"?token=" + FileUtils.lireFichier("/sdcard/cacheJMD/token.jmd") + 
-				"&pseudo=" + FileUtils.lireFichier("/sdcard/cacheJMD/pseudo.jmd") +
+				"?token=" + FileUtils.readFile("/sdcard/cacheJMD/token.jmd") + 
+				"&pseudo=" + FileUtils.readFile("/sdcard/cacheJMD/pseudo.jmd") +
 				"&timestamp=" + new java.util.Date().getTime()).execute();	
 	}
 	
@@ -83,7 +88,7 @@ public class FavoriA extends Activity {
 				listItem.add(map);		
 			}
 
-			final SimpleAdapter adapter = new SimpleAdapter (getBaseContext(), listItem, R.layout.administrateur_liste_annee_list, new String[] {"titre", "description", "img"}, new int[] {R.id.titre, R.id.description, R.id.img});
+			final SimpleAdapter adapter = new SimpleAdapter (getBaseContext(), listItem, R.layout.administrateur_liste_favori_list, new String[] {"titre", "description", "img"}, new int[] {R.id.titre, R.id.description, R.id.img});
 
 			liste.setAdapter(adapter); 
 
@@ -108,8 +113,8 @@ public class FavoriA extends Activity {
 												progress.setMessage("Chargement...");
 												new DeleteAnnee(progress, Constantes.URL_SERVER + "annee" +
 														"?id=" + listeAnnees.get(position).getId() +
-														"&token=" + FileUtils.lireFichier("/sdcard/cacheJMD/token.jmd") + 
-														"&pseudo=" + FileUtils.lireFichier("/sdcard/cacheJMD/pseudo.jmd") +
+														"&token=" + FileUtils.readFile("/sdcard/cacheJMD/token.jmd") + 
+														"&pseudo=" + FileUtils.readFile("/sdcard/cacheJMD/pseudo.jmd") +
 														"&timestamp=" + new java.util.Date().getTime()).execute();
 
 												adapter.notifyDataSetChanged();
@@ -150,8 +155,8 @@ public class FavoriA extends Activity {
 								progress.setMessage("Chargement...");
 								new FollowAnnee(progress, Constantes.URL_SERVER + "admin/follow" +
 										"?idAnnee=" + listeAnnees.get(arg2).getId() +
-										"&token=" + FileUtils.lireFichier("/sdcard/cacheJMD/token.jmd") + 
-										"&pseudo=" + FileUtils.lireFichier("/sdcard/cacheJMD/pseudo.jmd") +
+										"&token=" + FileUtils.readFile("/sdcard/cacheJMD/token.jmd") + 
+										"&pseudo=" + FileUtils.readFile("/sdcard/cacheJMD/pseudo.jmd") +
 										"&timestamp=" + new java.util.Date().getTime()).execute();	
 							}
 						});
@@ -169,8 +174,8 @@ public class FavoriA extends Activity {
 								progress.setMessage("Chargement...");
 								new UnfollowAnnee(progress, Constantes.URL_SERVER + "admin/unfollow" +
 										"?idAnnee=" + listeAnnees.get(arg2).getId() +
-										"&token=" + FileUtils.lireFichier("/sdcard/cacheJMD/token.jmd") + 
-										"&pseudo=" + FileUtils.lireFichier("/sdcard/cacheJMD/pseudo.jmd") +
+										"&token=" + FileUtils.readFile("/sdcard/cacheJMD/token.jmd") + 
+										"&pseudo=" + FileUtils.readFile("/sdcard/cacheJMD/pseudo.jmd") +
 										"&timestamp=" + new java.util.Date().getTime()).execute();	
 							}
 						});
@@ -237,7 +242,7 @@ public class FavoriA extends Activity {
 							filePseudo.delete();
 							fileToken.delete();
 
-							activity.finishAffinity();
+							finish();
 							startActivity(new Intent(FavoriA.this, Accueil.class));	
 
 							toast.setText("Session expirée.");	
@@ -593,6 +598,16 @@ public class FavoriA extends Activity {
 	public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
 	}
+	
+	/**
+	 * Méthode exécutée lorsque l'activité est relancée.
+	 */
+	@Override
+	public void onRestart() {
+		actualiserListe();
+		
+		super.onRestart();
+	} 
 	
 	/**
 	 * Méthode déclenchée lors d'un click sur le bouton virtuel Android de retour.

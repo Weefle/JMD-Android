@@ -49,6 +49,11 @@ public class ConnexionA extends Activity {
 		intent = new Intent(ConnexionA.this, AccueilA.class);
 	}
 	
+	/**
+	 * Méthode redirigeant l'utilisateur vers la vue d'inscription.
+	 * 
+	 * @param view La vue lors du click sur le bouton.
+	 */
 	public void inscription(View view) {
 		startActivity(new Intent(ConnexionA.this, InscriptionA.class));			
 	}
@@ -107,11 +112,6 @@ public class ConnexionA extends Activity {
 	
 	/* Classe interne. */
 	
-	/**
-	 * Classe interne représentant une tâche asynchrone qui sera effectuée en fond pendant un rond de chargement.
-	 * 
-	 * @author Jordi CHARPENTIER & Yoann VANHOESERLANDE
-	 */
 	private class SeConnecter extends AsyncTask<Void, Void, Void> {
 		private ProgressDialog progress;
 		private String pathUrl;
@@ -144,11 +144,8 @@ public class ConnexionA extends Activity {
 		        if (response.getStatusLine().getStatusCode() == 200) {
 		        	String responseBody = EntityUtils.toString(response.getEntity());
 		        	
-		        	String urlTokenFile = "/sdcard/cacheJMD/token.jmd";
-		        	String urlPseudoFile = "/sdcard/cacheJMD/pseudo.jmd";
-		        	
-		        	FileUtils.ecrireTexteFichier(responseBody, urlTokenFile);
-		        	FileUtils.ecrireTexteFichier(a.getPseudo(), urlPseudoFile);
+		        	FileUtils.writeFile(responseBody, "/sdcard/cacheJMD/token.jmd");
+		        	FileUtils.writeFile(a.getPseudo(), "/sdcard/cacheJMD/pseudo.jmd");
 		    		
 		        	finish();
 					startActivity(intent);

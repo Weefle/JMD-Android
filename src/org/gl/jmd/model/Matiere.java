@@ -69,14 +69,17 @@ public class Matiere implements Serializable {
 	public double getNoteFinale() {
 		double res = -1.0;
 		
-		if ((this.noteSession2 != null) &&
-				(this.noteSession2.getNote() > this.noteSession1.getNote())) {
-			
-			res = this.noteSession2.getNote();
-		} else if ((this.noteSession1 != null) && 
+		if ((this.noteSession1 != null) && 
 				(this.noteSession1.getNote() != -1.0)) {
 			
 			res = this.noteSession1.getNote();
+		} 
+		
+		if ((this.noteSession1 != null) && 
+				(this.noteSession2 != null) &&
+					(this.noteSession2.getNote() != -1.0)) {
+			
+			res = this.noteSession2.getNote();
 		}
 		
 		if (this.listeNotesCC.size() > 0) {

@@ -27,6 +27,7 @@ public class Accueil extends Activity {
 	}
 	
 	private void initView() {
+		
 		/*
 		 *  Va dispatcher l'utilisateur sur le bon accueil : si un fichier login est trouvé, c'est un admin. 
 		 *  Sinon, un étudiant.

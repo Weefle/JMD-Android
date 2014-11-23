@@ -75,17 +75,15 @@ public class InscriptionA extends Activity {
 
 			if (PASSWORD.getText().toString().equals(PASSWORD_AGAIN.getText().toString())) {
 				if (validate(EMAIL.getText().toString())) {					
-					String URL = Constantes.URL_SERVER + 
+					ProgressDialog progress = new ProgressDialog(activity);
+					progress.setMessage("Chargement...");
+					new InscriptionAdmin(progress, Constantes.URL_SERVER + 
 								 "admin/subscription" + 
 								 "?nom=" + NOM.getText().toString() + 
 								 "&prenom=" + PRENOM.getText().toString() + 
 								 "&pseudo=" + PSEUDO.getText().toString() + 
 								 "&password=" + SecurityUtils.sha256(PASSWORD.getText().toString()) + 
-								 "&email=" + EMAIL.getText().toString();
-
-					ProgressDialog progress = new ProgressDialog(activity);
-					progress.setMessage("Chargement...");
-					new InscriptionAdmin(progress, URL).execute();	
+								 "&email=" + EMAIL.getText().toString()).execute();	
 				} else {
 					EMAIL.setBackgroundResource(R.drawable.border_edittext_error);
 					
@@ -198,11 +196,8 @@ public class InscriptionA extends Activity {
 		return matcher.matches();
 	}
 
-	/**
-	 * Classe interne représentant une tâche asynchrone qui sera effectuée en fond pendant un rond de chargement.
-	 * 
-	 * @author Jordi CHARPENTIER & Yoann VANHOESERLANDE
-	 */
+	/* Classe interne. */
+	
 	private class InscriptionAdmin extends AsyncTask<Void, Void, Void> {
 		private ProgressDialog progress;
 		private String pathUrl;

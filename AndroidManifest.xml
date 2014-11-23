@@ -7,253 +7,253 @@
     <uses-sdk
         android:minSdkVersion="19"
         android:targetSdkVersion="20" />
-    
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name" >
-
         <activity
             android:name="org.gl.jmd.view.Accueil"
             android:configChanges="orientation|keyboardHidden"
-            android:label="@string/app_name" 
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
         <activity
             android:name="org.gl.jmd.view.InitApp"
             android:configChanges="orientation|keyboardHidden"
-            android:label="@string/ecran_choix_user_view_name" 
+            android:label="@string/ecran_choix_user_view_name"
+            android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
-        
+
         <!-- Vues de l'étudiant. -->
-        
+
         <activity
             android:name="org.gl.jmd.view.etudiant.AccueilE"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/etudiant_accueil_view_name" 
+            android:label="@string/etudiant_accueil_view_name"
+            android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
-        
         <activity
             android:name="org.gl.jmd.view.etudiant.StatsAnnee"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/etudiant_stats_annee_view_name" 
+            android:label="@string/etudiant_stats_annee_view_name"
+            android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
-        
+
         <!-- Listing -->
-        
+
         <activity
             android:name="org.gl.jmd.view.etudiant.listing.ListeAnneesE"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/etudiant_liste_annees_view_name" 
+            android:label="@string/etudiant_liste_annees_view_name"
+            android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
-        
         <activity
             android:name="org.gl.jmd.view.etudiant.listing.ListeMatieresE"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/etudiant_liste_matieres_view_name" 
+            android:label="@string/etudiant_liste_matieres_view_name"
+            android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
-        
         <activity
             android:name="org.gl.jmd.view.etudiant.listing.ListeUEE"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/etudiant_liste_ue_view_name" 
+            android:label="@string/etudiant_liste_ue_view_name"
+            android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
-        
         <activity
             android:name="org.gl.jmd.view.etudiant.listing.ListeSemestreE"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/etudiant_liste_trimestre_view_name" 
+            android:label="@string/etudiant_liste_trimestre_view_name"
+            android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
-        
         <activity
             android:name="org.gl.jmd.view.etudiant.listing.ListeTrimestreE"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/etudiant_liste_semestre_view_name" 
+            android:label="@string/etudiant_liste_semestre_view_name"
+            android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
-        
+
         <!-- Création -->
-        
+
         <activity
             android:name="org.gl.jmd.view.etudiant.create.AjouterAnneeE"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/etudiant_modifier_ae_view_name" 
+            android:label="@string/etudiant_modifier_ae_view_name"
+            android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
-        
         <activity
             android:name="org.gl.jmd.view.etudiant.create.SaisieNoteE"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/etudiant_saisie_note_titre_view_name" 
-            android:windowSoftInputMode="adjustPan"
-            android:theme="@android:style/Theme.NoTitleBar" >
+            android:label="@string/etudiant_saisie_note_titre_view_name"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" >
         </activity>
-        
+
         <!-- Vues de l'administrateur. -->
-        
+
         <activity
             android:name="org.gl.jmd.view.admin.AccueilA"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/administrateur_accueil_view_name" 
+            android:label="@string/administrateur_accueil_view_name"
+            android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
-        
         <activity
-            android:name="org.gl.jmd.view.admin.AccueilEtaDipA"
+            android:name="org.gl.jmd.view.admin.RecupMDPA"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/administrateur_accueil_eta_dip_view_name" 
+            android:label="@string/administrateur_recup_mdp_view_name"
+            android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
-        
         <activity
-            android:name="org.gl.jmd.view.admin.FavoriA"
+            android:name="org.gl.jmd.view.admin.listing.FavoriA"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/administrateur_favori_view_name" 
+            android:label="@string/administrateur_favori_view_name"
+            android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
-        
+
         <!-- Création -->
-        
+
         <activity
-            android:name="org.gl.jmd.view.admin.create.CreationRegle"    
+            android:name="org.gl.jmd.view.admin.create.CreationRegle"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/administrateur_creation_regle_view_name" 
+            android:label="@string/administrateur_creation_regle_view_name"
+            android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
-        
         <activity
-            android:name="org.gl.jmd.view.admin.create.CreationEtablissement"    
+            android:name="org.gl.jmd.view.admin.create.CreationEtablissement"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/administrateur_creation_eta_view_name" 
+            android:label="@string/administrateur_creation_eta_view_name"
+            android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
-        
         <activity
             android:name="org.gl.jmd.view.admin.create.CreationAnnee"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/administrateur_creation_annee_view_name" 
+            android:label="@string/administrateur_creation_annee_view_name"
+            android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
-        
         <activity
             android:name="org.gl.jmd.view.admin.create.CreationDiplome"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/administrateur_creation_diplome_view_name" 
+            android:label="@string/administrateur_creation_diplome_view_name"
+            android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
-        
         <activity
             android:name="org.gl.jmd.view.admin.create.CreationMatiere"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/administrateur_creation_matiere_view_name" 
+            android:label="@string/administrateur_creation_matiere_view_name"
+            android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
-        
         <activity
             android:name="org.gl.jmd.view.admin.create.CreationUE"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/administrateur_creation_ue_view_name" 
+            android:label="@string/administrateur_creation_ue_view_name"
+            android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
-        
+
         <!-- Listing -->
-        
+
         <activity
             android:name="org.gl.jmd.view.admin.listing.ListeUERegleA"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/administrateur_liste_ue_regle_view_name" 
+            android:label="@string/administrateur_liste_ue_regle_view_name"
+            android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
-        
         <activity
             android:name="org.gl.jmd.view.admin.listing.ListeRegleA"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/administrateur_liste_regle_view_name" 
+            android:screenOrientation="portrait"
+            android:label="@string/administrateur_liste_regle_view_name"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
-        
         <activity
             android:name="org.gl.jmd.view.admin.listing.ListeEtablissementA"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/administrateur_liste_eta_view_name" 
+            android:label="@string/administrateur_liste_eta_view_name"
+            android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
-        
         <activity
             android:name="org.gl.jmd.view.admin.listing.ListeAnneeA"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/administrateur_liste_annee_view_name" 
+            android:label="@string/administrateur_liste_annee_view_name"
+            android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
-        
         <activity
             android:name="org.gl.jmd.view.admin.listing.ListeDiplomeA"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/administrateur_liste_diplome_view_name" 
+            android:label="@string/administrateur_liste_diplome_view_name"
+            android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
-        
         <activity
             android:name="org.gl.jmd.view.admin.listing.ListeMatiereA"
-           android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/administrateur_liste_matiere_view_name" 
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/administrateur_liste_matiere_view_name"
+            android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
-        
         <activity
             android:name="org.gl.jmd.view.admin.listing.ListeUEA"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/administrateur_liste_ue_view_name" 
+            android:label="@string/administrateur_liste_ue_view_name"
+            android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
-         
+
         <!-- Menu -->
-        
+
         <activity
             android:name="org.gl.jmd.view.admin.ConnexionA"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/administrateur_connexion_view_name" 
+            android:label="@string/administrateur_connexion_view_name"
+            android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
-         </activity>
-         
-         <activity
+        </activity>
+        <activity
             android:name="org.gl.jmd.view.admin.InscriptionA"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/administrateur_inscription_view_name" 
+            android:label="@string/administrateur_inscription_view_name"
+            android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
-         </activity>
-        
+        </activity>
         <activity
             android:name="org.gl.jmd.view.menu.admin.AjouterAdminA"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/administrateur_ajout_admin_view_name" 
+            android:label="@string/administrateur_ajout_admin_view_name"
+            android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
-  
-        <!-- Autre -->
-        
-         <activity
-            android:name="org.gl.jmd.view.admin.RecupMDPA"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/administrateur_recup_mdp_view_name" 
-            android:theme="@android:style/Theme.NoTitleBar" >
-         </activity>
         
     </application>
+
 </manifest>

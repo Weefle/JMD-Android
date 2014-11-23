@@ -5,7 +5,6 @@ import java.util.*;
 import org.gl.jmd.R;
 import org.gl.jmd.dao.EtudiantDAO;
 import org.gl.jmd.model.*;
-import org.gl.jmd.model.enumeration.NoteType;
 
 import android.os.Bundle;
 import android.view.View;
@@ -28,6 +27,8 @@ public class SaisieNoteE extends Activity {
 	private Matiere matiere;
 
 	private Activity activity;
+	
+	private Toast toast;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +38,8 @@ public class SaisieNoteE extends Activity {
 		overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
 
 		activity = this;
-
+		toast = Toast.makeText(activity, "", Toast.LENGTH_SHORT);
+		
 		matiere = (Matiere) getIntent().getExtras().getSerializable("matiere");
 
 		initViewTitle();
@@ -174,26 +176,70 @@ public class SaisieNoteE extends Activity {
 									EditText epreuveNote = (EditText) dialog.findViewById(R.id.note_epreuve);
 									EditText epreuveCoeff = (EditText) dialog.findViewById(R.id.coeff_epreuve);
 	
-									Note note = new Note();
-									note.setCoefficient(Integer.parseInt(epreuveCoeff.getText().toString()));
-									note.setNote(Double.parseDouble(epreuveNote.getText().toString()));
-									note.setNom(epreuveNom.getText().toString());
-									note.setNoteType(NoteType.CONTROLE_CONTINU);
-	
-									listeNotes.add(note);
-	
-									HashMap<String, String> mapTemp = null;
-	
-									mapTemp = new HashMap<String, String>();
-									mapTemp.put("titre", note.getNom());
-									mapTemp.put("coeff", "Coefficient : " + note.getCoefficient());
-									mapTemp.put("note", note.getNote() + "/20");
-	
-									listItem2.add(mapTemp);
-	
-									mSchedule2.notifyDataSetChanged();
-	
-									dialog.hide();
+									if ((epreuveNom.getText().toString().length() > 0) && 
+											(epreuveNote.getText().toString().length() > 0) && 
+												(epreuveCoeff.getText().toString().length() > 0)) {
+										
+										Note note = new Note();
+										note.setCoefficient(Integer.parseInt(epreuveCoeff.getText().toString()));
+										note.setNote(Double.parseDouble(epreuveNote.getText().toString()));
+										note.setNom(epreuveNom.getText().toString());
+		
+										listeNotes.add(note);
+		
+										HashMap<String, String> mapTemp = null;
+		
+										mapTemp = new HashMap<String, String>();
+										mapTemp.put("titre", note.getNom());
+										mapTemp.put("coeff", "Coefficient : " + note.getCoefficient());
+										mapTemp.put("note", note.getNote() + "/20");
+		
+										listItem2.add(mapTemp);
+		
+										mSchedule2.notifyDataSetChanged();
+		
+										dialog.hide();
+									} else {
+										boolean isNomOK = true;
+										boolean isNoteOK = true;
+										boolean isCoeffOK = true;
+										
+										String txtToast = "";
+										
+										if (epreuveNom.getText().toString().length() == 0) {
+											epreuveNom.setBackgroundResource(R.drawable.border_edittext_error);
+											isNomOK = false;
+										} else {
+											epreuveNom.setBackgroundResource(R.drawable.border_edittext);
+										}
+										
+										if (epreuveNote.getText().toString().length() == 0) {
+											epreuveNote.setBackgroundResource(R.drawable.border_edittext_error);
+											isNoteOK = false;
+										} else {
+											epreuveNote.setBackgroundResource(R.drawable.border_edittext);
+										}
+										
+										if (epreuveCoeff.getText().toString().length() == 0) {
+											epreuveCoeff.setBackgroundResource(R.drawable.border_edittext_error);
+											isCoeffOK = false;
+										} else {
+											epreuveCoeff.setBackgroundResource(R.drawable.border_edittext);
+										}
+										
+										if (!isNomOK && !isNoteOK && !isCoeffOK) {
+											txtToast = "Les trois champs sont vides.";
+										} else if (!isNomOK) {
+											txtToast = "Le champ \"Nom\" est vide.";
+										} else if (!isNoteOK) {
+											txtToast = "Le champ \"Note\" est vide.";
+										} else if (!isCoeffOK) {
+											txtToast = "Le champ \"Coefficient\" est vide.";
+										}
+										
+										toast.setText(txtToast);
+										toast.show();
+									}
 								}
 							});
 	
@@ -243,7 +289,6 @@ public class SaisieNoteE extends Activity {
 
 		if (noteS1ET.getText().toString().length() > 0) {
 			Note noteS1 = new Note();
-			noteS1.setNoteType(NoteType.SESSION_1);
 			noteS1.setNote(Double.parseDouble(noteS1ET.getText().toString()));
 			
 			matiere.setNoteSession1(noteS1);
@@ -251,7 +296,6 @@ public class SaisieNoteE extends Activity {
 		
 		if (noteS2ET.getText().toString().length() > 0) {
 			Note noteS2 = new Note();
-			noteS2.setNoteType(NoteType.SESSION_2);
 			noteS2.setNote(Double.parseDouble(noteS2ET.getText().toString()));
 			
 			matiere.setNoteSession2(noteS2);
@@ -263,6 +307,16 @@ public class SaisieNoteE extends Activity {
 			matiere.setCoeffPartiel(Double.parseDouble(coeffPartiel.getText().toString()));
 		}
 		
+		if ((matiere.getListeNotesCC().size() > 0) && (coeffPartiel.getText().toString().length() == 0)) {
+			coeffPartiel.setBackgroundResource(R.drawable.border_edittext_error);
+			
+			toast.setText("Il faut définir un coefficient pour le partiel s'il y a eu un contrôle continu.");
+			toast.show();
+			
+			return;
+		}
+		
+		// Sauvegarde de la matière.
 		for (int i = 0; i < this.etudiant.getListeDiplomes().size(); i++) {
 			for (int j = 0; j < this.etudiant.getListeDiplomes().get(i).getListeAnnees().size(); j++) {
 				for (int k = 0; k < this.etudiant.getListeDiplomes().get(i).getListeAnnees().get(j).getListeUE().size(); k++) {

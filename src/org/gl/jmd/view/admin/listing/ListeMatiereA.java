@@ -58,7 +58,12 @@ public class ListeMatiereA extends Activity {
 	
 	private void initTextView() {
 		TextView tvTitre = (TextView) findViewById(R.id.admin_liste_matier_titre);
-		tvTitre.setText(ue.getNom());
+		
+		if (ue.getNom().length() > 20) {
+			tvTitre.setText(ue.getNom().substring(0, 20) + "...");
+		} else {
+			tvTitre.setText(ue.getNom());
+		}
 	}
 	
 	private void actualiserListe() {	
@@ -102,8 +107,8 @@ public class ListeMatiereA extends Activity {
 								progress.setMessage("Chargement...");
 								new DeleteMatiere(progress, Constantes.URL_SERVER + "matiere" +
 										"?id=" + listeMatieres.get(arg2).getId() +
-										"&token=" + FileUtils.lireFichier("/sdcard/cacheJMD/token.jmd") + 
-										"&pseudo=" + FileUtils.lireFichier("/sdcard/cacheJMD/pseudo.jmd") +
+										"&token=" + FileUtils.readFile("/sdcard/cacheJMD/token.jmd") + 
+										"&pseudo=" + FileUtils.readFile("/sdcard/cacheJMD/pseudo.jmd") +
 										"&timestamp=" + new java.util.Date().getTime()).execute();
 							}
 						});

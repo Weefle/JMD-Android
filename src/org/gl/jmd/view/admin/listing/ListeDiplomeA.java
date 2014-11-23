@@ -40,7 +40,7 @@ public class ListeDiplomeA extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		setContentView(R.layout.administrateur_liste_diplome);
+		setContentView(R.layout.view_with_list);
 		overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
 		
 		activity = this;
@@ -93,8 +93,8 @@ public class ListeDiplomeA extends Activity {
 							progress.setMessage("Chargement...");
 							new DeleteDiplome(progress, Constantes.URL_SERVER + "diplome" +
 									"?id=" + listItem.get(arg2).get("id") +
-									"&token=" + FileUtils.lireFichier("/sdcard/cacheJMD/token.jmd") + 
-									"&pseudo=" + FileUtils.lireFichier("/sdcard/cacheJMD/pseudo.jmd") +
+									"&token=" + FileUtils.readFile("/sdcard/cacheJMD/token.jmd") + 
+									"&pseudo=" + FileUtils.readFile("/sdcard/cacheJMD/pseudo.jmd") +
 									"&timestamp=" + new java.util.Date().getTime()).execute();
 						}
 					});

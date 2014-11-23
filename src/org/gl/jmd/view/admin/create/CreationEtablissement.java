@@ -108,8 +108,8 @@ public class CreationEtablissement extends Activity {
 			new CreerEtablissement(progress, Constantes.URL_SERVER + "etablissement" +
 					"?nom=" + URLEncoder.encode(e.getNom()) +
 					"&ville=" + URLEncoder.encode(e.getVille()) +
-					"&token=" + FileUtils.lireFichier("/sdcard/cacheJMD/token.jmd") + 
-					"&pseudo=" + FileUtils.lireFichier("/sdcard/cacheJMD/pseudo.jmd") +
+					"&token=" + FileUtils.readFile("/sdcard/cacheJMD/token.jmd") + 
+					"&pseudo=" + FileUtils.readFile("/sdcard/cacheJMD/pseudo.jmd") +
 					"&timestamp=" + new java.util.Date().getTime()).execute();	
 		} else {
 			boolean isNomOK = true;
@@ -144,11 +144,8 @@ public class CreationEtablissement extends Activity {
 		}
 	}
 	
-	/**
-	 * Classe interne représentant une tâche asynchrone qui sera effectuée en fond pendant un rond de chargement.
-	 * 
-	 * @author Jordi CHARPENTIER & Yoann VANHOESERLANDE
-	 */
+	/* Classe interne. */
+	
 	private class CreerEtablissement extends AsyncTask<Void, Void, Void> {
 		private ProgressDialog progress;
 		private String pathUrl;
@@ -188,7 +185,7 @@ public class CreationEtablissement extends Activity {
 					filePseudo.delete();
 					fileToken.delete();
 		        	
-					finishAllActivities();
+					finishAffinity();
 		        	startActivity(new Intent(CreationEtablissement.this, Accueil.class));	
 		        	
 		        	toast.setText("Session expirée.");	
@@ -238,10 +235,6 @@ public class CreationEtablissement extends Activity {
 		}
 	}
 	
-	public void finishAllActivities(){
-		this.finishAffinity();
-	}
-	
 	/* Méthodes héritées de la classe Activity. */
 	
 	/**
@@ -259,9 +252,6 @@ public class CreationEtablissement extends Activity {
 	 */
 	@Override
 	public void onBackPressed() {
-		final EditText NOM = (EditText) findViewById(R.id.et_crea_eta_nom);
-		final EditText VILLE = (EditText) findViewById(R.id.et_crea_eta_ville);
-		
 		if ((NOM.getText().toString().length() != 0) || (VILLE.getText().toString().length() != 0)) {
 			AlertDialog.Builder confirmQuitter = new AlertDialog.Builder(this);
 			confirmQuitter.setTitle("Annulation");

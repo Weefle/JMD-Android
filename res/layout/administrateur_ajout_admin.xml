@@ -15,9 +15,8 @@
             android:id="@+id/admin_ajout_admin_titre"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
             android:layout_centerInParent="true"
-            android:layout_marginLeft="30dp"
+            android:gravity="center_horizontal"
             android:text="@string/administrateur_ajout_admin_titre_texte"
             android:textColor="#FFFFFF"
             android:textSize="20sp" />

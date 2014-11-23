@@ -43,7 +43,6 @@
     <string name="administrateur_accueil_view_name">Accueil (Administrateur)</string>
     <string name="administrateur_ajout_admin_view_name">Ajouter un administrateur</string>
     <string name="administrateur_favori_view_name">Favori</string>
-    <string name="administrateur_accueil_eta_dip_view_name">Accueil (Administrateur)</string>
     
     <string name="administrateur_connexion_view_name">Connexion</string>
     <string name="administrateur_inscription_view_name">Inscription</string>
@@ -84,6 +83,9 @@
     
     <string name="hint_nom">Nom</string>
     <string name="hint_valeur">Valeur</string>
+    <string name="hint_note">Note</string>
+    <string name="hint_coefficient">Coefficient</string>
+    <string name="hint_nom_epreuve">Nom de l\'épreuve</string>
     
 	<string name="admin_crea_annee_hint_etablissement">Etablissement</string>
 	<string name="admin_crea_eta_hint_ville">Ville</string>
@@ -136,9 +138,9 @@
 	
 	<!-- Autres -->
 	
-	<string name="checkbox_derniere_annee">Dernière année d\'un diplôme ?</string>
 	<string name="accueil_choix_user_admin_txt">Qui êtes-vous ?</string>
 	<string name="ecran_choix_user_checkbox_texte">Se souvenir de mon choix ?</string>
+	
 	<string name="desc_img">Description</string>
 	
 	<string name="stats_annee_mention">Mention</string>
@@ -151,7 +153,9 @@
 	<string name="admin_choix_ue">Choisir une UE</string>
 	<string name="admin_choix_matiere">Choisir une matière</string>
 	<string name="admin_connexion_subtitle">Connectez-vous à votre compte Administrateur</string>
-	<string name="administrateur_creation_matiere_coefficient_tv">Coefficient</string>
+	<string name="admin_creation_annee_checkbox_derniere_annee">Dernière année d\'un diplôme ?</string>
+	<string name="admin_creation_matiere_coefficient_tv">Coefficient</string>
+	<string name="admin_creation_regle_sapplique_sur">S\'applique sur : </string>
 	
 	<!-- Spinners -->
 	

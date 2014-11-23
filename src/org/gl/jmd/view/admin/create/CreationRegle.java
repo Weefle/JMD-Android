@@ -109,8 +109,8 @@ public class CreationRegle extends Activity {
 					"&idAnnee=" + a.getId() +
 					"&idUE=" + selectedUE_ID +
 					"&idMatiere=" + selectedMatiere_ID +
-					"&token=" + FileUtils.lireFichier("/sdcard/cacheJMD/token.jmd") + 
-					"&pseudo=" + FileUtils.lireFichier("/sdcard/cacheJMD/pseudo.jmd") +
+					"&token=" + FileUtils.readFile("/sdcard/cacheJMD/token.jmd") + 
+					"&pseudo=" + FileUtils.readFile("/sdcard/cacheJMD/pseudo.jmd") +
 					"&timestamp=" + new java.util.Date().getTime()).execute();	
 		} else {
 			if (VALUE.getText().toString().length() == 0) {
@@ -178,9 +178,8 @@ public class CreationRegle extends Activity {
 		// Liste des UE
 		ProgressDialog progress = new ProgressDialog(activity);
 		progress.setMessage("Chargement...");
-		new GetUE(progress, Constantes.URL_SERVER + "ue/getAllUEOfAnneeByYearType" +
-									"?idAnnee=" + a.getId() +
-									"&yearType=" + a.getDecoupage().name()).execute(); 
+		new GetUE(progress, Constantes.URL_SERVER + "ue/getAllUEOfAnnee" +
+									"?idAnnee=" + a.getId()).execute(); 
 		
 		// Liste des matières de l'année
 		ProgressDialog progress2 = new ProgressDialog(activity);
@@ -313,7 +312,7 @@ public class CreationRegle extends Activity {
 					filePseudo.delete();
 					fileToken.delete();
 		        	
-					activity.finishAffinity();
+					finishAffinity();
 		        	startActivity(new Intent(CreationRegle.this, Accueil.class));	
 		        	
 		        	toast.setText("Session expirée.");	

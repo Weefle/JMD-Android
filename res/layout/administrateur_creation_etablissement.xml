@@ -15,20 +15,19 @@
             android:id="@+id/admin_crea_eta_titre"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
             android:textSize="20sp"
             android:layout_centerInParent="true"
             android:textColor="#FFFFFF"
-            android:layout_alignParentLeft="true"
+            android:gravity="center_horizontal"
             android:text="@string/administrateur_creation_eta_titre_texte" />
         
         <TextView
             android:id="@+id/admin_crea_eta_btn_save"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_centerInParent="true"
-            android:layout_marginRight="30dp"
+            android:layout_marginEnd="30dp"
             android:clickable="true"
             android:onClick="creerEtablissement"
             android:text="@string/bout_ok_txt"

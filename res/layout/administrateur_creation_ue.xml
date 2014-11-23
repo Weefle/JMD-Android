@@ -15,9 +15,8 @@
             android:id="@+id/admin_crea_ue_titre"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
+            android:gravity="center_horizontal"
             android:layout_centerInParent="true"
-            android:layout_marginStart="30dp"
             android:text="@string/administrateur_creation_ue_titre_texte"
             android:textColor="#FFFFFF"
             android:textSize="20sp" />

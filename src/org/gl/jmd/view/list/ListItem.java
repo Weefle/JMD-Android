@@ -11,17 +11,21 @@ import android.widget.TextView;
 public class ListItem implements Item {
 	
 	private Annee a;
+	
 	private int posDip;
+	
 	private int posAnn;
 	
 	public ListItem() {
 		this.a = null;
+		
 		this.posDip = 0;
 		this.posAnn = 0;
 	}
 
 	public ListItem(Annee a, int posDip, int posAnn) {
 		this.a = a;
+		
 		this.posDip = posDip;
 		this.posAnn = posAnn;
 	}
@@ -79,5 +83,4 @@ public class ListItem implements Item {
 
 		return view;
 	}
-
 }

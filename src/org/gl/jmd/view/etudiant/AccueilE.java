@@ -67,14 +67,12 @@ public class AccueilE extends Activity {
 			List<Item> items = new ArrayList<Item>();
 			
 			for(int s = 0; s < etud.getListeDiplomes().size(); s++) {
-				items.add(new Header(etud.getListeDiplomes().get(s).getNom()));
-				
 				if (etud.getListeDiplomes().get(s).getListeAnnees().size() > 0) {
+					items.add(new Header(etud.getListeDiplomes().get(s).getNom()));
+					
 					for(int p = 0; p < etud.getListeDiplomes().get(s).getListeAnnees().size(); p++) {
 						items.add(new ListItem(etud.getListeDiplomes().get(s).getListeAnnees().get(p), s, p));	
 					}
-				} else {
-					items.add(new ListItem());	
 				}
 			}
 
@@ -151,7 +149,10 @@ public class AccueilE extends Activity {
 								d.setListeAnnees(listeAnnees);
 								
 								listeDiplomes.remove(((ListItem) adapter.getItem(arg2)).getPosDip());
-								listeDiplomes.add(d);
+								
+								if (d.getListeAnnees().size() > 0) {
+									listeDiplomes.add(d);
+								}
 								
 								etud.setListeDiplomes(listeDiplomes);
 	

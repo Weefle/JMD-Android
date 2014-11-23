@@ -79,8 +79,8 @@ public class AjouterAdminA extends Activity {
 							progress.setMessage("Chargement...");
 							new NommerAdmin(progress, Constantes.URL_SERVER + "admin/nominateAdmin" +
 									"?pseudoToNominate=" + listeAdmins.get(position).getPseudo() +
-									"&token=" + FileUtils.lireFichier("/sdcard/cacheJMD/token.jmd") + 
-									"&pseudo=" + FileUtils.lireFichier("/sdcard/cacheJMD/pseudo.jmd") +
+									"&token=" + FileUtils.readFile("/sdcard/cacheJMD/token.jmd") + 
+									"&pseudo=" + FileUtils.readFile("/sdcard/cacheJMD/pseudo.jmd") +
 									"&timestamp=" + new java.util.Date().getTime()
 							).execute();	
 						}
