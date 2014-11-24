@@ -2,13 +2,18 @@ package org.gl.jmd.view.etudiant.listing;
 
 import java.util.*;
 
+import org.gl.jmd.Constantes;
 import org.gl.jmd.R;
 import org.gl.jmd.dao.EtudiantDAO;
-import org.gl.jmd.model.Annee;
-import org.gl.jmd.model.Diplome;
-import org.gl.jmd.model.Etudiant;
-import org.gl.jmd.model.enumeration.DecoupageYearType;
+import org.gl.jmd.model.*;
+import org.gl.jmd.model.enumeration.*;
 import org.gl.jmd.view.etudiant.StatsAnnee;
+import org.gl.jmd.view.etudiant.create.SaisieNoteE;
+import org.gl.jmd.view.list.Header;
+import org.gl.jmd.view.list.Item;
+import org.gl.jmd.view.list.ListItemMatiere;
+import org.gl.jmd.view.list.ListItemUE;
+import org.gl.jmd.view.list.TwoTextArrayAdapter;
 
 import android.os.Bundle;
 import android.view.View;
@@ -23,18 +28,14 @@ import android.content.res.Configuration;
  * @author Jordi CHARPENTIER & Yoann VANHOESERLANDE
  */
 public class ListeUEE extends Activity {
-	
+
 	private int positionDip = 0;
-	
+
 	private int positionAnn = 0;
-	
-	private String decoupage = null;
 
 	private Etudiant etud = EtudiantDAO.load();
 
 	private Annee ann;
-	
-	private Diplome d;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -45,18 +46,21 @@ public class ListeUEE extends Activity {
 
 		positionDip = getIntent().getExtras().getInt("positionDip");
 		positionAnn = getIntent().getExtras().getInt("positionAnn");
-		decoupage = getIntent().getExtras().getString("decoupage");
-		
-		d = etud.getListeDiplomes().get(positionDip);
+
 		ann = etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn);
-		
+
 		initListe();
 		initTitleView();
 	}
 
 	private void initTitleView() {
 		TextView tvTitre = (TextView) findViewById(R.id.etudiant_liste_ue_titre);
-		tvTitre.setText(ann.getNom().substring(0, 20) + "...");
+		
+		if (ann.getNom().length() > Constantes.LIMIT_TITLE) {
+			tvTitre.setText(ann.getNom().substring(0, Constantes.LIMIT_TITLE) + "...");
+		} else {
+			tvTitre.setText(ann.getNom());
+		}
 	}
 
 	/**
@@ -67,52 +71,153 @@ public class ListeUEE extends Activity {
 	public void simulerObtentionAnnee(View view) {
 		Intent i = new Intent(ListeUEE.this, StatsAnnee.class);
 		i.putExtra("annee", ann);
-		
+
 		startActivity(i);
 	}
 
 	private void initListe() {
-		if (etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().isEmpty()) {
-			final ListView liste = (ListView) findViewById(android.R.id.list);
-			final ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
+		if (etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().size() == 0) {
+			ListView liste = (ListView) findViewById(R.id.listUEEtu);
+			ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
 
 			HashMap<String, String> map = new HashMap<String, String>();
-
 			map.put("titre", "Aucune UE.");
 
 			listItem.add(map);		
 
-			liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.simple_list, new String[] {"titre"}, new int[] {R.id.titre})); 
+			liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.simple_list, new String[] {"titre"}, new int[] {R.id.titre}));
+			liste.setOnItemClickListener(null);
 		} else {
-			final ListView liste = (ListView) findViewById(android.R.id.list);
+			List<Item> items = new ArrayList<Item>();
 
-			final ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
-			HashMap<String, String> map;	
+			if (ann.getDecoupage() == DecoupageType.NULL) {
+				items.add(new Header("CONTRÔLE CONTINU"));
 
-			for(int s = 0; s < etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().size(); s++) {
-				if (ann.getListeUE().get(s).getDecoupage().equals(DecoupageYearType.valueOf(decoupage))) {
-					map = new HashMap<String, String>();
-	
-					map.put("id", "" + etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getId());
-					map.put("titre", etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getNom());
-	
-					listItem.add(map);		
+				for (int s = 0; s < etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().size(); s++) {
+					items.add(new Header(etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getNom()));	
+					
+					for (int b = 0; b < etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getListeMatieres().size(); b++) {
+						items.add(new ListItemMatiere(etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getListeMatieres().get(b), s, b));	
+					}
+				}
+			} else if (ann.getDecoupage() == DecoupageType.SEMESTRE) {
+				items.add(new Header("SEMESTRE 1"));
+				boolean hasSEM1 = false;
+
+				for (int s = 0; s < etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().size(); s++) {
+					if (etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getDecoupage() == DecoupageYearType.SEM1) {
+						hasSEM1 = true;
+						items.add(new Header(etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getNom()));	
+						
+						for (int b = 0; b < etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getListeMatieres().size(); b++) {
+							items.add(new ListItemMatiere(etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getListeMatieres().get(b), s, b));	
+						}
+					}
+				}
+
+				if (!hasSEM1) {
+					items.add(new ListItemMatiere());	
+				}
+
+				items.add(new Header("SEMESTRE 2"));
+				boolean hasSEM2 = false;
+
+				for (int s = 0; s < etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().size(); s++) {
+					if (etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getDecoupage() == DecoupageYearType.SEM2) {
+						hasSEM2 = true;
+						items.add(new Header(etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getNom()));	
+						
+						for (int b = 0; b < etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getListeMatieres().size(); b++) {
+							items.add(new ListItemMatiere(etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getListeMatieres().get(b), s, b));	
+						}
+					}
+				}
+
+				if (!hasSEM2) {
+					items.add(new ListItemMatiere());	
+				}
+			} else if (ann.getDecoupage() == DecoupageType.TRIMESTRE) {
+				items.add(new Header("TRIMESTRE 1"));
+				boolean hasTR1 = false;
+
+				for (int s = 0; s < etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().size(); s++) {
+					if (etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getDecoupage() == DecoupageYearType.TRI1) {
+						hasTR1 = true;
+						items.add(new Header(etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getNom()));	
+						
+						for (int b = 0; b < etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getListeMatieres().size(); b++) {
+							items.add(new ListItemMatiere(etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getListeMatieres().get(b), s, b));	
+						}
+					}
+				}
+
+				if (!hasTR1) {
+					items.add(new ListItemMatiere());	
+				}
+
+				items.add(new Header("TRIMESTRE 2"));
+				boolean hasTR2 = false;
+
+				for (int s = 0; s < etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().size(); s++) {
+					if (etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getDecoupage() == DecoupageYearType.TRI2) {
+						hasTR2 = true;
+						items.add(new Header(etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getNom()));	
+						
+						for (int b = 0; b < etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getListeMatieres().size(); b++) {
+							items.add(new ListItemMatiere(etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getListeMatieres().get(b), s, b));	
+						}
+					}
+				}
+
+				if (!hasTR2) {
+					items.add(new ListItemMatiere());	
+				}
+
+				items.add(new Header("TRIMESTRE 3"));
+				boolean hasTR3 = false;
+
+				for (int s = 0; s < etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().size(); s++) {
+					if (etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getDecoupage() == DecoupageYearType.TRI3) {
+						hasTR3 = true;
+						items.add(new Header(etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getNom()));	
+						
+						for (int b = 0; b < etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getListeMatieres().size(); b++) {
+							items.add(new ListItemMatiere(etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getListeMatieres().get(b), s, b));	
+						}
+					}
+				}
+
+				if (!hasTR3) {
+					items.add(new ListItemMatiere());	
 				}
 			}
 
-			final SimpleAdapter mSchedule = new SimpleAdapter (getBaseContext(), listItem, R.layout.simple_list, new String[] {"titre"}, new int[] {R.id.titre});
+			final TwoTextArrayAdapter adapter = new TwoTextArrayAdapter(this, items);
 
-			liste.setAdapter(mSchedule); 
+			final ListView liste = (ListView) findViewById(R.id.listUEEtu);
+
+			liste.setAdapter(adapter);
 
 			liste.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 				public void onItemClick(AdapterView<?> arg0, View arg1, final int position, long arg3) {
-					Intent act = new Intent(ListeUEE.this, ListeMatieresE.class);
-					act.putExtra("idDiplome", d.getId());
-					act.putExtra("idAnnee", ann.getId());
-					act.putExtra("idUE", Integer.parseInt(listItem.get(position).get("id")));
-					act.putExtra("nomUE", ann.getListeUE().get(position).getNom());
+					try {
+						Header h = ((Header) adapter.getItem(position));
 
-					startActivity(act);
+						if (h != null) {
+							return;
+						}
+					} catch(Exception e) {
+						// Do nothing.
+					}
+
+					if (((ListItemMatiere) adapter.getItem(position)).getMatiere() == null) {
+						// Do nothing.
+					} else {
+						Intent newIntent = new Intent(ListeUEE.this, SaisieNoteE.class);
+						newIntent.putExtra("matiere", ((ListItemMatiere) adapter.getItem(position)).getMatiere());
+						
+						startActivity(newIntent);
+					}
 				}
 			});
 		}
@@ -140,7 +245,7 @@ public class ListeUEE extends Activity {
 
 		super.onRestart();
 	} 
-	
+
 	/**
 	 * Méthode exécutée lorsque l'activité est relancée.
 	 */
@@ -148,7 +253,7 @@ public class ListeUEE extends Activity {
 	public void onResume() {
 		etud = EtudiantDAO.load();
 		ann = etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn);
-		
+
 		initListe();
 
 		super.onResume();

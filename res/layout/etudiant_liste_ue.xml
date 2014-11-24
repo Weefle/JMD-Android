@@ -32,9 +32,14 @@
             android:onClick="simulerObtentionAnnee"
             android:src="@drawable/info" />
     </RelativeLayout>
+    
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="0.5dp"
+        android:background="@android:color/black" />
 
     <ListView
-        android:id="@android:id/list"
+        android:id="@+id/listUEEtu"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" >
     </ListView>

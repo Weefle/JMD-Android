@@ -320,13 +320,6 @@ public class AjouterAnneeE extends Activity {
 							diplomeExists = true;
 						}
 					}
-
-					if (sommeCoeff != 60) {
-						toast.setText("L'année n'est pas complète.");
-						toast.show();
-						
-						return null;
-					}
 					
 					if (!exists) {
 						if (!diplomeExists) {

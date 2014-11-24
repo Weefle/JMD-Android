@@ -56,13 +56,6 @@
         <!-- Listing -->
 
         <activity
-            android:name="org.gl.jmd.view.etudiant.listing.ListeAnneesE"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/etudiant_liste_annees_view_name"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" >
-        </activity>
-        <activity
             android:name="org.gl.jmd.view.etudiant.listing.ListeMatieresE"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/etudiant_liste_matieres_view_name"
@@ -73,20 +66,6 @@
             android:name="org.gl.jmd.view.etudiant.listing.ListeUEE"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/etudiant_liste_ue_view_name"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" >
-        </activity>
-        <activity
-            android:name="org.gl.jmd.view.etudiant.listing.ListeSemestreE"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/etudiant_liste_trimestre_view_name"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" >
-        </activity>
-        <activity
-            android:name="org.gl.jmd.view.etudiant.listing.ListeTrimestreE"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/etudiant_liste_semestre_view_name"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>

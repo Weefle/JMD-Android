@@ -24,5 +24,7 @@ public class Constantes {
 	/**
 	 * URL du serveur sur lesquels sont déployés les services web de JMD.
 	 */
-	public static String URL_SERVER = "http://ns3281017.ip-5-39-94.eu:8080/JMD/webresources/";
+	public static final String URL_SERVER = "http://ns3281017.ip-5-39-94.eu:8080/JMD/webresources/";
+	
+	public static final int LIMIT_TITLE = 25;
 }

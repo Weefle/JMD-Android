@@ -14,7 +14,9 @@ public class TwoTextArrayAdapter extends ArrayAdapter<Item> {
     private LayoutInflater mInflater;
 
     public enum RowType {
-        LIST_ITEM, HEADER_ITEM
+        LIST_ITEM, 
+        HEADER_ITEM,
+        FOOTER
     }
 
     public TwoTextArrayAdapter(Context context, List<Item> items) {

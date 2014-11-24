@@ -7,6 +7,7 @@ import org.gl.jmd.dao.EtudiantDAO;
 import org.gl.jmd.model.*;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.*;
 import android.app.*;
@@ -316,11 +317,15 @@ public class SaisieNoteE extends Activity {
 			return;
 		}
 		
+		Log.e("SaisieNoteE", "matiere.getId() : " + matiere.getId());
+		
 		// Sauvegarde de la matière.
 		for (int i = 0; i < this.etudiant.getListeDiplomes().size(); i++) {
 			for (int j = 0; j < this.etudiant.getListeDiplomes().get(i).getListeAnnees().size(); j++) {
 				for (int k = 0; k < this.etudiant.getListeDiplomes().get(i).getListeAnnees().get(j).getListeUE().size(); k++) {
 					for (int l = 0; l < this.etudiant.getListeDiplomes().get(i).getListeAnnees().get(j).getListeUE().get(k).getListeMatieres().size(); l++) {
+						Log.e("SaisieNoteE", "this.etudiant.getListeDiplomes().get(" + i + ").getListeAnnees().get(" + j + ").getListeUE().get(" + k + ").getListeMatieres().get(" + l + ").getId() : " + this.etudiant.getListeDiplomes().get(i).getListeAnnees().get(j).getListeUE().get(k).getListeMatieres().get(l).getId());
+						
 						if (this.etudiant.getListeDiplomes().get(i).getListeAnnees().get(j).getListeUE().get(k).getListeMatieres().get(l).getId() == this.matiere.getId()) {
 							this.etudiant.getListeDiplomes().get(i).getListeAnnees().get(j).getListeUE().get(k).getListeMatieres().remove(l);
 							this.etudiant.getListeDiplomes().get(i).getListeAnnees().get(j).getListeUE().get(k).getListeMatieres().add(this.matiere);

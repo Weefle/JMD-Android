@@ -3,8 +3,8 @@ package org.gl.jmd.view.etudiant.listing;
 import java.util.*;
 
 import org.gl.jmd.R;
-import org.gl.jmd.dao.EtudiantDAO;
-import org.gl.jmd.model.Etudiant;
+import org.gl.jmd.model.Annee;
+import org.gl.jmd.model.UE;
 import org.gl.jmd.view.etudiant.create.SaisieNoteE;
 
 import android.os.Bundle;
@@ -20,22 +20,10 @@ import android.content.res.Configuration;
  * @author Jordi CHARPENTIER & Yoann VANHOESERLANDE
  */
 public class ListeMatieresE extends Activity {
-
-	private int idDiplome = 0;
-
-	private int idAnnee = 0;
-
-	private int idUe = 0;
-
-	private String nomUE = "";
-
-	private Etudiant etud = EtudiantDAO.load();
 	
-	private int posDip = 0;
+	private UE ue = null;
 	
-	private int posAnn = 0;
-	
-	private int posUe = 0;
+	private Annee a = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -44,12 +32,9 @@ public class ListeMatieresE extends Activity {
 		setContentView(R.layout.etudiant_liste_matiere);
 		overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
 
-		idDiplome = getIntent().getExtras().getInt("idDiplome");
-		idAnnee = getIntent().getExtras().getInt("idAnnee");
-		idUe = getIntent().getExtras().getInt("idUE");
-
-		nomUE = getIntent().getExtras().getString("nomUE");
-
+		ue = (UE) getIntent().getExtras().getSerializable("ue");
+		a = (Annee) getIntent().getExtras().getSerializable("annee");
+		
 		initListe();
 		initTitre();
 	}
@@ -57,50 +42,22 @@ public class ListeMatieresE extends Activity {
 	private void initTitre() {
 		// On donne comme titre à la vue le nom de l'UE choisie.
 		TextView tvTitre = (TextView) findViewById(R.id.etudiant_liste_matiere_titre);
-		tvTitre.setText(nomUE);
+		tvTitre.setText(ue.getNom());
 		
 		// isUEValid
 		TextView tvIsUEValid = (TextView) findViewById(R.id.etudiant_isUEValid);
 		
-		if (etud.getListeDiplomes().get(posDip).getListeAnnees().get(posAnn).getListeUE().get(posUe).getMoyenne() != -1.0) {
-			if (etud.getListeDiplomes().get(posDip).getListeAnnees().get(posAnn).getListeUE().get(posUe).isValid(etud.getListeDiplomes().get(posDip).getListeAnnees().get(posAnn).getListeRegles())) {
+		if (ue.getMoyenne() != -1.0) {
+			if (ue.isValid(a.getListeRegles())) {
 				tvIsUEValid.setText("L'UE est validée");
-			} else if (etud.getListeDiplomes().get(posDip).getListeAnnees().get(posAnn).getListeUE().get(posUe).getMoyenne() != -1.0) {
+			} else if (ue.getMoyenne() != -1.0) {
 				tvIsUEValid.setText("L'UE n'est pas validée");
 			}
 		}
 	}
 
 	private void initListe() {
-		for (int i = 0; i < this.etud.getListeDiplomes().size(); i++) {
-			if (this.etud.getListeDiplomes().get(i).getId() == this.idDiplome) {
-				posDip = i;
-			}
-		}
-
-		for (int i = 0; i < this.etud.getListeDiplomes().size(); i++) {
-			for (int j = 0; j < this.etud.getListeDiplomes().get(i).getListeAnnees().size(); j++) {
-				if (this.etud.getListeDiplomes().get(i).getListeAnnees().get(j).getId() == this.idAnnee) {
-					posAnn = j;
-				}
-			}
-		}
-
-		for (int i = 0; i < this.etud.getListeDiplomes().size(); i++) {
-			for (int j = 0; j < this.etud.getListeDiplomes().get(i).getListeAnnees().size(); j++) {
-				for (int k = 0; k < this.etud.getListeDiplomes().get(i).getListeAnnees().get(j).getListeUE().size(); k++) {
-					if (this.etud.getListeDiplomes().get(i).getListeAnnees().get(j).getListeUE().get(k).getId() == this.idUe) {
-						posUe = k;
-					}
-				}
-			}
-		}
-
-		final int posDipFin = posDip;
-		final int posAnnFin = posAnn;
-		final int posUeFin = posUe;
-
-		if (etud.getListeDiplomes().get(posDipFin).getListeAnnees().get(posAnnFin).getListeUE().get(posUeFin).getListeMatieres().isEmpty()) {
+		if (ue.getListeMatieres().isEmpty()) {
 			HashMap<String, String> map = new HashMap<String, String>();
 			map.put("titre", "Aucune matière.");
 
@@ -115,26 +72,26 @@ public class ListeMatieresE extends Activity {
 			final ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
 			HashMap<String, String> map;	
 
-			for (int s = 0; s < etud.getListeDiplomes().get(posDipFin).getListeAnnees().get(posAnnFin).getListeUE().get(posUeFin).getListeMatieres().size(); s++) {
+			for (int s = 0; s < ue.getListeMatieres().size(); s++) {
 				map = new HashMap<String, String>();
 
-				map.put("id", "" + etud.getListeDiplomes().get(posDipFin).getListeAnnees().get(posAnnFin).getListeUE().get(posUeFin).getListeMatieres().get(s).getId());
+				map.put("id", "" + ue.getListeMatieres().get(s).getId());
 
-				if (etud.getListeDiplomes().get(posDipFin).getListeAnnees().get(posAnnFin).getListeUE().get(posUeFin).getListeMatieres().get(s).getNom().length() > 20) {
-					map.put("titre", etud.getListeDiplomes().get(posDipFin).getListeAnnees().get(posAnnFin).getListeUE().get(posUeFin).getListeMatieres().get(s).getNom().substring(0, 20) + "...");
+				if (ue.getListeMatieres().get(s).getNom().length() > 20) {
+					map.put("titre", ue.getListeMatieres().get(s).getNom().substring(0, 20) + "...");
 				} else {
-					map.put("titre", etud.getListeDiplomes().get(posDipFin).getListeAnnees().get(posAnnFin).getListeUE().get(posUeFin).getListeMatieres().get(s).getNom());
+					map.put("titre", ue.getListeMatieres().get(s).getNom());
 				}
 
-				map.put("description", "Coefficient : " + etud.getListeDiplomes().get(posDipFin).getListeAnnees().get(posAnnFin).getListeUE().get(posUeFin).getListeMatieres().get(s).getCoefficient());
+				map.put("description", "Coefficient : " + ue.getListeMatieres().get(s).getCoefficient());
 
-				if (etud.getListeDiplomes().get(posDipFin).getListeAnnees().get(posAnnFin).getListeUE().get(posUeFin).getListeMatieres().get(s).isOption()) {
+				if (ue.getListeMatieres().get(s).isOption()) {
 					map.put("isOption", "Option");
 				} else {
 					map.put("isOption", "Obligatoire");
 				}
 
-				map.put("note", "" + etud.getListeDiplomes().get(posDipFin).getListeAnnees().get(posAnnFin).getListeUE().get(posUeFin).getListeMatieres().get(s).getNoteFinale());
+				map.put("note", "" + ue.getListeMatieres().get(s).getNoteFinale());
 
 				listItem.add(map);		
 			}
@@ -144,7 +101,7 @@ public class ListeMatieresE extends Activity {
 			liste.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 				public void onItemClick(AdapterView<?> arg0, View arg1, final int position, long arg3) {
 					Intent act = new Intent(ListeMatieresE.this, SaisieNoteE.class);
-					act.putExtra("matiere", etud.getListeDiplomes().get(posDipFin).getListeAnnees().get(posAnnFin).getListeUE().get(posUeFin).getListeMatieres().get(position));
+					act.putExtra("matiere", ue.getListeMatieres().get(position));
 
 					startActivity(act);
 				}
@@ -158,10 +115,10 @@ public class ListeMatieresE extends Activity {
 						View tempView = (View) liste.getChildAt(i);
 						TextView badgeNote = (TextView) tempView.findViewById(R.id.note);
 
-						if (etud.getListeDiplomes().get(posDipFin).getListeAnnees().get(posAnnFin).getListeUE().get(posUeFin).getListeMatieres().get(i).getNoteFinale() >= 10) {							
+						if (ue.getListeMatieres().get(i).getNoteFinale() >= 10) {							
 							badgeNote.setBackgroundResource(R.drawable.badge_moyenne_ok);
-						} else if ((etud.getListeDiplomes().get(posDipFin).getListeAnnees().get(posAnnFin).getListeUE().get(posUeFin).getListeMatieres().get(i).getNoteFinale() < 10) && 
-								(etud.getListeDiplomes().get(posDipFin).getListeAnnees().get(posAnnFin).getListeUE().get(posUeFin).getListeMatieres().get(i).getNoteFinale() >= 0)) {
+						} else if ((ue.getListeMatieres().get(i).getNoteFinale() < 10) && 
+								(ue.getListeMatieres().get(i).getNoteFinale() >= 0)) {
 							
 							badgeNote.setBackgroundResource(R.drawable.badge_moyenne_nok);
 						} else {
@@ -191,9 +148,7 @@ public class ListeMatieresE extends Activity {
 	 * Ici, ça permet d'actualiser la liste des années lorsqu'une année vient d'être créé et que l'application ramène l'utilisateur sur cette vue de listing.
 	 */
 	@Override
-	public void onRestart() {
-		etud = EtudiantDAO.load();
-		
+	public void onRestart() {		
 		initListe();
 		initTitre();
 

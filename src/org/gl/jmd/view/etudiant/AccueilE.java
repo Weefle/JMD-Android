@@ -96,23 +96,10 @@ public class AccueilE extends Activity {
 					
 					if (((ListItem) adapter.getItem(position)).getAnnee() == null) {
 						// Do nothing.
-					} else {
-						String decoupage = ((ListItem) adapter.getItem(position)).getAnnee().getDecoupage().name();
-						
-						Class<?> c = null;
-						
-						if (decoupage.equals(DecoupageType.NULL.name())) {
-							c = ListeUEE.class;
-						} else if (decoupage.equals(DecoupageType.SEMESTRE.name())) {
-							c = ListeSemestreE.class;
-						} else if (decoupage.equals(DecoupageType.TRIMESTRE.name())) {
-							c = ListeTrimestreE.class;
-						} 
-	
-						Intent act = new Intent(AccueilE.this, c);
+					} else {	
+						Intent act = new Intent(AccueilE.this, ListeUEE.class);
 						act.putExtra("positionDip", ((ListItem) adapter.getItem(position)).getPosDip());
 						act.putExtra("positionAnn", ((ListItem) adapter.getItem(position)).getPosAnnee());
-						act.putExtra("decoupage", ((ListItem) adapter.getItem(position)).getAnnee().getDecoupage().name());
 						
 						startActivity(act);
 					}
