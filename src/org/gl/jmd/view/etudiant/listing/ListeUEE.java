@@ -9,6 +9,7 @@ import org.gl.jmd.model.*;
 import org.gl.jmd.model.enumeration.*;
 import org.gl.jmd.view.etudiant.StatsAnnee;
 import org.gl.jmd.view.etudiant.create.SaisieNoteE;
+import org.gl.jmd.view.list.Footer;
 import org.gl.jmd.view.list.Header;
 import org.gl.jmd.view.list.Item;
 import org.gl.jmd.view.list.ListItemMatiere;
@@ -98,6 +99,14 @@ public class ListeUEE extends Activity {
 					
 					for (int b = 0; b < etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getListeMatieres().size(); b++) {
 						items.add(new ListItemMatiere(etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getListeMatieres().get(b), s, b));	
+					}
+					
+					if (etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getMoyenne() != -1.0) {
+						if (etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).isValid(ann.getListeRegles())) {
+							items.add(new Footer("L'UE est validée."));
+						} else if (etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getMoyenne() != -1.0) {
+							items.add(new Footer("L'UE n'est pas validée."));
+						}
 					}
 				}
 			} else if (ann.getDecoupage() == DecoupageType.SEMESTRE) {
@@ -204,6 +213,16 @@ public class ListeUEE extends Activity {
 						Header h = ((Header) adapter.getItem(position));
 
 						if (h != null) {
+							return;
+						}
+					} catch(Exception e) {
+						// Do nothing.
+					}
+					
+					try {
+						Footer f = ((Footer) adapter.getItem(position));
+
+						if (f != null) {
 							return;
 						}
 					} catch(Exception e) {
