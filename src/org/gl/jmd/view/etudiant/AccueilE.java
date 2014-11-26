@@ -4,17 +4,12 @@ import java.util.*;
 
 import org.gl.jmd.R;
 import org.gl.jmd.dao.EtudiantDAO;
-import org.gl.jmd.model.Annee;
-import org.gl.jmd.model.Diplome;
-import org.gl.jmd.model.Etudiant;
+import org.gl.jmd.model.*;
 import org.gl.jmd.model.enumeration.DecoupageType;
 import org.gl.jmd.view.*;
 import org.gl.jmd.view.etudiant.create.AjouterAnneeE;
 import org.gl.jmd.view.etudiant.listing.*;
-import org.gl.jmd.view.list.Header;
-import org.gl.jmd.view.list.Item;
-import org.gl.jmd.view.list.ListItem;
-import org.gl.jmd.view.list.TwoTextArrayAdapter;
+import org.gl.jmd.view.list.*;
 
 import android.os.Bundle;
 import android.view.*;
@@ -97,7 +92,15 @@ public class AccueilE extends Activity {
 					if (((ListItem) adapter.getItem(position)).getAnnee() == null) {
 						// Do nothing.
 					} else {	
-						Intent act = new Intent(AccueilE.this, ListeUEE.class);
+						Class c = null;
+						
+						if (((ListItem) adapter.getItem(position)).getAnnee().getDecoupage() == DecoupageType.NULL) {
+							c = ListeUEE.class;
+						} else if (((ListItem) adapter.getItem(position)).getAnnee().getDecoupage() == DecoupageType.SEMESTRE) {
+							c = ListeUEETabs.class;
+						}
+						
+						Intent act = new Intent(AccueilE.this, c);
 						act.putExtra("positionDip", ((ListItem) adapter.getItem(position)).getPosDip());
 						act.putExtra("positionAnn", ((ListItem) adapter.getItem(position)).getPosAnnee());
 						

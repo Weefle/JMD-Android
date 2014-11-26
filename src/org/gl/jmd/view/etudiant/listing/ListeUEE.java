@@ -9,14 +9,10 @@ import org.gl.jmd.model.*;
 import org.gl.jmd.model.enumeration.*;
 import org.gl.jmd.view.etudiant.StatsAnnee;
 import org.gl.jmd.view.etudiant.create.SaisieNoteE;
-import org.gl.jmd.view.list.Footer;
-import org.gl.jmd.view.list.Header;
-import org.gl.jmd.view.list.Item;
-import org.gl.jmd.view.list.ListItemMatiere;
-import org.gl.jmd.view.list.ListItemUE;
-import org.gl.jmd.view.list.TwoTextArrayAdapter;
+import org.gl.jmd.view.list.*;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.*;
 import android.app.*;
@@ -37,6 +33,8 @@ public class ListeUEE extends Activity {
 	private Etudiant etud = EtudiantDAO.load();
 
 	private Annee ann;
+	
+	private DecoupageYearType d;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -47,11 +45,20 @@ public class ListeUEE extends Activity {
 
 		positionDip = getIntent().getExtras().getInt("positionDip");
 		positionAnn = getIntent().getExtras().getInt("positionAnn");
-
+		
 		ann = etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn);
-
-		initListe();
-		initTitleView();
+		
+		d = (DecoupageYearType) getIntent().getExtras().getSerializable("type");
+		
+		if (d != null) {
+			RelativeLayout r = (RelativeLayout) findViewById(R.id.etudiant_liste_ue_bandeau);
+			r.setVisibility(View.GONE);
+			
+			initListe(d);
+		} else {
+			initListe();
+			initTitleView();
+		}
 	}
 
 	private void initTitleView() {
@@ -92,8 +99,6 @@ public class ListeUEE extends Activity {
 			List<Item> items = new ArrayList<Item>();
 
 			if (ann.getDecoupage() == DecoupageType.NULL) {
-				items.add(new Header("CONTRÔLE CONTINU"));
-
 				for (int s = 0; s < etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().size(); s++) {
 					items.add(new Header(etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getNom()));	
 					
@@ -241,6 +246,84 @@ public class ListeUEE extends Activity {
 			});
 		}
 	}
+	
+	private void initListe(DecoupageYearType d) {
+		if (etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().size() == 0) {
+			ListView liste = (ListView) findViewById(R.id.listUEEtu);
+			ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
+
+			HashMap<String, String> map = new HashMap<String, String>();
+			map.put("titre", "Aucune UE.");
+
+			listItem.add(map);		
+
+			liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.simple_list, new String[] {"titre"}, new int[] {R.id.titre}));
+			liste.setOnItemClickListener(null);
+		} else {
+			List<Item> items = new ArrayList<Item>();
+
+			if (ann.getDecoupage() == DecoupageType.SEMESTRE) {
+				for (int s = 0; s < etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().size(); s++) {
+					if (etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getDecoupage() == d) {
+						items.add(new Header(etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getNom()));	
+						
+						for (int b = 0; b < etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getListeMatieres().size(); b++) {
+							items.add(new ListItemMatiere(etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getListeMatieres().get(b), s, b));	
+						}
+					}
+				}
+			} else if (ann.getDecoupage() == DecoupageType.TRIMESTRE) {
+				for (int s = 0; s < etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().size(); s++) {
+					if (etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getDecoupage() == d) {
+						items.add(new Header(etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getNom()));	
+						
+						for (int b = 0; b < etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getListeMatieres().size(); b++) {
+							items.add(new ListItemMatiere(etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getListeMatieres().get(b), s, b));	
+						}
+					}
+				}
+			}
+
+			final TwoTextArrayAdapter adapter = new TwoTextArrayAdapter(this, items);
+
+			final ListView liste = (ListView) findViewById(R.id.listUEEtu);
+
+			liste.setAdapter(adapter);
+
+			liste.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+				public void onItemClick(AdapterView<?> arg0, View arg1, final int position, long arg3) {
+					try {
+						Header h = ((Header) adapter.getItem(position));
+
+						if (h != null) {
+							return;
+						}
+					} catch(Exception e) {
+						// Do nothing.
+					}
+					
+					try {
+						Footer f = ((Footer) adapter.getItem(position));
+
+						if (f != null) {
+							return;
+						}
+					} catch(Exception e) {
+						// Do nothing.
+					}
+
+					if (((ListItemMatiere) adapter.getItem(position)).getMatiere() == null) {
+						// Do nothing.
+					} else {
+						Intent newIntent = new Intent(ListeUEE.this, SaisieNoteE.class);
+						newIntent.putExtra("matiere", ((ListItemMatiere) adapter.getItem(position)).getMatiere());
+						
+						startActivity(newIntent);
+					}
+				}
+			});
+		}
+	}
 
 	/* Méthodes héritées de la classe Activity. */
 
@@ -260,7 +343,17 @@ public class ListeUEE extends Activity {
 	@Override
 	public void onRestart() {
 		etud = EtudiantDAO.load();
-		initListe();
+		ann = etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn);
+		
+		if (d != null) {
+			RelativeLayout r = (RelativeLayout) findViewById(R.id.etudiant_liste_ue_bandeau);
+			r.setVisibility(View.GONE);
+			
+			initListe(d);
+		} else {
+			initListe();
+			initTitleView();
+		}
 
 		super.onRestart();
 	} 
@@ -273,7 +366,15 @@ public class ListeUEE extends Activity {
 		etud = EtudiantDAO.load();
 		ann = etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn);
 
-		initListe();
+		if (d != null) {
+			RelativeLayout r = (RelativeLayout) findViewById(R.id.etudiant_liste_ue_bandeau);
+			r.setVisibility(View.GONE);
+			
+			initListe(d);
+		} else {
+			initListe();
+			initTitleView();
+		}
 
 		super.onResume();
 	} 

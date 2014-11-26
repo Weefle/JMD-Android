@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#FFFFFF"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="60dp"
+        android:background="#FF5E3A"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/etudiant_liste_ue_tabs_titre"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:gravity="center_horizontal"
+            android:layout_centerInParent="true"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp" />
+
+    </RelativeLayout>
+
+    <TabHost
+        android:id="@android:id/tabhost"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical" >
+
+            <FrameLayout
+                android:id="@android:id/tabcontent"
+                android:layout_width="fill_parent"
+                android:layout_height="0dip"
+                android:layout_weight="1" />
+
+            <TabWidget
+                android:id="@android:id/tabs"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:background="#252a31"
+                android:tabStripEnabled="false" >
+            </TabWidget>
+        </LinearLayout>
+    </TabHost>
+
+</LinearLayout>

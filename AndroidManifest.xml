@@ -69,6 +69,13 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
+        <activity
+            android:name="org.gl.jmd.view.etudiant.listing.ListeUEETabs"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/etudiant_liste_ue_view_name"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar" >
+        </activity>
 
         <!-- Création -->
 

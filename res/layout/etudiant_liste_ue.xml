@@ -6,6 +6,7 @@
     android:orientation="vertical" >
 
     <RelativeLayout
+        android:id="@+id/etudiant_liste_ue_bandeau"
         android:layout_width="fill_parent"
         android:layout_height="60dp"
         android:background="#FF5E3A"
