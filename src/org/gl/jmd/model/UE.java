@@ -75,7 +75,7 @@ public class UE implements Serializable {
 		double produitMatiereCoeff = 0.0;
 		
 		for (int i = 0; i < this.listeMatieres.size(); i++) {
-			if (this.listeMatieres.get(i).getNoteFinale() != -1.0 ) {
+			if (this.listeMatieres.get(i).getNoteFinale() != -1.0) {
 				coeffGlobalUE += this.listeMatieres.get(i).getCoefficient();
 				produitMatiereCoeff += this.listeMatieres.get(i).getNoteFinale() * this.listeMatieres.get(i).getCoefficient();
 			}
@@ -89,21 +89,8 @@ public class UE implements Serializable {
 		return res;
 	}
 	
-	/**
-	 * Méthode permettant de savoir si l'UE est valide ou non.
-	 * <b>Valide</b> : elle respecte toutes les règles de gestion associées et sa moyenne est supérieure ou égale à 10.
-	 * 
-	 * @param listeRegles La liste des règles de gestion
-	 * 
-	 * @return <b>true</b> si l'UE est valide.
-	 * <b>false</b> sinon.
-	 */
-	public boolean isValid(ArrayList<Regle> listeRegles) {
-		boolean res = true;
-		
-		if ((this.getMoyenne() < 10) && (this.getMoyenne() >= 0)) {
-			res = false;
-		} 
+	public boolean estAjourne(ArrayList<Regle> listeRegles) {
+		boolean res = false;
 		
 		for (int i = 0; i < listeRegles.size(); i++) {			
 			if ((listeRegles.get(i).getRegle() == RegleType.NOTE_MINIMALE) &&
@@ -113,27 +100,11 @@ public class UE implements Serializable {
 					if ((this.listeMatieres.get(k).getNoteFinale() != -1.0) && 
 							(this.listeMatieres.get(k).getNoteFinale() < listeRegles.get(i).getValeur())) {
 						
-						res = false;
+						res = true;
 						break;
 					}
 				}
-			} else if ((listeRegles.get(i).getRegle() == RegleType.NB_OPT_MINI) &&
-					(listeRegles.get(i).getIdUE() == this.id)) {
-				
-				int nbOption = listeRegles.get(i).getValeur();
-				
-				for (int k = 0; k < this.listeMatieres.size(); k++) {
-					if ((this.listeMatieres.get(k).isOption())
-							&& (this.listeMatieres.get(k).getNoteFinale() != -1.0)) {
-							
-						nbOption--;
-					}
-				}
-				
-				if (nbOption > 0) {
-					res = false;
-				}
-			}
+			} 
 		}
 		
 		return res;

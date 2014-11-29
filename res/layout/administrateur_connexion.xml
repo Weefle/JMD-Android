@@ -58,7 +58,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginTop="30dp"
-            android:hint="@string/pseudo_txt"
+            android:hint="@string/hint_pseudo"
             android:inputType="text" />
 
         <EditText
@@ -70,7 +70,7 @@
             android:layout_marginRight="10dp"
             android:layout_marginTop="30dp"
             android:fontFamily="sans-serif"
-            android:hint="@string/admin_connex_mdp"
+            android:hint="@string/hint_password"
             android:inputType="textPassword" />
 
         <Button

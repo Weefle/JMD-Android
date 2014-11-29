@@ -59,7 +59,7 @@ public class CreationUE extends Activity {
 		
 		if (a.getDecoupage() == DecoupageType.SEMESTRE) {
 			adapter = ArrayAdapter.createFromResource(this, R.array.position_ue_array_2, android.R.layout.simple_spinner_item);
-		} else if (a.getDecoupage() == DecoupageType.SEMESTRE) {
+		} else if (a.getDecoupage() == DecoupageType.TRIMESTRE) {
 			adapter = ArrayAdapter.createFromResource(this, R.array.position_ue_array_1, android.R.layout.simple_spinner_item);
 		} else {
 			spinner.setVisibility(View.GONE);
@@ -123,7 +123,7 @@ public class CreationUE extends Activity {
 		} else {
 			NOM.setBackgroundResource(R.drawable.border_edittext_error);
 			
-			toast.setText("Au moins un des champs est vide.");
+			toast.setText("Le champ \"Nom\" est vide.");
 			toast.show();
 		}
 	}

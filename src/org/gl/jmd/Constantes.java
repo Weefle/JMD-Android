@@ -26,5 +26,8 @@ public class Constantes {
 	 */
 	public static final String URL_SERVER = "http://ns3281017.ip-5-39-94.eu:8080/JMD/webresources/";
 	
-	public static final int LIMIT_TITLE = 25;
+	/**
+	 * La limite de taille des textes à afficher.
+	 */
+	public static final int LIMIT_TEXT = 20;
 }

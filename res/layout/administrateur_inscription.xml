@@ -68,7 +68,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="20dp"
-        android:hint="@string/admin_inscr_pseudo"
+        android:hint="@string/hint_pseudo"
         android:inputType="text" />
 
     <EditText
@@ -78,7 +78,7 @@
         android:layout_gravity="center"
         android:layout_marginTop="20dp"
         android:fontFamily="sans-serif"
-        android:hint="@string/admin_inscr_password"
+        android:hint="@string/hint_password"
         android:inputType="textPassword" />
 
     <EditText

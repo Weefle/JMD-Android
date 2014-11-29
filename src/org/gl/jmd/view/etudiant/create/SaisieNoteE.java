@@ -7,7 +7,6 @@ import org.gl.jmd.dao.EtudiantDAO;
 import org.gl.jmd.model.*;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.*;
 import android.app.*;
@@ -230,12 +229,18 @@ public class SaisieNoteE extends Activity {
 										
 										if (!isNomOK && !isNoteOK && !isCoeffOK) {
 											txtToast = "Les trois champs sont vides.";
-										} else if (!isNomOK) {
-											txtToast = "Le champ \"Nom\" est vide.";
-										} else if (!isNoteOK) {
-											txtToast = "Le champ \"Note\" est vide.";
-										} else if (!isCoeffOK) {
-											txtToast = "Le champ \"Coefficient\" est vide.";
+										} else {
+											if (!isNomOK) {
+												txtToast = "Le champ \"Nom\" est vide.\n";
+											}
+											
+											if (!isNoteOK) {
+												txtToast = "Le champ \"Note\" est vide.\n";
+											}
+											
+											if (!isCoeffOK) {
+												txtToast = "Le champ \"Coefficient\" est vide.";
+											}
 										}
 										
 										toast.setText(txtToast);
@@ -293,6 +298,8 @@ public class SaisieNoteE extends Activity {
 			noteS1.setNote(Double.parseDouble(noteS1ET.getText().toString()));
 			
 			matiere.setNoteSession1(noteS1);
+		} else {
+			matiere.setNoteSession1(new Note());
 		}
 		
 		if (noteS2ET.getText().toString().length() > 0) {
@@ -300,14 +307,45 @@ public class SaisieNoteE extends Activity {
 			noteS2.setNote(Double.parseDouble(noteS2ET.getText().toString()));
 			
 			matiere.setNoteSession2(noteS2);
+		} else {
+			matiere.setNoteSession2(new Note());
 		}
 		
 		matiere.setListeNotesCC(listeNotes);
 		
 		if (coeffPartiel.getText().toString().length() > 0) {
 			matiere.setCoeffPartiel(Double.parseDouble(coeffPartiel.getText().toString()));
+		} else {
+			matiere.setCoeffPartiel(0.0);
 		}
 		
+		// Contrôle des informations saisies.
+		
+		// Si une note de seconde session est définie mais pas de note de première session.
+		if ((noteS2ET.getText().toString().length() > 0) && (noteS1ET.getText().toString().length() == 0)) {
+			noteS1ET.setBackgroundResource(R.drawable.border_edittext_error);
+			noteS2ET.setBackgroundResource(R.drawable.border_edittext);
+			
+			toast.setText("Il faut définir une note de première session avant d'en définir une note de seconde.");
+			toast.show();
+			
+			return;
+		}
+		
+		// Si uniquement un coefficient de partiel est définie.
+		if (((noteS1ET.getText().toString().length() == 0) && (noteS2ET.getText().toString().length() == 0))
+				&& (coeffPartiel.getText().toString().length() > 0)) {
+			
+			noteS1ET.setBackgroundResource(R.drawable.border_edittext_error);
+			noteS2ET.setBackgroundResource(R.drawable.border_edittext_error);
+			
+			toast.setText("Il faut définir au moins une note de première session.");
+			toast.show();
+					
+			return;
+		}
+		
+		// Si au moins un contrôle continu existe mais que le coefficient partiel n'est pas défini.
 		if ((matiere.getListeNotesCC().size() > 0) && (coeffPartiel.getText().toString().length() == 0)) {
 			coeffPartiel.setBackgroundResource(R.drawable.border_edittext_error);
 			
@@ -317,15 +355,11 @@ public class SaisieNoteE extends Activity {
 			return;
 		}
 		
-		Log.e("SaisieNoteE", "matiere.getId() : " + matiere.getId());
-		
 		// Sauvegarde de la matière.
 		for (int i = 0; i < this.etudiant.getListeDiplomes().size(); i++) {
 			for (int j = 0; j < this.etudiant.getListeDiplomes().get(i).getListeAnnees().size(); j++) {
 				for (int k = 0; k < this.etudiant.getListeDiplomes().get(i).getListeAnnees().get(j).getListeUE().size(); k++) {
 					for (int l = 0; l < this.etudiant.getListeDiplomes().get(i).getListeAnnees().get(j).getListeUE().get(k).getListeMatieres().size(); l++) {
-						Log.e("SaisieNoteE", "this.etudiant.getListeDiplomes().get(" + i + ").getListeAnnees().get(" + j + ").getListeUE().get(" + k + ").getListeMatieres().get(" + l + ").getId() : " + this.etudiant.getListeDiplomes().get(i).getListeAnnees().get(j).getListeUE().get(k).getListeMatieres().get(l).getId());
-						
 						if (this.etudiant.getListeDiplomes().get(i).getListeAnnees().get(j).getListeUE().get(k).getListeMatieres().get(l).getId() == this.matiere.getId()) {
 							this.etudiant.getListeDiplomes().get(i).getListeAnnees().get(j).getListeUE().get(k).getListeMatieres().remove(l);
 							this.etudiant.getListeDiplomes().get(i).getListeAnnees().get(j).getListeUE().get(k).getListeMatieres().add(this.matiere);
@@ -337,6 +371,8 @@ public class SaisieNoteE extends Activity {
 
 		EtudiantDAO.save(this.etudiant);
 
+		// Fin de la vue.
+		
 		finish();
 	}
 

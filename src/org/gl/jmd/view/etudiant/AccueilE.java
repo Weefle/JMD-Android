@@ -98,6 +98,8 @@ public class AccueilE extends Activity {
 							c = ListeUEE.class;
 						} else if (((ListItem) adapter.getItem(position)).getAnnee().getDecoupage() == DecoupageType.SEMESTRE) {
 							c = ListeUEETabs.class;
+						} else if (((ListItem) adapter.getItem(position)).getAnnee().getDecoupage() == DecoupageType.TRIMESTRE) {
+							c = ListeUEETabs.class;
 						}
 						
 						Intent act = new Intent(AccueilE.this, c);

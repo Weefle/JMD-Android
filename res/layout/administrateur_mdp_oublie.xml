@@ -41,7 +41,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="20dp"
-        android:hint="@string/pseudo_txt"
+        android:hint="@string/hint_pseudo"
         android:inputType="text" />
 
 </LinearLayout>

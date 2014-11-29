@@ -6,6 +6,7 @@
     android:orientation="vertical" >
 
     <RelativeLayout
+        android:id="@+id/relativListeUeTabs"
         android:layout_width="fill_parent"
         android:layout_height="60dp"
         android:background="#FF5E3A"
@@ -44,6 +45,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
+                android:focusable="true"
                 android:background="#252a31"
                 android:tabStripEnabled="false" >
             </TabWidget>

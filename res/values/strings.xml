@@ -13,13 +13,14 @@
     
     <string name="etudiant_liste_annees_view_name">Liste des années</string>
     <string name="etudiant_liste_ue_view_name">Liste des UE</string>
+    <string name="etudiant_liste_ue__tabs_view_name">Liste des UE</string>
     <string name="etudiant_liste_matieres_view_name">Liste des matières</string>
     <string name="etudiant_liste_trimestre_view_name">Trimestres</string>
     <string name="etudiant_liste_semestre_view_name">Semestres</string>
    
     <string name="etudiant_ajouter_annee_ae_view_name">Ajout des années</string>
     <string name="etudiant_modifier_ae_view_name">Bienvenue</string>
-    <string name="etudiant_accueil_view_name">Accueil (Etudiant)</string>
+    <string name="etudiant_accueil_view_name">Bienvenue</string>
     <string name="etudiant_saisie_note_titre_view_name">Saisie de notes</string>
     <string name="etudiant_stats_annee_view_name">Stats sur l\'année</string>
     
@@ -70,14 +71,11 @@
     <string name="bout_creer_txt">Créer</string>
     <string name="bout_ajouter_txt">Ajouter</string>
     <string name="btn_choisir">Choisir</string>
-    
-    <string name="etudiant_ajout_diplome_bout_valider">Ajouter</string>
     <string name="bout_ok_txt">OK</string>
      
     <string name="admin_bout_connexion_texte">Se connecter</string>
     <string name="admin_inscription_bout_inscription">Inscription</string>
     <string name="admin_mdp_oublie_bout_texte">Valider</string>
-    <string name="admin_ajout_admin_bout_ajouter_texte">Ajouter</string>
     
     <!-- Hints -->
     
@@ -86,20 +84,17 @@
     <string name="hint_note">Note</string>
     <string name="hint_coefficient">Coefficient</string>
     <string name="hint_nom_epreuve">Nom de l\'épreuve</string>
+    <string name="hint_pseudo">Pseudo</string>    
+    <string name="hint_password">Mot de passe</string>
     
 	<string name="admin_crea_annee_hint_etablissement">Etablissement</string>
 	<string name="admin_crea_eta_hint_ville">Ville</string>
 	<string name="admin_crea_eta_hint_coeff">Coefficient</string>
 	<string name="admin_crea_mat_checkbox_option_txt">Cette matière est une option</string>
 	
-    <string name="admin_inscr_pseudo">Pseudo</string>
-    <string name="admin_inscr_password">Mot de passe</string>
     <string name="admin_inscr_password_retype">Retapez votre mot de passe</string>
     <string name="admin_inscr_email">Email</string>
     <string name="admin_inscr_prenom">Prénom</string>
-    
-    <string name="pseudo_txt">Pseudo</string>    
-    <string name="admin_connex_mdp">Mot de passe</string>
     
     <string name="etudiant_ajout_ue_hint_nom_ue_txt">Nom de l\'UE</string>
     <string name="etudiant_ajout_annees_hint_nom_annee_txt">Nom de l\'année</string>
@@ -112,7 +107,7 @@
     <string name="administrateur_creation_annee_titre_texte">Nouvelle année</string>
     <string name="administrateur_creation_ue_titre_texte">Nouvelle UE</string>
     <string name="administrateur_creation_matiere_titre_texte">Nouvelle matière</string>
-    <string name="administrateur_creation_regle_titre_texte">Création d\'une règle</string>
+    <string name="administrateur_creation_regle_titre_texte">Nouvelle règle</string>
         
     <string name="administrateur_mdp_oublie_titre_texte">Password oublié</string>
     <string name="administrateur_ajout_admin_titre_texte">Ajouter un administrateur</string>

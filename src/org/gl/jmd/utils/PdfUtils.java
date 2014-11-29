@@ -83,7 +83,7 @@ public class PdfUtils {
 				for (int i = 0; i < ann.getListeUE().size(); i++) {
 					paint.setFakeBoldText(true);
 					
-					String txtUE = ann.getListeUE().get(i).getNom() + "/" + ann.getListeUE().get(i).getTotalCoeff() + " : ";
+					String txtUE = ann.getListeUE().get(i).getNom() + " (coefficient " + ann.getListeUE().get(i).getTotalCoeff() + ") : ";
 					
 					if (ann.getListeUE().get(i).getMoyenne() != -1.0) {
 						txtUE += ann.getListeUE().get(i).getMoyenne() + "/20";
@@ -94,19 +94,19 @@ public class PdfUtils {
 					for (int j = 0; j < ann.getListeUE().get(i).getListeMatieres().size(); j++) {
 						paint.setFakeBoldText(false);
 						startY += 15;
-						String txtMatiere = ann.getListeUE().get(i).getListeMatieres().get(j).getNom() + "/coeff" + ann.getListeUE().get(i).getListeMatieres().get(j).getCoefficient(); 
+						String txtMatiere = ann.getListeUE().get(i).getListeMatieres().get(j).getNom() + " (coefficient " + ann.getListeUE().get(i).getListeMatieres().get(j).getCoefficient() + ")"; 
 						
 						if (ann.getListeUE().get(i).getListeMatieres().get(j).getNoteFinale() != -1.0) {
 							page.getCanvas().drawText(txtMatiere + " : " + ann.getListeUE().get(i).getListeMatieres().get(j).getNoteFinale() + "/20", 50, startY, paint); 
 						} else {
-							page.getCanvas().drawText(txtMatiere + " : ", 50, startY, paint); 
+							page.getCanvas().drawText(txtMatiere + " : Aucune note.", 50, startY, paint); 
 						}
 					}
 					
-					startY += 15;
+					startY += 20;
 				}
 				
-				startY += 15;
+				startY += 10;
 				
 				String txtRes = "Résultat : ";
 				

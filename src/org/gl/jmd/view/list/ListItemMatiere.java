@@ -1,5 +1,6 @@
 package org.gl.jmd.view.list;
 
+import org.gl.jmd.Constantes;
 import org.gl.jmd.R;
 import org.gl.jmd.model.Matiere;
 import org.gl.jmd.view.list.TwoTextArrayAdapter.RowType;
@@ -58,8 +59,8 @@ public class ListItemMatiere implements Item {
 		TextView text = (TextView) view.findViewById(R.id.titre);
 		
 		if (m != null) {			
-			if (m.getNom().length() > 20) {
-				text.setText(m.getNom().substring(0, 20) + "...");
+			if (m.getNom().length() > Constantes.LIMIT_TEXT) {
+				text.setText(m.getNom().substring(0, Constantes.LIMIT_TEXT) + "...");
 			} else {
 				text.setText(m.getNom());
 			}
@@ -73,7 +74,7 @@ public class ListItemMatiere implements Item {
 			if (m.isOption()) {
 				textIOption.setText("Option");
 			} else {
-				textIOption.setText("Obligatoire");
+				textIOption.setVisibility(View.GONE);
 			}
 			
 			TextView textNote = (TextView) view.findViewById(R.id.note);
@@ -94,7 +95,8 @@ public class ListItemMatiere implements Item {
 			}
 		} else {
 			view = (View) inflater.inflate(R.layout.simple_list, null);
-
+			text = (TextView) view.findViewById(R.id.titre);
+			
 			text.setText("Aucune matière.");
 		}
 

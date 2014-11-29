@@ -2,6 +2,7 @@ package org.gl.jmd.view.list;
 
 import org.gl.jmd.R;
 import org.gl.jmd.model.Annee;
+import org.gl.jmd.utils.NumberUtils;
 import org.gl.jmd.view.list.TwoTextArrayAdapter.RowType;
 
 import android.view.LayoutInflater;
@@ -64,7 +65,7 @@ public class ListItem implements Item {
 		if (a != null) {
 			text1.setText(a.getNom());
 			text2.setText(a.getEtablissement().getNom());
-			text3.setText("" + a.getMoyenne());
+			text3.setText("" + NumberUtils.round(a.getMoyenne(), 2));
 	
 			if (a.getMoyenne() >= 10) {
 				text3.setBackgroundResource(R.drawable.badge_moyenne_ok);
