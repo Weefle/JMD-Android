@@ -68,14 +68,39 @@ public class UE implements Serializable {
 	 * 
 	 * @return La moyenne de l'UE.
 	 */
-	public double getMoyenne() {
+	public double getMoyenne(ArrayList<Regle> listeRegles) {
 		double res = -1.0;
 		
 		int coeffGlobalUE = 0;
 		double produitMatiereCoeff = 0.0;
 		
+		// Récupération des options.
+		int nbOptionMini = 0;
+		
+		for (int i = 0; i < listeRegles.size(); i++) {
+			if ((listeRegles.get(i).getRegle() == RegleType.NB_OPT_MINI) &&
+					(listeRegles.get(i).getId() == this.id)) {
+				
+				nbOptionMini = listeRegles.get(i).getValeur();
+			}
+		}
+		
+		ArrayList<Matiere> listOptions = new ArrayList<Matiere>();
+		
 		for (int i = 0; i < this.listeMatieres.size(); i++) {
-			if (this.listeMatieres.get(i).getNoteFinale() != -1.0) {
+			if ((this.listeMatieres.get(i).getNoteFinale() != -1.0) &&
+					(this.listeMatieres.get(i).isOption())) {
+				
+				nbOptionMini--;
+				listOptions.add(this.listeMatieres.get(i));
+			}
+		}
+		
+		// Calcul de la moyenne.
+		for (int i = 0; i < this.listeMatieres.size(); i++) {
+			if ((this.listeMatieres.get(i).getNoteFinale() != -1.0) &&
+					(!this.listeMatieres.get(i).isOption())) {
+				
 				coeffGlobalUE += this.listeMatieres.get(i).getCoefficient();
 				produitMatiereCoeff += this.listeMatieres.get(i).getNoteFinale() * this.listeMatieres.get(i).getCoefficient();
 			}
