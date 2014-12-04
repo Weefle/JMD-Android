@@ -105,10 +105,10 @@ public class ListeUEE extends Activity {
 						items.add(new ListItemMatiere(etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getListeMatieres().get(b), s, b));	
 					}
 
-					if (etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getMoyenne() != -1.0) {
+					if (etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getMoyenne(ann.getListeRegles()) != -1.0) {
 						if (etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).estAjourne(ann.getListeRegles())) {
 							items.add(new Footer("Défaillant."));
-						} else if (etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getMoyenne() < 10) {
+						} else if (etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getMoyenne(ann.getListeRegles()) < 10) {
 							items.add(new Footer("Non validée."));
 						} else {
 							items.add(new Footer("Validée."));
@@ -185,13 +185,13 @@ public class ListeUEE extends Activity {
 						items.add(new ListItemMatiere());	
 					}
 
-					if (etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getMoyenne() != -1.0) {
+					if (etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getMoyenne(ann.getListeRegles()) != -1.0) {
 						if (etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).estAjourne(ann.getListeRegles())) {
 							items.add(new Footer("Défaillant."));
-						} else if (etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getMoyenne() < 10) {
+						} else if (etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getMoyenne(ann.getListeRegles()) < 10) {
 							items.add(new Footer("Non validée."));
 						} else {
-							items.add(new Footer("Validée."));
+							items.add(new Footer("Validée (" + etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getMoyenne(ann.getListeRegles()) + "/20)."));
 						}
 					}
 				}

@@ -168,7 +168,7 @@ public class Annee implements Serializable {
 					}
 				}
 
-				moyenneS1 += this.listeUE.get(i).getMoyenne() * coeffUE;
+				moyenneS1 += this.listeUE.get(i).getMoyenne(this.listeRegles) * coeffUE;
 			}
 
 			moyenneS1 = moyenneS1 / coeffGlobalUES1;
@@ -186,7 +186,7 @@ public class Annee implements Serializable {
 					}
 				}
 
-				moyenneS2 += this.listeUE.get(i).getMoyenne() * coeffUE;
+				moyenneS2 += this.listeUE.get(i).getMoyenne(this.listeRegles) * coeffUE;
 			}
 
 			moyenneS2 = moyenneS2 / coeffGlobalUES2;
@@ -223,7 +223,7 @@ public class Annee implements Serializable {
 					}
 				}
 
-				moyenneT1 += this.listeUE.get(i).getMoyenne() * coeffUE;
+				moyenneT1 += this.listeUE.get(i).getMoyenne(this.listeRegles) * coeffUE;
 			}
 
 			moyenneT1 = moyenneT1 / coeffGlobalUET1;
@@ -241,7 +241,7 @@ public class Annee implements Serializable {
 					}
 				}
 
-				moyenneT2 += this.listeUE.get(i).getMoyenne() * coeffUE;
+				moyenneT2 += this.listeUE.get(i).getMoyenne(this.listeRegles) * coeffUE;
 			}
 
 			moyenneT2 = moyenneT2 / coeffGlobalUET2;
@@ -259,7 +259,7 @@ public class Annee implements Serializable {
 					}
 				}
 
-				moyenneT3 += this.listeUE.get(i).getMoyenne() * coeffUE;
+				moyenneT3 += this.listeUE.get(i).getMoyenne(this.listeRegles) * coeffUE;
 			}
 
 			moyenneT3 = moyenneT3 / coeffGlobalUET3;

@@ -85,8 +85,8 @@ public class PdfUtils {
 					
 					String txtUE = ann.getListeUE().get(i).getNom() + " (coefficient " + ann.getListeUE().get(i).getTotalCoeff() + ") : ";
 					
-					if (ann.getListeUE().get(i).getMoyenne() != -1.0) {
-						txtUE += ann.getListeUE().get(i).getMoyenne() + "/20";
+					if (ann.getListeUE().get(i).getMoyenne(ann.getListeRegles()) != -1.0) {
+						txtUE += ann.getListeUE().get(i).getMoyenne(ann.getListeRegles()) + "/20";
 					} 
 					
 					page.getCanvas().drawText(txtUE, 50, startY, paint); 

@@ -6,6 +6,8 @@ import java.util.*;
 import org.gl.jmd.model.enumeration.*;
 import org.gl.jmd.utils.NumberUtils;
 
+import android.util.Log;
+
 /**
  * Classe représentant une UE (d'une année).
  * 
@@ -79,7 +81,7 @@ public class UE implements Serializable {
 		
 		for (int i = 0; i < listeRegles.size(); i++) {
 			if ((listeRegles.get(i).getRegle() == RegleType.NB_OPT_MINI) &&
-					(listeRegles.get(i).getId() == this.id)) {
+					(listeRegles.get(i).getIdUE() == this.id)) {
 				
 				nbOptionMini = listeRegles.get(i).getValeur();
 			}
@@ -91,8 +93,32 @@ public class UE implements Serializable {
 			if ((this.listeMatieres.get(i).getNoteFinale() != -1.0) &&
 					(this.listeMatieres.get(i).isOption())) {
 				
-				nbOptionMini--;
 				listOptions.add(this.listeMatieres.get(i));
+			}
+		}
+		
+		// Tri de la liste des options.
+		for (int i = listOptions.size() - 1; i >= 0; i--) {
+	        for (int j = 0; j < i; j++) {
+	            if (listOptions.get(j).getNoteFinale() < listOptions.get(j + 1).getNoteFinale()) {
+	                Matiere temp = listOptions.get(j);
+	                listOptions.set(j, listOptions.get(j + 1));
+	                listOptions.set(j + 1, temp);
+	            }
+	        }
+	    }
+		
+		// Moyenne des n meilleurs options.
+		if (listOptions.size() > nbOptionMini) {	
+			Log.e("UE", "---");
+			
+			for (int i = 0; i < nbOptionMini; i++) {
+				if (listOptions.get(i).getNoteFinale() != -1.0) {
+					Log.e("UE", listOptions.get(i).getNom());
+					
+					coeffGlobalUE += this.listeMatieres.get(i).getCoefficient();
+					produitMatiereCoeff += this.listeMatieres.get(i).getNoteFinale() * this.listeMatieres.get(i).getCoefficient();
+				}
 			}
 		}
 		
