@@ -6,7 +6,7 @@ import org.gl.jmd.R;
 import org.gl.jmd.dao.EtudiantDAO;
 import org.gl.jmd.model.*;
 
-import android.os.Bundle;
+import android.os.*;
 import android.view.View;
 import android.widget.*;
 import android.app.*;
@@ -355,25 +355,51 @@ public class SaisieNoteE extends Activity {
 			return;
 		}
 		
-		// Sauvegarde de la matière.
-		for (int i = 0; i < this.etudiant.getListeDiplomes().size(); i++) {
-			for (int j = 0; j < this.etudiant.getListeDiplomes().get(i).getListeAnnees().size(); j++) {
-				for (int k = 0; k < this.etudiant.getListeDiplomes().get(i).getListeAnnees().get(j).getListeUE().size(); k++) {
-					for (int l = 0; l < this.etudiant.getListeDiplomes().get(i).getListeAnnees().get(j).getListeUE().get(k).getListeMatieres().size(); l++) {
-						if (this.etudiant.getListeDiplomes().get(i).getListeAnnees().get(j).getListeUE().get(k).getListeMatieres().get(l).getId() == this.matiere.getId()) {
-							this.etudiant.getListeDiplomes().get(i).getListeAnnees().get(j).getListeUE().get(k).getListeMatieres().remove(l);
-							this.etudiant.getListeDiplomes().get(i).getListeAnnees().get(j).getListeUE().get(k).getListeMatieres().add(this.matiere);
+		ProgressDialog progress = new ProgressDialog(activity);
+		progress.setMessage("Chargement...");
+		new SaveAll(progress).execute();	
+	}
+	
+	/* Classe interne. */
+	
+	private class SaveAll extends AsyncTask<Void, Void, Void> {
+		private ProgressDialog progress;
+
+		public SaveAll(ProgressDialog progress) {
+			this.progress = progress;
+		}
+
+		public void onPreExecute() {
+			progress.show();
+		}
+
+		public void onPostExecute(Void unused) {
+			progress.dismiss();
+		}
+
+		protected Void doInBackground(Void... arg0) {			
+			// Sauvegarde de la matière.
+			for (int i = 0; i < etudiant.getListeDiplomes().size(); i++) {
+				for (int j = 0; j < etudiant.getListeDiplomes().get(i).getListeAnnees().size(); j++) {
+					for (int k = 0; k < etudiant.getListeDiplomes().get(i).getListeAnnees().get(j).getListeUE().size(); k++) {
+						for (int l = 0; l < etudiant.getListeDiplomes().get(i).getListeAnnees().get(j).getListeUE().get(k).getListeMatieres().size(); l++) {
+							if (etudiant.getListeDiplomes().get(i).getListeAnnees().get(j).getListeUE().get(k).getListeMatieres().get(l).getId() == matiere.getId()) {
+								etudiant.getListeDiplomes().get(i).getListeAnnees().get(j).getListeUE().get(k).getListeMatieres().remove(l);
+								etudiant.getListeDiplomes().get(i).getListeAnnees().get(j).getListeUE().get(k).getListeMatieres().add(matiere);
+							}
 						}
 					}
 				}
 			}
+
+			EtudiantDAO.save(etudiant);
+
+			// Fin de la vue.
+			
+			finish();
+
+			return null;
 		}
-
-		EtudiantDAO.save(this.etudiant);
-
-		// Fin de la vue.
-		
-		finish();
 	}
 
 	/* Méthode héritée de la classe Activity. */

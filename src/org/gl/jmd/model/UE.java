@@ -6,8 +6,6 @@ import java.util.*;
 import org.gl.jmd.model.enumeration.*;
 import org.gl.jmd.utils.NumberUtils;
 
-import android.util.Log;
-
 /**
  * Classe représentant une UE (d'une année).
  * 
@@ -109,15 +107,11 @@ public class UE implements Serializable {
 	    }
 		
 		// Moyenne des n meilleurs options.
-		if (listOptions.size() > nbOptionMini) {	
-			Log.e("UE", "---");
-			
+		if (listOptions.size() > nbOptionMini) {				
 			for (int i = 0; i < nbOptionMini; i++) {
-				if (listOptions.get(i).getNoteFinale() != -1.0) {
-					Log.e("UE", listOptions.get(i).getNom());
-					
-					coeffGlobalUE += this.listeMatieres.get(i).getCoefficient();
-					produitMatiereCoeff += this.listeMatieres.get(i).getNoteFinale() * this.listeMatieres.get(i).getCoefficient();
+				if (listOptions.get(i).getNoteFinale() != -1.0) {					
+					coeffGlobalUE += listOptions.get(i).getCoefficient();
+					produitMatiereCoeff += listOptions.get(i).getNoteFinale() * listOptions.get(i).getCoefficient();
 				}
 			}
 		}

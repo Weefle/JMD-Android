@@ -4,14 +4,18 @@ import org.gl.jmd.R;
 import org.gl.jmd.view.list.TwoTextArrayAdapter.RowType;
 
 import android.view.*;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class Footer implements Item {
-	
-	private final String name;
 
-	public Footer(String name) {
-		this.name = name;
+	private boolean isAjourne;
+
+	private double moyenne;
+
+	public Footer(boolean isAjourne, double moyenne) {
+		this.isAjourne = isAjourne;
+		this.moyenne = moyenne;
 	}
 
 	@Override
@@ -22,15 +26,34 @@ public class Footer implements Item {
 	@Override
 	public View getView(LayoutInflater inflater, View convertView) {
 		View view;
-		
+
 		if (convertView == null) {
 			view = (View) inflater.inflate(R.layout.footer, null);
 		} else {
 			view = convertView;
 		}
 
-		TextView text = (TextView) view.findViewById(R.id.separator);
-		text.setText(name);
+		TextView text = (TextView) view.findViewById(R.id.titre);
+		text.setText("Moyenne : " + this.moyenne);
+		
+		TextView isValid = (TextView) view.findViewById(R.id.isValide);
+		RelativeLayout.LayoutParams r = (RelativeLayout.LayoutParams) isValid.getLayoutParams();
+
+		if (this.isAjourne) {
+			isValid.setText("Ajournée.");
+			
+			r.width = 150;
+		} else if (this.moyenne < 10.0) {
+			isValid.setText("Non validée.");
+			
+			r.width = 190;
+		} else {
+			isValid.setText("Validée.");
+			
+			r.width = 135;
+		}
+		
+		isValid.setLayoutParams(r);
 
 		return view;
 	}

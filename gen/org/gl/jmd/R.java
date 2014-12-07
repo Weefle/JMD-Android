@@ -123,7 +123,7 @@ public final class R {
         public static final int content_frame=0x7f080001;
         public static final int crea_annee_bout_choisir_eta=0x7f080013;
         public static final int description=0x7f08003a;
-        public static final int detail=0x7f080077;
+        public static final int detail=0x7f080078;
         public static final int drawer_layout=0x7f080000;
         public static final int ecran_choix_user_titre=0x7f080047;
         public static final int et_crea_eta_nom=0x7f08001c;
@@ -143,6 +143,7 @@ public final class R {
         public static final int etudiant_saisie_note_titre=0x7f08005f;
         public static final int img=0x7f08003b;
         public static final int isOption=0x7f08003e;
+        public static final int isValide=0x7f080072;
         public static final int iv_background=0x7f080046;
         public static final int layout_root=0x7f080062;
         public static final int left_drawer=0x7f080005;
@@ -155,15 +156,15 @@ public final class R {
         public static final int listUEEtu=0x7f08005c;
         public static final int list_header=0x7f080040;
         public static final int mdp_oublie_zone_pseudo=0x7f080045;
-        public static final int menu_deconnexion=0x7f080075;
-        public static final int menu_nommer_admin=0x7f080076;
+        public static final int menu_deconnexion=0x7f080076;
+        public static final int menu_nommer_admin=0x7f080077;
         public static final int nom_epreuve=0x7f080063;
         public static final int note=0x7f080058;
         public static final int noteCC=0x7f080067;
         public static final int note_epreuve=0x7f080064;
         public static final int note_list=0x7f080069;
         public static final int relativListeUeTabs=0x7f08005d;
-        public static final int separator=0x7f080072;
+        public static final int separator=0x7f080073;
         public static final int stats_annee_avancement_titre=0x7f08006e;
         public static final int stats_annee_avancement_value=0x7f08006f;
         public static final int stats_annee_export=0x7f08006b;
@@ -172,8 +173,8 @@ public final class R {
         public static final int stats_annee_moyenne_titre=0x7f08006c;
         public static final int stats_annee_moyenne_value=0x7f08006d;
         public static final int stats_annee_titre_vue=0x7f08006a;
-        public static final int tabsLayout=0x7f080073;
-        public static final int tabsText=0x7f080074;
+        public static final int tabsLayout=0x7f080074;
+        public static final int tabsText=0x7f080075;
         public static final int titre=0x7f080039;
         public static final int valider_bouton=0x7f080066;
     }

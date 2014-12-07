@@ -31,8 +31,6 @@ public class ListeUEE extends Activity {
 
 	private Etudiant etud = EtudiantDAO.load();
 
-	private Annee ann;
-
 	private DecoupageYearType d;
 
 	@Override
@@ -44,8 +42,6 @@ public class ListeUEE extends Activity {
 
 		positionDip = getIntent().getExtras().getInt("positionDip");
 		positionAnn = getIntent().getExtras().getInt("positionAnn");
-
-		ann = etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn);
 
 		d = (DecoupageYearType) getIntent().getExtras().getSerializable("type");
 
@@ -63,10 +59,10 @@ public class ListeUEE extends Activity {
 	private void initTitleView() {
 		TextView tvTitre = (TextView) findViewById(R.id.etudiant_liste_ue_titre);
 
-		if (ann.getNom().length() > Constantes.LIMIT_TEXT) {
-			tvTitre.setText(ann.getNom().substring(0, Constantes.LIMIT_TEXT) + "...");
+		if (etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getNom().length() > Constantes.LIMIT_TEXT) {
+			tvTitre.setText(etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getNom().substring(0, Constantes.LIMIT_TEXT) + "...");
 		} else {
-			tvTitre.setText(ann.getNom());
+			tvTitre.setText(etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getNom());
 		}
 	}
 
@@ -77,7 +73,7 @@ public class ListeUEE extends Activity {
 	 */
 	public void simulerObtentionAnnee(View view) {
 		Intent i = new Intent(ListeUEE.this, StatsAnnee.class);
-		i.putExtra("annee", ann);
+		i.putExtra("annee", etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn));
 
 		startActivity(i);
 	}
@@ -97,7 +93,7 @@ public class ListeUEE extends Activity {
 		} else {
 			List<Item> items = new ArrayList<Item>();
 
-			if (ann.getDecoupage() == DecoupageType.NULL) {
+			if (etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getDecoupage() == DecoupageType.NULL) {
 				for (int s = 0; s < etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().size(); s++) {
 					items.add(new Header(etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getNom()));	
 
@@ -105,13 +101,16 @@ public class ListeUEE extends Activity {
 						items.add(new ListItemMatiere(etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getListeMatieres().get(b), s, b));	
 					}
 
-					if (etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getMoyenne(ann.getListeRegles()) != -1.0) {
-						if (etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).estAjourne(ann.getListeRegles())) {
-							items.add(new Footer("Défaillant."));
-						} else if (etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getMoyenne(ann.getListeRegles()) < 10) {
-							items.add(new Footer("Non validée."));
+					if (etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getMoyenne(etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeRegles()) != -1.0) {
+						if (etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).estAjourne(etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeRegles())) {
+							items.add(new Footer(true, 
+												 etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getMoyenne(etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeRegles())));
+						} else if (etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getMoyenne(etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeRegles()) < 10) {
+							items.add(new Footer(false, 
+									 			 etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getMoyenne(etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeRegles())));
 						} else {
-							items.add(new Footer("Validée."));
+							items.add(new Footer(false,
+									 			 etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getMoyenne(etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeRegles())));
 						}
 					}
 				}
@@ -185,13 +184,16 @@ public class ListeUEE extends Activity {
 						items.add(new ListItemMatiere());	
 					}
 
-					if (etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getMoyenne(ann.getListeRegles()) != -1.0) {
-						if (etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).estAjourne(ann.getListeRegles())) {
-							items.add(new Footer("Défaillant."));
-						} else if (etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getMoyenne(ann.getListeRegles()) < 10) {
-							items.add(new Footer("Non validée."));
+					if (etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getMoyenne(etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeRegles()) != -1.0) {
+						if (etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).estAjourne(etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeRegles())) {
+							items.add(new Footer(true, 
+												 etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getMoyenne(etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeRegles())));
+						} else if (etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getMoyenne(etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeRegles()) < 10) {
+							items.add(new Footer(false, 
+									 			 etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getMoyenne(etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeRegles())));
 						} else {
-							items.add(new Footer("Validée (" + etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getMoyenne(ann.getListeRegles()) + "/20)."));
+							items.add(new Footer(false, 
+									 			 etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getMoyenne(etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeRegles())));
 						}
 					}
 				}
@@ -256,7 +258,6 @@ public class ListeUEE extends Activity {
 	@Override
 	public void onRestart() {
 		etud = EtudiantDAO.load();
-		ann = etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn);
 
 		if (d != null) {
 			RelativeLayout r = (RelativeLayout) findViewById(R.id.etudiant_liste_ue_bandeau);
@@ -265,7 +266,6 @@ public class ListeUEE extends Activity {
 			initListe(d);
 		} else {
 			initListe();
-			initTitleView();
 		}
 
 		super.onRestart();
@@ -277,7 +277,6 @@ public class ListeUEE extends Activity {
 	@Override
 	public void onResume() {
 		etud = EtudiantDAO.load();
-		ann = etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn);
 
 		if (d != null) {
 			RelativeLayout r = (RelativeLayout) findViewById(R.id.etudiant_liste_ue_bandeau);
@@ -286,7 +285,6 @@ public class ListeUEE extends Activity {
 			initListe(d);
 		} else {
 			initListe();
-			initTitleView();
 		}
 
 		super.onResume();

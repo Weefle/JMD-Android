@@ -4,6 +4,7 @@ import org.gl.jmd.R;
 import org.gl.jmd.dao.EtudiantDAO;
 import org.gl.jmd.model.*;
 import org.gl.jmd.model.enumeration.*;
+import org.gl.jmd.view.etudiant.StatsAnnee;
 
 import android.os.Bundle;
 import android.text.SpannableString;
@@ -74,6 +75,18 @@ public class ListeUEETabs extends TabActivity {
 		
 		RelativeLayout r = (RelativeLayout) findViewById(R.id.relativListeUeTabs);
 		r.setOnTouchListener(gestureListener);
+	}
+	
+	/**
+	 * Méthode déclenchée lors d'un click sur le bouton de simulation.
+	 * 
+	 * @param view La vue lors du click sur le bouton de simulation.
+	 */
+	public void simulerObtentionAnnee(View view) {
+		Intent i = new Intent(ListeUEETabs.this, StatsAnnee.class);
+		i.putExtra("annee", etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn));
+
+		startActivity(i);
 	}
 
 	private class MyGestureDetector extends SimpleOnGestureListener {

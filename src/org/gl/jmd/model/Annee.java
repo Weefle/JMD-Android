@@ -121,153 +121,26 @@ public class Annee implements Serializable {
 	public double getMoyenne() {
 		double res = -1.0;
 
-		if (this.decoupage == DecoupageType.NULL) {
-			double resNULL = 0;
-			float sommeCoeffEntrees = 0;
-			boolean hasNote = false;
+		double resNULL = 0;
+		float sommeCoeffEntrees = 0;
+		boolean hasNote = false;
 
-			for (int i = 0; i < this.listeUE.size(); i++) {				
-				for (int j = 0; j < this.listeUE.get(i).getListeMatieres().size(); j++) {
-					if (this.listeUE.get(i).getListeMatieres().get(j).getNoteFinale() != -1.0) {
-						sommeCoeffEntrees += this.listeUE.get(i).getListeMatieres().get(j).getCoefficient();
-						hasNote = true;
-						resNULL += this.listeUE.get(i).getListeMatieres().get(j).getCoefficient() * this.listeUE.get(i).getListeMatieres().get(j).getNoteFinale();
-					}
-				}
-			} 
-
-			if (hasNote) {
-				resNULL = resNULL / sommeCoeffEntrees;
-				resNULL = NumberUtils.round(resNULL, 2);
-
-				res = resNULL;
-			} 
-		} else if (this.decoupage == DecoupageType.SEMESTRE) {
-			int coeffGlobalUES1 = 0;
-			int coeffGlobalUES2 = 0;
-
-			for (int i = 0; i < this.listeUE.size(); i++) {
-				for (int j = 0; j < this.listeUE.get(i).getListeMatieres().size(); j++) {
-					if (this.listeUE.get(i).getDecoupage() == DecoupageYearType.SEM1) {
-						coeffGlobalUES1 += this.listeUE.get(i).getListeMatieres().get(j).getCoefficient();
-					} else if (this.listeUE.get(i).getDecoupage() == DecoupageYearType.SEM2) {
-						coeffGlobalUES2 += this.listeUE.get(i).getListeMatieres().get(j).getCoefficient();
-					} 
+		for (int i = 0; i < this.listeUE.size(); i++) {				
+			for (int j = 0; j < this.listeUE.get(i).getListeMatieres().size(); j++) {
+				if (this.listeUE.get(i).getListeMatieres().get(j).getNoteFinale() != -1.0) {
+					sommeCoeffEntrees += this.listeUE.get(i).getListeMatieres().get(j).getCoefficient();
+					hasNote = true;
+					resNULL += this.listeUE.get(i).getListeMatieres().get(j).getCoefficient() * this.listeUE.get(i).getListeMatieres().get(j).getNoteFinale();
 				}
 			}
+		} 
 
-			// Moyenne S1
-			double moyenneS1 = 0.0;
+		if (hasNote) {
+			resNULL = resNULL / sommeCoeffEntrees;
+			resNULL = NumberUtils.round(resNULL, 2);
 
-			for (int i = 0; i < this.listeUE.size(); i++) {	
-				int coeffUE = 0;
-
-				for (int j = 0; j < this.listeUE.get(i).getListeMatieres().size(); j++) {
-					if (this.listeUE.get(i).getDecoupage() == DecoupageYearType.SEM1) {
-						coeffUE += this.listeUE.get(i).getListeMatieres().get(j).getCoefficient();
-					}
-				}
-
-				moyenneS1 += this.listeUE.get(i).getMoyenne(this.listeRegles) * coeffUE;
-			}
-
-			moyenneS1 = moyenneS1 / coeffGlobalUES1;
-			moyenneS1 = NumberUtils.round(moyenneS1, 2);
-
-			// Moyenne S2
-			double moyenneS2 = 0.0;
-
-			for (int i = 0; i < this.listeUE.size(); i++) {	
-				int coeffUE = 0;
-
-				for (int j = 0; j < this.listeUE.get(i).getListeMatieres().size(); j++) {
-					if (this.listeUE.get(i).getDecoupage() == DecoupageYearType.SEM2) {
-						coeffUE += this.listeUE.get(i).getListeMatieres().get(j).getCoefficient();
-					}
-				}
-
-				moyenneS2 += this.listeUE.get(i).getMoyenne(this.listeRegles) * coeffUE;
-			}
-
-			moyenneS2 = moyenneS2 / coeffGlobalUES2;
-			moyenneS2 = NumberUtils.round(moyenneS2, 2);
-
-			// Moyenne des 2 semestres.
-			res = (moyenneS1 + moyenneS2) / 2;
-		} else if (this.decoupage == DecoupageType.TRIMESTRE) {
-			int coeffGlobalUET1 = 0;
-			int coeffGlobalUET2 = 0;
-			int coeffGlobalUET3 = 0;
-
-			for (int i = 0; i < this.listeUE.size(); i++) {
-				for (int j = 0; j < this.listeUE.get(i).getListeMatieres().size(); j++) {
-					if (this.listeUE.get(i).getDecoupage() == DecoupageYearType.TRI1) {
-						coeffGlobalUET1 += this.listeUE.get(i).getListeMatieres().get(j).getCoefficient();
-					} else if (this.listeUE.get(i).getDecoupage() == DecoupageYearType.TRI2) {
-						coeffGlobalUET2 += this.listeUE.get(i).getListeMatieres().get(j).getCoefficient();
-					} else if (this.listeUE.get(i).getDecoupage() == DecoupageYearType.TRI3) {
-						coeffGlobalUET3 += this.listeUE.get(i).getListeMatieres().get(j).getCoefficient();
-					} 
-				}
-			}
-
-			// Moyenne T1
-			double moyenneT1 = 0.0;
-
-			for (int i = 0; i < this.listeUE.size(); i++) {	
-				int coeffUE = 0;
-
-				for (int j = 0; j < this.listeUE.get(i).getListeMatieres().size(); j++) {
-					if (this.listeUE.get(i).getDecoupage() == DecoupageYearType.TRI1) {
-						coeffUE += this.listeUE.get(i).getListeMatieres().get(j).getCoefficient();
-					}
-				}
-
-				moyenneT1 += this.listeUE.get(i).getMoyenne(this.listeRegles) * coeffUE;
-			}
-
-			moyenneT1 = moyenneT1 / coeffGlobalUET1;
-			moyenneT1 = NumberUtils.round(moyenneT1, 2);
-
-			// Moyenne T2
-			double moyenneT2 = 0.0;
-
-			for (int i = 0; i < this.listeUE.size(); i++) {	
-				int coeffUE = 0;
-
-				for (int j = 0; j < this.listeUE.get(i).getListeMatieres().size(); j++) {
-					if (this.listeUE.get(i).getDecoupage() == DecoupageYearType.TRI2) {
-						coeffUE += this.listeUE.get(i).getListeMatieres().get(j).getCoefficient();
-					}
-				}
-
-				moyenneT2 += this.listeUE.get(i).getMoyenne(this.listeRegles) * coeffUE;
-			}
-
-			moyenneT2 = moyenneT2 / coeffGlobalUET2;
-			moyenneT2 = NumberUtils.round(moyenneT2, 2);
-
-			// Moyenne T3
-			double moyenneT3 = 0.0;
-
-			for (int i = 0; i < this.listeUE.size(); i++) {	
-				int coeffUE = 0;
-
-				for (int j = 0; j < this.listeUE.get(i).getListeMatieres().size(); j++) {
-					if (this.listeUE.get(i).getDecoupage() == DecoupageYearType.TRI3) {
-						coeffUE += this.listeUE.get(i).getListeMatieres().get(j).getCoefficient();
-					}
-				}
-
-				moyenneT3 += this.listeUE.get(i).getMoyenne(this.listeRegles) * coeffUE;
-			}
-
-			moyenneT3 = moyenneT3 / coeffGlobalUET3;
-			moyenneT3 = NumberUtils.round(moyenneT3, 2);
-
-			// Moyenne des 3 trimestres
-			res = (moyenneT1 + moyenneT2 + moyenneT3) / 3;			
-		}
+			res = resNULL;
+		} 
 
 		return res;
 	}
