@@ -1,11 +1,8 @@
 package org.gl.jmd.view;
 
-import java.io.File;
-
+import org.gl.jmd.Constantes;
 import org.gl.jmd.R;
-import org.gl.jmd.dao.ParametreDAO;
-import org.gl.jmd.model.*;
-import org.gl.jmd.model.enumeration.ParamType;
+import org.gl.jmd.utils.FileUtils;
 import org.gl.jmd.view.admin.*;
 import org.gl.jmd.view.etudiant.AccueilE;
 
@@ -23,6 +20,8 @@ import android.widget.CheckBox;
  */
 public class InitApp extends Activity {
 
+	private CheckBox checkbox;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -33,14 +32,27 @@ public class InitApp extends Activity {
 		initCheckbox(); 
 	}
 	
-	private void initCheckbox() {
-		Parametre p = ParametreDAO.load();
-		CheckBox checkbox = (CheckBox) findViewById(R.id.accueil_choix_user_se_souvenir);
+	private void initCheckbox() {		
+		checkbox = (CheckBox) findViewById(R.id.accueil_choix_user_se_souvenir);
 		
-		if (p != null) {
-			if (p.get(ParamType.IS_ADMIN) != null) {
-				checkbox.setChecked(true);
-			}
+		if (FileUtils.readFile(Constantes.FILE_PARAM).length() > 0) {
+			checkbox.setChecked(true);
+		}
+	}
+	
+	private void isCheckBoxEtudiantChecked() {
+		if (checkbox.isChecked()) {
+			FileUtils.writeFile("Etudiant", Constantes.FILE_PARAM);
+		} else {
+			Constantes.FILE_PARAM.delete();
+		}
+	}
+	
+	private void isCheckBoxAdminChecked() {
+		if (checkbox.isChecked()) {
+			FileUtils.writeFile("Administrateur", Constantes.FILE_PARAM);
+		} else {
+			Constantes.FILE_PARAM.delete();
 		}
 	}
 	
@@ -50,21 +62,11 @@ public class InitApp extends Activity {
 	 * @param view La vue lors du click sur le bouton.
 	 */
 	public void navigateToAdminScreen(View view) {		
-		CheckBox checkbox = (CheckBox) findViewById(R.id.accueil_choix_user_se_souvenir);
-		 
-		if (checkbox.isChecked()) {
-			Parametre p = new Parametre();
-			p.addParam(ParamType.IS_ADMIN, "true");
-			
-			ParametreDAO.save(p);
-		}
+		isCheckBoxAdminChecked();
 		
 		finish();
 		
-		File filePseudo = new File("/sdcard/cacheJMD/pseudo.jmd");
-		File fileToken = new File("/sdcard/cacheJMD/token.jmd");
-		
-		if (filePseudo.exists() && fileToken.exists()) {
+		if (Constantes.FILE_PSEUDO.exists() && Constantes.FILE_TOKEN.exists()) {
 			startActivity(new Intent(InitApp.this, AccueilA.class));
 		} else {
 			startActivity(new Intent(InitApp.this, ConnexionA.class));
@@ -77,16 +79,10 @@ public class InitApp extends Activity {
 	 * @param view La vue lors du click sur le bouton.
 	 */
 	public void navigateToEtudiantScreen(View view) {		
-		CheckBox checkbox = (CheckBox) findViewById(R.id.accueil_choix_user_se_souvenir);
-		 
-		if (checkbox.isChecked()) {
-			Parametre p = new Parametre();
-			p.addParam(ParamType.IS_ADMIN, "false");
-			
-			ParametreDAO.save(p);
-		}
+		isCheckBoxEtudiantChecked();
 		
 		finish();
+		
 		startActivity(new Intent(InitApp.this, AccueilE.class));
 	}
 	

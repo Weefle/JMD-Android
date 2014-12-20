@@ -1,18 +1,15 @@
 package org.gl.jmd.view.admin.listing;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.*;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
+import org.apache.http.client.*;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.gl.jmd.*;
-import org.gl.jmd.model.Matiere;
-import org.gl.jmd.model.UE;
+import org.gl.jmd.model.*;
 import org.gl.jmd.utils.*;
 import org.gl.jmd.view.Accueil;
 import org.gl.jmd.view.admin.create.CreationMatiere;
@@ -107,8 +104,8 @@ public class ListeMatiereA extends Activity {
 								progress.setMessage("Chargement...");
 								new DeleteMatiere(progress, Constantes.URL_SERVER + "matiere" +
 										"?id=" + listeMatieres.get(arg2).getId() +
-										"&token=" + FileUtils.readFile("/sdcard/cacheJMD/token.jmd") + 
-										"&pseudo=" + FileUtils.readFile("/sdcard/cacheJMD/pseudo.jmd") +
+										"&token=" + FileUtils.readFile(Constantes.FILE_TOKEN) + 
+										"&pseudo=" + FileUtils.readFile(Constantes.FILE_PSEUDO) +
 										"&timestamp=" + new java.util.Date().getTime()).execute();
 							}
 						});
@@ -294,12 +291,9 @@ public class ListeMatiereA extends Activity {
 				        	
 				        	toast.setText("Matière supprimée.");
 				        	toast.show();
-				        } else if (response.getStatusLine().getStatusCode() == 401) {
-							File filePseudo = new File("/sdcard/cacheJMD/pseudo.jmd");
-							File fileToken = new File("/sdcard/cacheJMD/token.jmd");
-							
-							filePseudo.delete();
-							fileToken.delete();
+				        } else if (response.getStatusLine().getStatusCode() == 401) {							
+				        	Constantes.FILE_PSEUDO.delete();
+				        	Constantes.FILE_TOKEN.delete();
 				        	
 							activity.finishAffinity();
 				        	startActivity(new Intent(ListeMatiereA.this, Accueil.class));	

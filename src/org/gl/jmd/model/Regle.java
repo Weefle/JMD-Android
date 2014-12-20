@@ -2,6 +2,8 @@ package org.gl.jmd.model;
 
 import java.io.Serializable;
 
+import org.gl.jmd.model.enumeration.OperateurType;
+
 /**
  * Classe représentant une règle de gestion.
  * 
@@ -47,10 +49,56 @@ public class Regle implements Serializable {
 	private int idMatiere;
 	
 	/**
+	 * Le nom de l'UE associée à la règle.
+	 */
+	private String nomUE;
+	
+	/**
 	 * Constructeur par défaut de la classe.
 	 */
 	public Regle() {
 		
+	}
+	
+	@Override
+	public String toString() {
+		String res = "";
+		
+		OperateurType o = null;
+		
+		if (this.operateur == 0) {
+			o = OperateurType.SUPERIEUR;
+		} else if (this.operateur == 1) {
+			o = OperateurType.SUPERIEUR_EGAL;
+		} else if (this.operateur == 2) {
+			o = OperateurType.EGAL;
+		} else if (this.operateur == 3) {
+			o = OperateurType.INFERIEUR_EGAL;
+		} else if (this.operateur == 4) {
+			o = OperateurType.INFERIEUR;
+		} 
+
+		String operateurAffiche = "";
+
+		if (o.equals(OperateurType.SUPERIEUR)) {
+			operateurAffiche = "supérieure";
+		} else if (o.equals(OperateurType.SUPERIEUR_EGAL)) {
+			operateurAffiche = "supérieure ou égale";
+		} else if (o.equals(OperateurType.EGAL)) {
+			operateurAffiche = "égale";
+		} else if (o.equals(OperateurType.INFERIEUR_EGAL)) {
+			operateurAffiche = "inférieure ou égale";
+		} else if (o.equals(OperateurType.INFERIEUR)) {
+			operateurAffiche = "inférieure";
+		}
+		
+		if (this.regle == 1) {
+			res = "Nb d'option(s) minimale(s) " + operateurAffiche + " à " + this.valeur;
+		} else if (this.regle == 2) {
+			res = "Note minimale " + operateurAffiche + " à " + this.valeur;
+		} 
+		
+		return res;
 	}
 
 	/* Getters. */
@@ -118,6 +166,15 @@ public class Regle implements Serializable {
 		return this.idMatiere;
 	}
 	
+	/**
+	 * Méthode retournant le nom de l'UE associée à la règle.
+	 * 
+	 * @return Le nom de l'UE associée à la règle.
+	 */
+	public String getNomUE() {
+		return this.nomUE;
+	}
+	
 	/* Setters. */
 
 	/**
@@ -181,5 +238,14 @@ public class Regle implements Serializable {
 	 */
 	public void setIdMatiere(int idMatiere) {
 		this.idMatiere = idMatiere;
+	}
+	
+	/**
+	 * Méthode permettant de modifier le nom de l'UE associée à la règle.
+	 * 
+	 * @param nomUE Le nouveau nom de l'UE associée à la règle.
+	 */
+	public void setNomUE(String nomUE) {
+		this.nomUE = nomUE;
 	}
 }

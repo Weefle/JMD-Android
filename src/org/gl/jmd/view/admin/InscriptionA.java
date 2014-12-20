@@ -286,4 +286,30 @@ public class InscriptionA extends Activity {
 	public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
 	}
+	
+	/**
+	 * Méthode déclenchée lors d'un click sur le bouton virtuel Android de retour.
+	 */
+	@Override
+	public void onBackPressed() {
+		if ((PSEUDO.getText().toString().length() != 0) || (PASSWORD.getText().toString().length() != 0) || 
+				(PASSWORD_AGAIN.getText().toString().length() != 0) || (EMAIL.getText().toString().length() != 0) ||
+				(NOM.getText().toString().length() != 0) || (PRENOM.getText().toString().length() != 0)) {
+			
+			AlertDialog.Builder confirmQuitter = new AlertDialog.Builder(this);
+			confirmQuitter.setTitle("Annulation");
+			confirmQuitter.setMessage("Voulez-vous vraiment annuler ?");
+			confirmQuitter.setCancelable(false);
+			confirmQuitter.setPositiveButton("Oui", new AlertDialog.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					finish();
+				}
+			});
+
+			confirmQuitter.setNegativeButton("Non", null);
+			confirmQuitter.show();
+		} else {
+			finish();
+		}
+	}
 }

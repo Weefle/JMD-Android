@@ -93,6 +93,26 @@ public class Annee implements Serializable {
 
 		return res;
 	}
+	
+	/**
+	 * Méthode permettant de savoir si l'année est ajournée.
+	 * Ici, une année est ajournée si au moins une de ses UE l'est.
+	 * 
+	 * @return <b>true</b> si l'année est ajournée.<br />
+	 * <b>false</b> sinon.
+	 */
+	public boolean isAjourne() {
+		boolean res = false;
+		
+		for (int i = 0; i < this.listeUE.size(); i++) {			
+			if (this.listeUE.get(i).estAjourne(this.listeRegles)) {
+				res = true;
+				break;
+			}
+		}
+		
+		return res;
+	}
 
 	/**
 	 * Méthode retournant la mention de l'année.
@@ -143,6 +163,18 @@ public class Annee implements Serializable {
 		} 
 
 		return res;
+	}
+
+	public List<UE> getListeUE(DecoupageYearType d) {
+		List<UE> l = new ArrayList<UE>();
+		
+		for (int i = 0; i < this.listeUE.size(); i++) {
+			if (this.listeUE.get(i).getDecoupage() == d) {
+				l.add(this.listeUE.get(i));
+			}
+		}
+		
+		return l;
 	}
 
 	/* Getters. */

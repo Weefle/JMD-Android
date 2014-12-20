@@ -54,6 +54,8 @@ public class CreationRegle extends Activity {
 	
 	private String selectedMatiere_ID = "";
 	
+	private final ArrayList<UE> listeUE = new ArrayList<UE>();
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -80,9 +82,9 @@ public class CreationRegle extends Activity {
 		if (VALUE.getText().toString().length() != 0) {
 			Regle r = new Regle();
 
-			if (selectedTypeRegle == 1) {
+			if (selectedTypeRegle == 2) {
 				r.setRegle(RegleType.NOTE_MINIMALE);
-			} else if (selectedTypeRegle == RegleType.NOTE_MINIMALE) {
+			} else if (selectedTypeRegle == 1) {
 				r.setRegle(RegleType.NB_OPT_MINI);
 			}
 
@@ -109,8 +111,8 @@ public class CreationRegle extends Activity {
 					"&idAnnee=" + a.getId() +
 					"&idUE=" + selectedUE_ID +
 					"&idMatiere=" + selectedMatiere_ID +
-					"&token=" + FileUtils.readFile("/sdcard/cacheJMD/token.jmd") + 
-					"&pseudo=" + FileUtils.readFile("/sdcard/cacheJMD/pseudo.jmd") +
+					"&token=" + FileUtils.readFile(Constantes.FILE_TOKEN) + 
+					"&pseudo=" + FileUtils.readFile(Constantes.FILE_PSEUDO) +
 					"&timestamp=" + new java.util.Date().getTime()).execute();	
 		} else {
 			if (VALUE.getText().toString().length() == 0) {
@@ -217,7 +219,11 @@ public class CreationRegle extends Activity {
 						} else if (parent.getItemAtPosition(pos).toString().equals("Aucune UE")) {
 							selectedUE_ID = "0";
 						} else {
-							selectedUE_ID = parent.getItemAtPosition(pos).toString();
+							for (int i = 0; i < listeUE.size(); i++) {
+								if (parent.getItemAtPosition(pos).toString().equals(listeUE.get(i).getNom())) {
+									selectedUE_ID = "" + listeUE.get(i).getId();
+								}
+							}
 						}
 					}
 
@@ -306,11 +312,8 @@ public class CreationRegle extends Activity {
 		        	
 		        	finish();
 		        } else if (response.getStatusLine().getStatusCode() == 401) {
-					File filePseudo = new File("/sdcard/cacheJMD/pseudo.jmd");
-					File fileToken = new File("/sdcard/cacheJMD/token.jmd");
-					
-					filePseudo.delete();
-					fileToken.delete();
+		        	Constantes.FILE_PSEUDO.delete();
+		        	Constantes.FILE_TOKEN.delete();
 		        	
 					finishAffinity();
 		        	startActivity(new Intent(CreationRegle.this, Accueil.class));	
@@ -538,8 +541,7 @@ public class CreationRegle extends Activity {
 					}
 				});
 			} 
-            
-            final ArrayList<UE> listeUE = new ArrayList<UE>();
+
             UE ue = null;
             
             if (jsonStr.length() > 0) {            	

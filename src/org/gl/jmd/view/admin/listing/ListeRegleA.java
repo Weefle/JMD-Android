@@ -9,17 +9,19 @@ import org.apache.http.client.*;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.gl.jmd.*;
-import org.gl.jmd.model.Annee;
-import org.gl.jmd.model.Regle;
-import org.gl.jmd.model.enumeration.OperateurType;
+import org.gl.jmd.model.*;
 import org.gl.jmd.utils.*;
 import org.gl.jmd.view.Accueil;
+import org.gl.jmd.view.list.Header;
+import org.gl.jmd.view.list.TwoTextArrayAdapter;
+import org.gl.jmd.view.list.item.*;
 import org.json.*;
 
 import android.app.*;
 import android.content.*;
 import android.content.res.Configuration;
 import android.os.*;
+import android.util.Log;
 import android.view.View;
 import android.widget.*;
 
@@ -35,14 +37,14 @@ public class ListeRegleA extends Activity {
 	private Annee a = null;
 
 	private Toast toast;
-	
+
 	private ArrayList<Regle> listeRegles = new ArrayList<Regle>();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		setContentView(R.layout.view_with_list);
+		setContentView(R.layout.administrateur_liste_regle);
 		overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
 
 		a = (Annee) getIntent().getExtras().getSerializable("annee");
@@ -55,89 +57,79 @@ public class ListeRegleA extends Activity {
 
 	private void actualiserListe() {
 		listeRegles.clear();
-		
+
 		ProgressDialog progress = new ProgressDialog(this);
 		progress.setMessage("Chargement...");
 		new ListerRegles(progress, Constantes.URL_SERVER + "regle/getAllByAnnee" +
-										"?idAnnee=" + a.getId()).execute();	
+				"?idAnnee=" + a.getId()).execute();	
+	}
+	
+	private boolean contains(String regleToString, ArrayList<Regle> listRegles) {
+		boolean res = false;
+		
+		for (int i = 0; i < listRegles.size(); i++) {
+			if (listRegles.get(i).toString().equals(regleToString)) {
+				res = true;
+				break;
+			}
+		}
+		
+		return res;
 	}
 
 	private void initListe() {
-		final ListView liste = (ListView) findViewById(android.R.id.list);
+		if (this.listeRegles.isEmpty()) {
+			ListView liste = (ListView) findViewById(android.R.id.list);
+			ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
 
-		if (listeRegles.size() > 0) {
-			final ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
-			HashMap<String, String> map;
-			OperateurType o;
+			HashMap<String, String> map = new HashMap<String, String>();
+			map.put("titre", "Aucune règle.");
 
-			for(int s = 0; s < listeRegles.size(); s++) {
-				map = new HashMap<String, String>();
+			listItem.add(map);		
 
-				map.put("id", "" + listeRegles.get(s).getId());
-
-				if (listeRegles.get(s).getOperateur() == 0) {
-					map.put("operateur", ">");
-					o = OperateurType.SUPERIEUR;
-				} else if (listeRegles.get(s).getOperateur() == 1) {
-					map.put("operateur", ">=");
-					o = OperateurType.SUPERIEUR_EGAL;
-				} else if (listeRegles.get(s).getOperateur() == 2) {
-					map.put("operateur", "=");
-					o = OperateurType.EGAL;
-				} else if (listeRegles.get(s).getOperateur() == 3) {
-					map.put("operateur", "<=");
-					o = OperateurType.INFERIEUR_EGAL;
-				} else if (listeRegles.get(s).getOperateur() == 0) {
-					map.put("operateur", "<");
-					o = OperateurType.INFERIEUR;
-				} else {
-					toast.setText("Erreur - Veuillez réessayer");
-					toast.show();
-
-					return;
+			liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.simple_list, new String[] {"titre"}, new int[] {R.id.titre}));
+			liste.setOnItemClickListener(null);
+		} else {
+			List<Item> items = new ArrayList<Item>();
+			ArrayList<Regle> listTypeRegle = new ArrayList<Regle>();
+			
+			for (int s = 0; s < this.listeRegles.size(); s++) {
+				if (!contains(this.listeRegles.get(s).toString(), listTypeRegle)) {
+					listTypeRegle.add(this.listeRegles.get(s));
 				}
-
-				String operateurAffiche = "";
-
-				if (o.equals(OperateurType.SUPERIEUR)) {
-					operateurAffiche = "supérieure";
-				} else if (o.equals(OperateurType.SUPERIEUR_EGAL)) {
-					operateurAffiche = "supérieure ou égale";
-				} else if (o.equals(OperateurType.EGAL)) {
-					operateurAffiche = "égale";
-				} else if (o.equals(OperateurType.INFERIEUR_EGAL)) {
-					operateurAffiche = "inférieure ou égale";
-				} else if (o.equals(OperateurType.INFERIEUR)) {
-					operateurAffiche = "inférieure";
+			}
+			
+			for (int s = 0; s < listTypeRegle.size(); s++) {
+				items.add(new Header(listTypeRegle.get(s).toString()));
+				
+				for (int y = 0; y < this.listeRegles.size(); y++) {
+					if (this.listeRegles.get(y).toString().equals(listTypeRegle.get(s).toString())) {
+						items.add(new ListItemRegle(this.listeRegles.get(y), y));
+					}
 				}
-
-				if (listeRegles.get(s).getRegle() == 1) {
-					map.put("titre", "Nb d'option(s) minimale(s) " + operateurAffiche + " à " + listeRegles.get(s).getValeur());
-				} else if (listeRegles.get(s).getRegle() == 2) {
-					map.put("titre", "Note minimale " + operateurAffiche + " à " + listeRegles.get(s).getValeur());
-				} else {
-					toast.setText("Erreur - Veuillez réessayer");
-					toast.show();
-
-					return;
-				}
-
-				map.put("description", 
-						"S'applique sur : UE (" + (listeRegles.get(s).getIdUE() == 1000000000 ? "toutes" : "ID : " + listeRegles.get(s).getIdUE()) + "), " +
-						"matière (" + (listeRegles.get(s).getIdMatiere() == 1000000000 ? "toutes)" : "ID : " + listeRegles.get(s).getIdMatiere() + ")"));
-
-				map.put("idUE", "" + listeRegles.get(s).getIdUE());
-				map.put("idMatiere", "" + listeRegles.get(s).getIdMatiere());
-				map.put("value", "" + listeRegles.get(s).getValeur());
-
-				listItem.add(map);		
 			}
 
-			liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.complex_list, new String[] {"titre", "description"}, new int[] {R.id.titre, R.id.description})); 
+			final TwoTextArrayAdapter adapter = new TwoTextArrayAdapter(this, items);
+
+			final ListView liste = (ListView) findViewById(android.R.id.list);
+
+			liste.setAdapter(adapter);
 
 			liste.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 				public boolean onItemLongClick(AdapterView<?> arg0, View arg1, final int arg2, final long arg3) {
-					if (listItem.get(arg2).get("img") == null) {
+					try {
+						Header h = ((Header) adapter.getItem(arg2));
+						
+						if (h != null) {
+							return false;
+						}
+					} catch(Exception e) {
+						// Do nothing.
+					}
+					
+					if (((ListItemRegle) adapter.getItem(arg2)).getRegle() == null) {
+						// Do nothing.
+					} else {
 						AlertDialog.Builder confirmQuitter = new AlertDialog.Builder(ListeRegleA.this);
 						confirmQuitter.setTitle("Suppression");
 						confirmQuitter.setMessage("Voulez-vous vraiment supprimer cet élément ?");
@@ -147,9 +139,9 @@ public class ListeRegleA extends Activity {
 								ProgressDialog progress = new ProgressDialog(activity);
 								progress.setMessage("Chargement...");
 								new DeleteRegle(progress, Constantes.URL_SERVER + "regle" +
-										"?id=" + listeRegles.get(arg2).getId() +
-										"&token=" + FileUtils.readFile("/sdcard/cacheJMD/token.jmd") + 
-										"&pseudo=" + FileUtils.readFile("/sdcard/cacheJMD/pseudo.jmd") +
+										"?id=" + ((ListItemRegle) adapter.getItem(arg2)).getRegle().getId() +
+										"&token=" + FileUtils.readFile(Constantes.FILE_TOKEN) + 
+										"&pseudo=" + FileUtils.readFile(Constantes.FILE_PSEUDO) +
 										"&timestamp=" + new java.util.Date().getTime()).execute();
 							}
 						});
@@ -161,14 +153,6 @@ public class ListeRegleA extends Activity {
 					return true;
 				}
 			}); 
-		} else {
-			HashMap<String, String> map = new HashMap<String, String>();
-			map.put("titre", "Aucune règle.");
-
-			ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
-			listItem.add(map);
-
-			liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.simple_list, new String[] {"titre"}, new int[] {R.id.titre})); 
 		}
 	}
 
@@ -193,7 +177,7 @@ public class ListeRegleA extends Activity {
 
 		protected Void doInBackground(Void... arg0) {			
 			String jsonStr = "";
-            
+
 			try {
 				jsonStr = WebUtils.call(pathUrl, WebUtils.GET);
 			} catch (SocketTimeoutException e1) {
@@ -245,38 +229,39 @@ public class ListeRegleA extends Activity {
 					}
 				});
 			} 
-            
-            Regle r = null;
-            
-            if (jsonStr.length() > 0) {            	
-                try {
-                    JSONArray regles = new JSONArray(jsonStr);
- 
-                    for (int i = 0; i < regles.length(); i++) {
-                    	JSONObject c = regles.getJSONObject(i);
-                        
-                        r = new Regle();
-                        r.setId(c.getInt("id"));
-                        r.setIdAnnee(c.getInt("idAnnee"));
-                        r.setIdMatiere(c.getInt("idMatiere"));
-                        r.setIdUE(c.getInt("idUE"));
-                        r.setOperateur(c.getInt("operateur"));
-                        r.setRegle(c.getInt("regle"));
-                        r.setValeur(c.getInt("valeur"));
-                        
-                        listeRegles.add(r);
-                    }
-                    
-                    ListeRegleA.this.runOnUiThread(new Runnable() {
-    					public void run() {    						
-    						initListe();
-    					}
-    				});
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            } else {
-            	ListeRegleA.this.runOnUiThread(new Runnable() {
+
+			Regle r = null;
+
+			if (jsonStr.length() > 0) {            	
+				try {
+					JSONArray regles = new JSONArray(jsonStr);
+
+					for (int i = 0; i < regles.length(); i++) {
+						JSONObject c = regles.getJSONObject(i);
+
+						r = new Regle();
+						r.setId(c.getInt("id"));
+						r.setIdAnnee(c.getInt("idAnnee"));
+						r.setIdMatiere(c.getInt("idMatiere"));
+						r.setIdUE(c.getInt("idUE"));
+						r.setOperateur(c.getInt("operateur"));
+						r.setRegle(c.getInt("regle"));
+						r.setValeur(c.getInt("valeur"));
+						r.setNomUE(c.getString("nomUE"));
+						
+						listeRegles.add(r);
+					}
+
+					ListeRegleA.this.runOnUiThread(new Runnable() {
+						public void run() {    						
+							initListe();
+						}
+					});
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			} else {
+				ListeRegleA.this.runOnUiThread(new Runnable() {
 					public void run() {
 						AlertDialog.Builder builder = new AlertDialog.Builder(ListeRegleA.this);
 						builder.setMessage("Erreur - Vérifiez votre connexion");
@@ -291,7 +276,7 @@ public class ListeRegleA extends Activity {
 						error.show();
 					}
 				});
-            }
+			}
 
 			return null;
 		}
@@ -326,6 +311,8 @@ public class ListeRegleA extends Activity {
 			try {
 				final HttpResponse response = httpclient.execute(httpDelete);
 
+				Log.e("ListeRegleA", pathUrl);
+				
 				if (response.getStatusLine().getStatusCode() == 200) {
 					toast.setText("Règle supprimée.");
 					toast.show();
@@ -336,14 +323,11 @@ public class ListeRegleA extends Activity {
 						}
 					});
 				} else if (response.getStatusLine().getStatusCode() == 401) {
-					File filePseudo = new File("/sdcard/cacheJMD/pseudo.jmd");
-					File fileToken = new File("/sdcard/cacheJMD/token.jmd");
-
-					filePseudo.delete();
-					fileToken.delete();
+					Constantes.FILE_PSEUDO.delete();
+					Constantes.FILE_TOKEN.delete();
 
 					activity.finishAffinity();
-					
+
 					startActivity(new Intent(ListeRegleA.this, Accueil.class));	
 
 					toast.setText("Session expirée.");	

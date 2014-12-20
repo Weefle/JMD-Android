@@ -2,6 +2,8 @@ package org.gl.jmd.view.list;
 
 import java.util.List;
 
+import org.gl.jmd.view.list.item.Item;
+
 
 import android.content.Context;
 import android.view.LayoutInflater;

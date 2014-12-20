@@ -1,4 +1,4 @@
-package org.gl.jmd.dao;
+package org.gl.jmd;
 
 import java.io.*;
 import java.util.ArrayList;

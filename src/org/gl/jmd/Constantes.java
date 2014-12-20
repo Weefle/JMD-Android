@@ -1,8 +1,9 @@
 package org.gl.jmd;
 
+import java.io.File;
+
 /**
  * Classe contenant les constantes de l'application.
- * <i>Exemple</i> : URL du serveur.
  * 
  * @author Jordi CHARPENTIER & Yoann VANHOESERLANDE
  */
@@ -30,4 +31,22 @@ public class Constantes {
 	 * La limite de taille des textes à afficher.
 	 */
 	public static final int LIMIT_TEXT = 20;
+	
+	/* Fichiers. */
+	
+	/**
+	 * Le fichier contenant le paramètre sur l'accueil de l'appli.
+	 * C'est à dire savoir si on arrive sur l'accueil étudiant ou sur l'accueil admin ?
+	 */
+	public static final File FILE_PARAM = new File("/sdcard/cacheJMD/param.jmd");
+	
+	/**
+	 * Le fichier contenant le token de session de l'administrateur s'il est connecté.
+	 */
+	public static final File FILE_TOKEN = new File("/sdcard/cacheJMD/token.jmd");
+	
+	/**
+	 * L'URL du fichier contenant le pseudo de l'administrateur s'il est connecté.
+	 */
+	public static final File FILE_PSEUDO = new File("/sdcard/cacheJMD/pseudo.jmd");
 }

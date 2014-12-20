@@ -108,8 +108,8 @@ public class CreationEtablissement extends Activity {
 			new CreerEtablissement(progress, Constantes.URL_SERVER + "etablissement" +
 					"?nom=" + URLEncoder.encode(e.getNom()) +
 					"&ville=" + URLEncoder.encode(e.getVille()) +
-					"&token=" + FileUtils.readFile("/sdcard/cacheJMD/token.jmd") + 
-					"&pseudo=" + FileUtils.readFile("/sdcard/cacheJMD/pseudo.jmd") +
+					"&token=" + FileUtils.readFile(Constantes.FILE_TOKEN) + 
+					"&pseudo=" + FileUtils.readFile(Constantes.FILE_PSEUDO) +
 					"&timestamp=" + new java.util.Date().getTime()).execute();	
 		} else {
 			boolean isNomOK = true;
@@ -179,11 +179,8 @@ public class CreationEtablissement extends Activity {
 		        	toast.setText("Un établissement avec ce nom et cette ville existe déjà.");
 		        	toast.show();
 		        } else if (response.getStatusLine().getStatusCode() == 401) {
-					File filePseudo = new File("/sdcard/cacheJMD/pseudo.jmd");
-					File fileToken = new File("/sdcard/cacheJMD/token.jmd");
-					
-					filePseudo.delete();
-					fileToken.delete();
+		        	Constantes.FILE_PSEUDO.delete();
+		        	Constantes.FILE_TOKEN.delete();
 		        	
 					finishAffinity();
 		        	startActivity(new Intent(CreationEtablissement.this, Accueil.class));	

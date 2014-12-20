@@ -2,6 +2,7 @@ package org.gl.jmd.view.list;
 
 import org.gl.jmd.R;
 import org.gl.jmd.view.list.TwoTextArrayAdapter.RowType;
+import org.gl.jmd.view.list.item.Item;
 
 import android.view.*;
 import android.widget.RelativeLayout;

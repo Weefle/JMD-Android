@@ -1,4 +1,4 @@
-package org.gl.jmd.view.list;
+package org.gl.jmd.view.list.item;
 
 import android.view.*;
 

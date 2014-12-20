@@ -2,9 +2,8 @@ package org.gl.jmd.view;
 
 import java.io.File;
 
-import org.gl.jmd.dao.ParametreDAO;
-import org.gl.jmd.model.*;
-import org.gl.jmd.model.enumeration.ParamType;
+import org.gl.jmd.Constantes;
+import org.gl.jmd.utils.FileUtils;
 import org.gl.jmd.view.admin.*;
 import org.gl.jmd.view.etudiant.AccueilE;
 
@@ -27,7 +26,6 @@ public class Accueil extends Activity {
 	}
 	
 	private void initView() {
-		
 		/*
 		 *  Va dispatcher l'utilisateur sur le bon accueil : si un fichier login est trouvé, c'est un admin. 
 		 *  Sinon, un étudiant.
@@ -36,27 +34,23 @@ public class Accueil extends Activity {
 		finish();
 		
 		File repCache = new File("/sdcard/cacheJMD/");
-		File filePseudo = new File("/sdcard/cacheJMD/pseudo.jmd");
-		File fileToken = new File("/sdcard/cacheJMD/token.jmd");
 		
 		if (!repCache.exists()) {
 			repCache.mkdir();
 		}
 		
-		Parametre param = ParametreDAO.load();
+		String paramHome = FileUtils.readFile(Constantes.FILE_PARAM);
 		
-		if ((param == null)) {
+		if (paramHome.length() == 0) {
 			startActivity(new Intent(Accueil.this, InitApp.class));
-		} else if ((param != null) && (param.get(ParamType.IS_ADMIN) != null)) {
-			if (param.get(ParamType.IS_ADMIN).equals("false")) {
-				startActivity(new Intent(Accueil.this, AccueilE.class));
-			} else if (param.get(ParamType.IS_ADMIN).equals("true")) {
-				if (filePseudo.exists() && fileToken.exists()) {
-					startActivity(new Intent(Accueil.this, AccueilA.class));
-				} else {
-					startActivity(new Intent(Accueil.this, ConnexionA.class));
-				}
+		} else if (paramHome.equals("Administrateur")) {
+			if (Constantes.FILE_PSEUDO.exists() && Constantes.FILE_TOKEN.exists()) {
+				startActivity(new Intent(Accueil.this, AccueilA.class));
+			} else {
+				startActivity(new Intent(Accueil.this, ConnexionA.class));
 			}
-		} 
+		} else if (paramHome.equals("Etudiant")) {
+			startActivity(new Intent(Accueil.this, AccueilE.class));
+		}
 	}
 }

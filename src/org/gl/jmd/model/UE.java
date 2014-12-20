@@ -114,6 +114,13 @@ public class UE implements Serializable {
 					produitMatiereCoeff += listOptions.get(i).getNoteFinale() * listOptions.get(i).getCoefficient();
 				}
 			}
+		} else {
+			for (int i = 0; i < listOptions.size(); i++) {
+				if (listOptions.get(i).getNoteFinale() != -1.0) {					
+					coeffGlobalUE += listOptions.get(i).getCoefficient();
+					produitMatiereCoeff += listOptions.get(i).getNoteFinale() * listOptions.get(i).getCoefficient();
+				}
+			}
 		}
 		
 		// Calcul de la moyenne.

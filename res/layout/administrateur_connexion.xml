@@ -87,29 +87,42 @@
             android:text="@string/admin_bout_connexion_texte"
             android:textColor="@drawable/button_color_selector" />
 
-        <TextView
-            android:id="@+id/connex_texte_mdp_oublie"
-            android:layout_width="fill_parent"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
-            android:clickable="true"
-            android:gravity="center"
-            android:onClick="resetPassword"
-            android:text="@string/connex_texte_mdp_oublie"
-            android:textColor="#000000"
-            android:textSize="15sp" />
+            android:orientation="horizontal"
+            android:weightSum="2" >
 
-        <TextView
-            android:id="@+id/connex_texte_inscription"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:clickable="true"
-            android:gravity="center"
-            android:onClick="inscription"
-            android:text="@string/connex_texte_inscription"
-            android:textColor="#000000"
-            android:textSize="15sp" />
+            <TextView
+                android:id="@+id/connex_texte_inscription"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:gravity="center"
+                android:onClick="inscription"
+                android:text="@string/connex_texte_inscription"
+                android:textColor="#000000"
+                android:textSize="15sp" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="fill_parent"
+                android:background="#000000" />
+
+            <TextView
+                android:id="@+id/connex_texte_mdp_oublie"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:gravity="center"
+                android:onClick="resetPassword"
+                android:text="@string/connex_texte_mdp_oublie"
+                android:textColor="#000000"
+                android:textSize="15sp" />
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>

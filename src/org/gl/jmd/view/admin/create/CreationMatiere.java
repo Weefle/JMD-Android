@@ -90,8 +90,8 @@ public class CreationMatiere extends Activity {
 					"&coefficient=" + m.getCoefficient() +
 					"&isOption=" + m.isOption() +
 					"&idUE=" + idUE +
-					"&token=" + FileUtils.readFile("/sdcard/cacheJMD/token.jmd") + 
-					"&pseudo=" + FileUtils.readFile("/sdcard/cacheJMD/pseudo.jmd") +
+					"&token=" + FileUtils.readFile(Constantes.FILE_TOKEN) + 
+					"&pseudo=" + FileUtils.readFile(Constantes.FILE_PSEUDO) +
 					"&timestamp=" + new java.util.Date().getTime()).execute();	
 		} else {
 			boolean isCoeffOK = true;
@@ -158,11 +158,8 @@ public class CreationMatiere extends Activity {
 		        	
 		        	finish();
 		        } else if (response.getStatusLine().getStatusCode() == 401) {
-					File filePseudo = new File("/sdcard/cacheJMD/pseudo.jmd");
-					File fileToken = new File("/sdcard/cacheJMD/token.jmd");
-					
-					filePseudo.delete();
-					fileToken.delete();
+		        	Constantes.FILE_PSEUDO.delete();
+		        	Constantes.FILE_TOKEN.delete();
 		        	
 					activity.finishAffinity();
 		        	startActivity(new Intent(CreationMatiere.this, Accueil.class));	

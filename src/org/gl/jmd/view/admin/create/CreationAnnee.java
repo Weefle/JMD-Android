@@ -144,8 +144,8 @@ public class CreationAnnee extends Activity {
 					"&idDiplome=" +  idDiplome +
 					"&decoupage=" + a.getDecoupage().name() +
 					"&isLastYear" + a.isLast() +
-					"&token=" + FileUtils.readFile("/sdcard/cacheJMD/token.jmd") + 
-					"&pseudo=" + FileUtils.readFile("/sdcard/cacheJMD/pseudo.jmd") +
+					"&token=" + FileUtils.readFile(Constantes.FILE_TOKEN) + 
+					"&pseudo=" + FileUtils.readFile(Constantes.FILE_PSEUDO) +
 					"&timestamp=" + new java.util.Date().getTime()).execute(); 
 		} else {
 			boolean isNomOK = true;
@@ -322,10 +322,10 @@ public class CreationAnnee extends Activity {
 
 		protected Void doInBackground(Void... arg0) {
 			HttpClient httpclient = new DefaultHttpClient();
-		    HttpPut httppost = new HttpPut(pathUrl);
+		    HttpPut httpPut = new HttpPut(pathUrl);
 
 		    try {
-		        HttpResponse response = httpclient.execute(httppost);
+		        HttpResponse response = httpclient.execute(httpPut);
 		        
 		        if (response.getStatusLine().getStatusCode() == 200) {
 		        	toast.setText("Année créée.");
@@ -336,11 +336,8 @@ public class CreationAnnee extends Activity {
 		        	toast.setText("Une année avec ce nom existe déjà.");
 		        	toast.show();
 		        } else if (response.getStatusLine().getStatusCode() == 401) {
-					File filePseudo = new File("/sdcard/cacheJMD/pseudo.jmd");
-					File fileToken = new File("/sdcard/cacheJMD/token.jmd");
-					
-					filePseudo.delete();
-					fileToken.delete();
+		        	Constantes.FILE_PSEUDO.delete();
+		        	Constantes.FILE_TOKEN.delete();
 		        	
 					finishAffinity();
 		        	startActivity(new Intent(CreationAnnee.this, Accueil.class));	

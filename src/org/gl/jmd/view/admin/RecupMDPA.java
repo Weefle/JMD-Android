@@ -52,13 +52,11 @@ public class RecupMDPA extends Activity {
 			
 			Admin a = new Admin();
 			a.setPseudo(PSEUDO.getText().toString());
-			
-			String URL = Constantes.URL_SERVER + "admin/passwordOublie" +
-						 "?pseudo=" + a.getPseudo();
 
 			ProgressDialog progress = new ProgressDialog(activity);
 			progress.setMessage("Chargement...");
-			new RecupMDP(progress, URL).execute();	
+			new RecupMDP(progress, Constantes.URL_SERVER + "admin/passwordOublie" +
+					 "?pseudo=" + a.getPseudo()).execute();	
 		} else {
 			if (PSEUDO.getText().toString().length() == 0) {
 				PSEUDO.setBackgroundResource(R.drawable.border_edittext_error);

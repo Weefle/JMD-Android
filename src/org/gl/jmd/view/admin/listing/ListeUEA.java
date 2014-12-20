@@ -16,6 +16,8 @@ import org.gl.jmd.model.enumeration.DecoupageYearType;
 import org.gl.jmd.utils.*;
 import org.gl.jmd.view.Accueil;
 import org.gl.jmd.view.list.*;
+import org.gl.jmd.view.list.item.Item;
+import org.gl.jmd.view.list.item.ListItemUE;
 import org.json.*;
 
 import android.app.*;
@@ -211,8 +213,8 @@ public class ListeUEA extends Activity {
 								progress.setMessage("Chargement...");
 								new DeleteUE(progress, Constantes.URL_SERVER + "ue" +
 										"?id=" + listeUE.get(arg2).getId() +
-										"&token=" + FileUtils.readFile("/sdcard/cacheJMD/token.jmd") + 
-										"&pseudo=" + FileUtils.readFile("/sdcard/cacheJMD/pseudo.jmd") +
+										"&token=" + FileUtils.readFile(Constantes.FILE_TOKEN) + 
+										"&pseudo=" + FileUtils.readFile(Constantes.FILE_PSEUDO) +
 										"&timestamp=" + new java.util.Date().getTime()).execute();
 							}
 						});
@@ -385,11 +387,8 @@ public class ListeUEA extends Activity {
 		    					}
 		    				});
 				        } else if (response.getStatusLine().getStatusCode() == 401) {
-							File filePseudo = new File("/sdcard/cacheJMD/pseudo.jmd");
-							File fileToken = new File("/sdcard/cacheJMD/token.jmd");
-							
-							filePseudo.delete();
-							fileToken.delete();
+				        	Constantes.FILE_PSEUDO.delete();
+				        	Constantes.FILE_TOKEN.delete();
 							
 							finish();
 				        	

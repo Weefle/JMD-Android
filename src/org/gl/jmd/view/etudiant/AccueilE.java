@@ -2,14 +2,16 @@ package org.gl.jmd.view.etudiant;
 
 import java.util.*;
 
+import org.gl.jmd.EtudiantDAO;
 import org.gl.jmd.R;
-import org.gl.jmd.dao.EtudiantDAO;
 import org.gl.jmd.model.*;
 import org.gl.jmd.model.enumeration.DecoupageType;
 import org.gl.jmd.view.*;
 import org.gl.jmd.view.etudiant.create.AjouterAnneeE;
 import org.gl.jmd.view.etudiant.listing.*;
 import org.gl.jmd.view.list.*;
+import org.gl.jmd.view.list.item.Item;
+import org.gl.jmd.view.list.item.ListItem;
 
 import android.os.Bundle;
 import android.view.*;

@@ -93,8 +93,8 @@ public class ListeDiplomeA extends Activity {
 							progress.setMessage("Chargement...");
 							new DeleteDiplome(progress, Constantes.URL_SERVER + "diplome" +
 									"?id=" + listItem.get(arg2).get("id") +
-									"&token=" + FileUtils.readFile("/sdcard/cacheJMD/token.jmd") + 
-									"&pseudo=" + FileUtils.readFile("/sdcard/cacheJMD/pseudo.jmd") +
+									"&token=" + FileUtils.readFile(Constantes.FILE_TOKEN) + 
+									"&pseudo=" + FileUtils.readFile(Constantes.FILE_PSEUDO) +
 									"&timestamp=" + new java.util.Date().getTime()).execute();
 						}
 					});

@@ -79,8 +79,8 @@ public class AjouterAdminA extends Activity {
 							progress.setMessage("Chargement...");
 							new NommerAdmin(progress, Constantes.URL_SERVER + "admin/nominateAdmin" +
 									"?pseudoToNominate=" + listeAdmins.get(position).getPseudo() +
-									"&token=" + FileUtils.readFile("/sdcard/cacheJMD/token.jmd") + 
-									"&pseudo=" + FileUtils.readFile("/sdcard/cacheJMD/pseudo.jmd") +
+									"&token=" + FileUtils.readFile(Constantes.FILE_TOKEN) + 
+									"&pseudo=" + FileUtils.readFile(Constantes.FILE_PSEUDO) +
 									"&timestamp=" + new java.util.Date().getTime()
 							).execute();	
 						}
@@ -92,18 +92,21 @@ public class AjouterAdminA extends Activity {
 			}); 
 		} else {
 			final ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
-			HashMap<String, String> map;
-
-			map = new HashMap<String, String>();
+			
+			HashMap<String, String> map = new HashMap<String, String>();
 			map.put("titre", "Aucun compte en attente.");
 
 			listItem.add(map);
 
-			SimpleAdapter mSchedule = new SimpleAdapter (getBaseContext(), listItem, R.layout.simple_list, new String[] {"titre"}, new int[] {R.id.titre});
-
-			liste.setAdapter(mSchedule); 
+			liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.simple_list, new String[] {"titre"}, new int[] {R.id.titre})); 
 		}
 	}
+	
+	public void finishAllActivities(){
+		this.finishAffinity();
+	}
+	
+	/* Classes internes. */
 	
 	private class InitListeComptes extends AsyncTask<Void, Void, Void> {
 		private ProgressDialog progress;
@@ -242,12 +245,9 @@ public class AjouterAdminA extends Activity {
 		        	toast.show();
 		        	
 		        	finish();
-		        } else if (response.getStatusLine().getStatusCode() == 401) {
-		        	File filePseudo = new File("/sdcard/cacheJMD/pseudo.jmd");
-					File fileToken = new File("/sdcard/cacheJMD/token.jmd");
-					
-					filePseudo.delete();
-					fileToken.delete();
+		        } else if (response.getStatusLine().getStatusCode() == 401) {					
+		        	Constantes.FILE_PSEUDO.delete();
+		        	Constantes.FILE_TOKEN.delete();
 		        	
 					finishAllActivities();
 		        	startActivity(new Intent(AjouterAdminA.this, Accueil.class));	
@@ -294,11 +294,7 @@ public class AjouterAdminA extends Activity {
 
 			return null;
 		}
-	}
-	
-	public void finishAllActivities(){
-		this.finishAffinity();
-	}
+	}	
 	
 	/* Méthode héritée de la classe Activity. */
 	

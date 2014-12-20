@@ -58,8 +58,8 @@ public class FavoriA extends Activity {
 		ProgressDialog progress = new ProgressDialog(this);
 		progress.setMessage("Chargement...");
 		new ListerAnnees(progress, Constantes.URL_SERVER + "annee/getFavorites" +
-				"?token=" + FileUtils.readFile("/sdcard/cacheJMD/token.jmd") + 
-				"&pseudo=" + FileUtils.readFile("/sdcard/cacheJMD/pseudo.jmd") +
+				"?token=" + FileUtils.readFile(Constantes.FILE_TOKEN) + 
+				"&pseudo=" + FileUtils.readFile(Constantes.FILE_PSEUDO) +
 				"&timestamp=" + new java.util.Date().getTime()).execute();	
 	}
 	
@@ -113,8 +113,8 @@ public class FavoriA extends Activity {
 												progress.setMessage("Chargement...");
 												new DeleteAnnee(progress, Constantes.URL_SERVER + "annee" +
 														"?id=" + listeAnnees.get(position).getId() +
-														"&token=" + FileUtils.readFile("/sdcard/cacheJMD/token.jmd") + 
-														"&pseudo=" + FileUtils.readFile("/sdcard/cacheJMD/pseudo.jmd") +
+														"&token=" + FileUtils.readFile(Constantes.FILE_TOKEN) + 
+														"&pseudo=" + FileUtils.readFile(Constantes.FILE_PSEUDO) +
 														"&timestamp=" + new java.util.Date().getTime()).execute();
 
 												adapter.notifyDataSetChanged();
@@ -155,8 +155,8 @@ public class FavoriA extends Activity {
 								progress.setMessage("Chargement...");
 								new FollowAnnee(progress, Constantes.URL_SERVER + "admin/follow" +
 										"?idAnnee=" + listeAnnees.get(arg2).getId() +
-										"&token=" + FileUtils.readFile("/sdcard/cacheJMD/token.jmd") + 
-										"&pseudo=" + FileUtils.readFile("/sdcard/cacheJMD/pseudo.jmd") +
+										"&token=" + FileUtils.readFile(Constantes.FILE_TOKEN) + 
+										"&pseudo=" + FileUtils.readFile(Constantes.FILE_PSEUDO) +
 										"&timestamp=" + new java.util.Date().getTime()).execute();	
 							}
 						});
@@ -174,8 +174,8 @@ public class FavoriA extends Activity {
 								progress.setMessage("Chargement...");
 								new UnfollowAnnee(progress, Constantes.URL_SERVER + "admin/unfollow" +
 										"?idAnnee=" + listeAnnees.get(arg2).getId() +
-										"&token=" + FileUtils.readFile("/sdcard/cacheJMD/token.jmd") + 
-										"&pseudo=" + FileUtils.readFile("/sdcard/cacheJMD/pseudo.jmd") +
+										"&token=" + FileUtils.readFile(Constantes.FILE_TOKEN) + 
+										"&pseudo=" + FileUtils.readFile(Constantes.FILE_PSEUDO) +
 										"&timestamp=" + new java.util.Date().getTime()).execute();	
 							}
 						});
@@ -236,11 +236,8 @@ public class FavoriA extends Activity {
 							toast.setText("Année supprimée.");
 							toast.show();
 						} else if (response.getStatusLine().getStatusCode() == 401) {
-							File filePseudo = new File("/sdcard/cacheJMD/pseudo.jmd");
-							File fileToken = new File("/sdcard/cacheJMD/token.jmd");
-
-							filePseudo.delete();
-							fileToken.delete();
+							Constantes.FILE_PSEUDO.delete();
+							Constantes.FILE_TOKEN.delete();
 
 							finish();
 							startActivity(new Intent(FavoriA.this, Accueil.class));	
@@ -428,11 +425,8 @@ public class FavoriA extends Activity {
 							toast.setText("Vous ne suivez plus cette année.");
 							toast.show();
 						} else if (response.getStatusLine().getStatusCode() == 401) {
-							File filePseudo = new File("/sdcard/cacheJMD/pseudo.jmd");
-							File fileToken = new File("/sdcard/cacheJMD/token.jmd");
-
-							filePseudo.delete();
-							fileToken.delete();
+							Constantes.FILE_PSEUDO.delete();
+							Constantes.FILE_TOKEN.delete();
 
 							activity.finishAffinity();
 							startActivity(new Intent(FavoriA.this, Accueil.class));	
@@ -570,11 +564,8 @@ public class FavoriA extends Activity {
 					ex.printStackTrace();
 				}
 			} else if (httpResponse.getStatusLine().getStatusCode() == 401) { 
-				File filePseudo = new File("/sdcard/cacheJMD/pseudo.jmd");
-	        	File fileToken = new File("/sdcard/cacheJMD/token.jmd");
-
-	        	filePseudo.delete();
-	        	fileToken.delete();
+				Constantes.FILE_PSEUDO.delete();
+				Constantes.FILE_TOKEN.delete();
 
 	        	finish();
 	        	startActivity(new Intent(FavoriA.this, Accueil.class));	

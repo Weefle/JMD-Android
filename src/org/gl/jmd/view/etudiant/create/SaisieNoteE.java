@@ -2,8 +2,8 @@ package org.gl.jmd.view.etudiant.create;
 
 import java.util.*;
 
+import org.gl.jmd.EtudiantDAO;
 import org.gl.jmd.R;
-import org.gl.jmd.dao.EtudiantDAO;
 import org.gl.jmd.model.*;
 
 import android.os.*;

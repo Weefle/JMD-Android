@@ -81,16 +81,14 @@ public class ListeEtablissementA extends Activity {
 					confirmQuitter.setMessage("Voulez-vous vraiment supprimer cet élément ?");
 					confirmQuitter.setCancelable(false);
 					confirmQuitter.setPositiveButton("Oui", new AlertDialog.OnClickListener() {
-						public void onClick(DialogInterface dialog, int id) {
-							String URL = Constantes.URL_SERVER + "etablissement" +
-									"?id=" + listItem.get(arg2).get("id") +
-									"&token=" + FileUtils.readFile("/sdcard/cacheJMD/token.jmd") + 
-									"&pseudo=" + FileUtils.readFile("/sdcard/cacheJMD/pseudo.jmd") +
-									"&timestamp=" + new java.util.Date().getTime();	
-							
+						public void onClick(DialogInterface dialog, int id) {							
 							ProgressDialog progress = new ProgressDialog(activity);
 							progress.setMessage("Chargement...");
-							new DeleteEtablissement(progress, URL).execute();
+							new DeleteEtablissement(progress, Constantes.URL_SERVER + "etablissement" +
+									"?id=" + listItem.get(arg2).get("id") +
+									"&token=" + FileUtils.readFile(Constantes.FILE_TOKEN) + 
+									"&pseudo=" + FileUtils.readFile(Constantes.FILE_PSEUDO) +
+									"&timestamp=" + new java.util.Date().getTime()).execute();
 						}
 					});
 					
@@ -268,12 +266,9 @@ public class ListeEtablissementA extends Activity {
 		    						actualiserListe();
 		    					}
 		    				});
-				        } else if (response.getStatusLine().getStatusCode() == 401) {
-							File filePseudo = new File("/sdcard/cacheJMD/pseudo.jmd");
-							File fileToken = new File("/sdcard/cacheJMD/token.jmd");
-							
-							filePseudo.delete();
-							fileToken.delete();
+				        } else if (response.getStatusLine().getStatusCode() == 401) {							
+							Constantes.FILE_PSEUDO.delete();
+							Constantes.FILE_TOKEN.delete();
 				        	
 							finish();
 				        	startActivity(new Intent(ListeEtablissementA.this, Accueil.class));	

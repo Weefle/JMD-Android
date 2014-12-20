@@ -215,14 +215,12 @@ public class AccueilA extends TabActivity {
 				dLayout.closeDrawers();					
 				
 				if (listItem.get(position).get("titre").equals("Déconnexion")) {
-					String URL = Constantes.URL_SERVER + "admin/logout" +
-							"?token=" + FileUtils.readFile("/sdcard/cacheJMD/token.jmd") + 
-							"&pseudo=" + FileUtils.readFile("/sdcard/cacheJMD/pseudo.jmd") +
-							"&timestamp=" + new java.util.Date().getTime();			
-
 					ProgressDialog progress = new ProgressDialog(activity);
 					progress.setMessage("Chargement...");
-					new SeDeco(progress, URL).execute(); 
+					new SeDeco(progress, Constantes.URL_SERVER + "admin/logout" +
+							"&token=" + FileUtils.readFile(Constantes.FILE_TOKEN) + 
+							"&pseudo=" + FileUtils.readFile(Constantes.FILE_PSEUDO) +
+							"&timestamp=" + new java.util.Date().getTime()).execute(); 
         		} else if (listItem.get(position).get("titre").equals("Nommer un admin")) {
         			startActivity(new Intent(AccueilA.this, AjouterAdminA.class));			
         		}
@@ -271,6 +269,8 @@ public class AccueilA extends TabActivity {
 			startActivity(new Intent(AccueilA.this, CreationDiplome.class));	
 		}
 	}
+	
+	/* Classe interne. */
 	
 	private class SeDeco extends AsyncTask<Void, Void, Void> {
 		private ProgressDialog progress;

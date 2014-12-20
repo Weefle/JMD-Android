@@ -1,4 +1,4 @@
-package org.gl.jmd.view.list;
+package org.gl.jmd.view.list.item;
 
 import org.gl.jmd.Constantes;
 import org.gl.jmd.R;

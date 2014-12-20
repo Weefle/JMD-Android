@@ -1,7 +1,7 @@
 package org.gl.jmd.view.etudiant.listing;
 
+import org.gl.jmd.EtudiantDAO;
 import org.gl.jmd.R;
-import org.gl.jmd.dao.EtudiantDAO;
 import org.gl.jmd.model.*;
 import org.gl.jmd.model.enumeration.*;
 import org.gl.jmd.view.etudiant.StatsAnnee;
@@ -9,10 +9,7 @@ import org.gl.jmd.view.etudiant.StatsAnnee;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
-import android.view.GestureDetector;
-import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.*;
 import android.widget.TabHost.OnTabChangeListener;
@@ -37,16 +34,6 @@ public class ListeUEETabs extends TabActivity {
 	
 	private TextView tvTitre = null;
 
-	private GestureDetector gestureDetector;
-	
-	private View.OnTouchListener gestureListener;
-	
-	private static final int SWIPE_MIN_DISTANCE = 120;
-	
-	private static final int SWIPE_MAX_OFF_PATH = 250;
-	
-	private static final int SWIPE_THRESHOLD_VELOCITY = 200;
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -59,22 +46,11 @@ public class ListeUEETabs extends TabActivity {
 
 		ann = etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn);
 
-		gestureDetector = new GestureDetector(this, new MyGestureDetector());
-		gestureListener = new View.OnTouchListener() {
-			@Override
-			public boolean onTouch(View arg0, MotionEvent arg1) {
-				return gestureDetector.onTouchEvent(arg1);
-			}	
-		};
-
 		tabHost = getTabHost();
 		
 		initTabs();
 		initTabHost();
 		initElements();
-		
-		RelativeLayout r = (RelativeLayout) findViewById(R.id.relativListeUeTabs);
-		r.setOnTouchListener(gestureListener);
 	}
 	
 	/**
@@ -87,36 +63,6 @@ public class ListeUEETabs extends TabActivity {
 		i.putExtra("annee", etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn));
 
 		startActivity(i);
-	}
-
-	private class MyGestureDetector extends SimpleOnGestureListener {
-		@Override
-		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-			try {
-				if (Math.abs(e1.getY() - e2.getY()) > SWIPE_MAX_OFF_PATH) {
-					return false;
-				}
-				
-				if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-					if (tabHost.getCurrentTab() == 0) {
-						tabHost.setCurrentTab(1);
-					} 
-				} else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-					if (tabHost.getCurrentTab() == 1) {
-						tabHost.setCurrentTab(0);
-					} 
-				}
-			} catch (Exception e) {
-				// nothing
-			}
-			
-			return false;
-		}
-
-		@Override
-		public boolean onDown(MotionEvent e) {
-			return true;
-		}
 	}
 
 	private void initElements() {

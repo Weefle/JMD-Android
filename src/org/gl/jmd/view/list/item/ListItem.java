@@ -1,4 +1,4 @@
-package org.gl.jmd.view.list;
+package org.gl.jmd.view.list.item;
 
 import org.gl.jmd.R;
 import org.gl.jmd.model.Annee;
@@ -67,7 +67,9 @@ public class ListItem implements Item {
 			text2.setText(a.getEtablissement().getNom());
 			text3.setText("" + NumberUtils.round(a.getMoyenne(), 2));
 	
-			if (a.getMoyenne() >= 10) {
+			if (a.isAjourne()) {
+				text3.setBackgroundResource(R.drawable.badge_moyenne_nok);
+			} else if (a.getMoyenne() >= 10) {
 				text3.setBackgroundResource(R.drawable.badge_moyenne_ok);
 			} else if ((a.getMoyenne() < 10) && (a.getMoyenne() >= 0)) {
 				text3.setBackgroundResource(R.drawable.badge_moyenne_nok);

@@ -78,20 +78,34 @@ public class ConnexionA extends Activity {
 			progress.setMessage("Chargement...");
 			new SeConnecter(progress, URL).execute();	
 		} else {
+			boolean isLoginOK = true;
+			boolean isPasswordOK = true;
+			
+			String txtToast = "";
+			
 			if (PSEUDO.getText().toString().length() == 0) {
 				PSEUDO.setBackgroundResource(R.drawable.border_edittext_error);
+				isLoginOK = false;
 			} else {
 				PSEUDO.setBackgroundResource(R.drawable.border_edittext);
 			}
 			
 			if (PASSWORD.getText().toString().length() == 0) {
 				PASSWORD.setBackgroundResource(R.drawable.border_edittext_error);
-
+				isPasswordOK = false;
 			} else {
 				PASSWORD.setBackgroundResource(R.drawable.border_edittext);
 			}
 			
-			toast.setText("Au moins un des champs est vide.");
+			if (!isLoginOK && !isPasswordOK) {
+				txtToast = "Les deux champs sont vides.";
+			} else if (!isLoginOK) {
+				txtToast = "Le champ \"Pseudo\" est vide.";
+			} else if (!isPasswordOK) {
+				txtToast = "Le champ \"Password\" est vide.";
+			} 
+			
+			toast.setText(txtToast);
 			toast.show();
 		}
 	}
@@ -137,15 +151,16 @@ public class ConnexionA extends Activity {
 		        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
 		        nameValuePairs.add(new BasicNameValuePair("username", a.getPseudo()));
 				nameValuePairs.add(new BasicNameValuePair("password", a.getPassword()));
-		        httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+		        
+				httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
 		        HttpResponse response = httpclient.execute(httppost);
 		        
 		        if (response.getStatusLine().getStatusCode() == 200) {
 		        	String responseBody = EntityUtils.toString(response.getEntity());
 		        	
-		        	FileUtils.writeFile(responseBody, "/sdcard/cacheJMD/token.jmd");
-		        	FileUtils.writeFile(a.getPseudo(), "/sdcard/cacheJMD/pseudo.jmd");
+		        	FileUtils.writeFile(responseBody, Constantes.FILE_TOKEN);
+		        	FileUtils.writeFile(a.getPseudo(), Constantes.FILE_PSEUDO);
 		    		
 		        	finish();
 					startActivity(intent);

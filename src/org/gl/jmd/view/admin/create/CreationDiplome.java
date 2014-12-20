@@ -66,17 +66,15 @@ public class CreationDiplome extends Activity {
 			}
 			
 			Diplome d = new Diplome();
-			d.setNom(NOM.getText().toString());
-			
-			String URL = Constantes.URL_SERVER + "diplome" +
-									"?nom=" + URLEncoder.encode(d.getNom()) +
-									"&token=" + FileUtils.readFile("/sdcard/cacheJMD/token.jmd") + 
-									"&pseudo=" + FileUtils.readFile("/sdcard/cacheJMD/pseudo.jmd") +
-									"&timestamp=" + new java.util.Date().getTime();			
+			d.setNom(NOM.getText().toString());	
 			
 			ProgressDialog progress = new ProgressDialog(activity);
 			progress.setMessage("Chargement...");
-			new CreerDiplome(progress, URL).execute();	
+			new CreerDiplome(progress, Constantes.URL_SERVER + "diplome" +
+					"?nom=" + URLEncoder.encode(d.getNom()) +
+					"&token=" + FileUtils.readFile(Constantes.FILE_TOKEN) + 
+					"&pseudo=" + FileUtils.readFile(Constantes.FILE_PSEUDO) +
+					"&timestamp=" + new java.util.Date().getTime()).execute();	
 		} else {
 			NOM.setBackgroundResource(R.drawable.border_edittext_error);
 			
@@ -120,11 +118,8 @@ public class CreationDiplome extends Activity {
 		        	toast.setText("Un diplôme avec ce nom existe déjà.");
 		        	toast.show();
 		        } else if (response.getStatusLine().getStatusCode() == 401) {
-					File filePseudo = new File("/sdcard/cacheJMD/pseudo.jmd");
-					File fileToken = new File("/sdcard/cacheJMD/token.jmd");
-					
-					filePseudo.delete();
-					fileToken.delete();
+		        	Constantes.FILE_PSEUDO.delete();
+		        	Constantes.FILE_TOKEN.delete();
 		        	
 					finishAffinity();
 		        	startActivity(new Intent(CreationDiplome.this, Accueil.class));	

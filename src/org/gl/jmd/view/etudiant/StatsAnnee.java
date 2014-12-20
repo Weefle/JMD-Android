@@ -53,9 +53,8 @@ public class StatsAnnee extends Activity {
 	public void export(View view) {		
 		PdfUtils.generateYearRapport(ann, this.getApplicationContext());
 		
-		File file = new File("/sdcard/cacheJMD/rapport-" + ann.getId() + ".pdf");
 		Intent intent = new Intent(Intent.ACTION_VIEW);
-		intent.setDataAndType(Uri.fromFile(file), "application/pdf");
+		intent.setDataAndType(Uri.fromFile(new File("/sdcard/cacheJMD/rapport-" + ann.getId() + ".pdf")), "application/pdf");
 		intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
 		startActivity(intent); 
 	}
