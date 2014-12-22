@@ -39,6 +39,10 @@ public class RecupMDPA extends Activity {
 		toast = Toast.makeText(activity, "", Toast.LENGTH_SHORT);
 	}
 	
+	public void back(View view) {
+		finish();
+	}
+	
 	/**
 	 * Méthode permettant de lancer la récupération du mot de passe.
 	 * 

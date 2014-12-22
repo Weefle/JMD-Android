@@ -31,7 +31,7 @@ public class ListeUEETabs extends TabActivity {
 	private Etudiant etud = EtudiantDAO.load();
 
 	private Annee ann;
-	
+
 	private TextView tvTitre = null;
 
 	@Override
@@ -47,12 +47,12 @@ public class ListeUEETabs extends TabActivity {
 		ann = etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn);
 
 		tabHost = getTabHost();
-		
+
 		initTabs();
 		initTabHost();
 		initElements();
 	}
-	
+
 	/**
 	 * Méthode déclenchée lors d'un click sur le bouton de simulation.
 	 * 
@@ -63,6 +63,15 @@ public class ListeUEETabs extends TabActivity {
 		i.putExtra("annee", etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn));
 
 		startActivity(i);
+	}
+
+	/**
+	 * Méthode déclenchée lors d'un click sur le bouton de simulation.
+	 * 
+	 * @param view La vue lors du click sur le bouton de simulation.
+	 */
+	public void back(View view) {
+		finish();
 	}
 
 	private void initElements() {
@@ -202,7 +211,7 @@ public class ListeUEETabs extends TabActivity {
 					tv2.setText(spanString2);
 				} 
 			}}
-				);
+		);
 	}
 
 	private void setupTab(String name, String tag, Intent intent, int i) {
@@ -226,7 +235,13 @@ public class ListeUEETabs extends TabActivity {
 		act.putExtra("positionDip", positionDip);
 		act.putExtra("positionAnn", positionAnn);
 
-		Intent act2 = act;
+		Intent act2 = new Intent(ListeUEETabs.this, ListeUEE.class);
+		act2.putExtra("positionDip", positionDip);
+		act2.putExtra("positionAnn", positionAnn);
+
+		Intent act3 = new Intent(ListeUEETabs.this, ListeUEE.class);
+		act3.putExtra("positionDip", positionDip);
+		act3.putExtra("positionAnn", positionAnn);
 
 		if (ann.getDecoupage() == DecoupageType.SEMESTRE) {
 			act.putExtra("type", DecoupageYearType.SEM1);
@@ -241,13 +256,13 @@ public class ListeUEETabs extends TabActivity {
 
 			setupTab("Trimestre 1", "0", act, 0);
 
-			act.putExtra("type", DecoupageYearType.TRI2);
+			act2.putExtra("type", DecoupageYearType.TRI2);
 
-			setupTab("Trimestre 2", "1", act, 1);
+			setupTab("Trimestre 2", "1", act2, 1);
 
-			act.putExtra("type", DecoupageYearType.TRI3);
+			act3.putExtra("type", DecoupageYearType.TRI3);
 
-			setupTab("Trimestre 3", "2", act, 2);
+			setupTab("Trimestre 3", "2", act3, 2);
 		}
 	}
 

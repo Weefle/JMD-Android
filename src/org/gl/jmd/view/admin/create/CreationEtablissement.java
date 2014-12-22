@@ -53,6 +53,29 @@ public class CreationEtablissement extends Activity {
 		VILLE = (EditText) findViewById(R.id.et_crea_eta_ville);
 	}
 	
+	public void back(View view) {
+		testBack();
+	}
+	
+	private void testBack() {
+		if ((NOM.getText().toString().length() != 0) || (VILLE.getText().toString().length() != 0)) {
+			AlertDialog.Builder confirmQuitter = new AlertDialog.Builder(this);
+			confirmQuitter.setTitle("Annulation");
+			confirmQuitter.setMessage("Voulez-vous vraiment annuler ?");
+			confirmQuitter.setCancelable(false);
+			confirmQuitter.setPositiveButton("Oui", new AlertDialog.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					finish();
+				}
+			});
+
+			confirmQuitter.setNegativeButton("Non", null);
+			confirmQuitter.show();
+		} else {
+			finish();
+		}
+	}
+	
 	/**
 	 * Méthode permettant de créer un établissement (déclenchée lors d'un click sur le bouton "créer").
 	 * 
@@ -62,36 +85,23 @@ public class CreationEtablissement extends Activity {
 		if ((NOM.getText().toString().length() != 0) && (VILLE.getText().toString().length() != 0)) {
 			Pattern pattern = Pattern.compile("^[a-zA-Z0-9\\s]*$");
 			
-			Matcher matcher1 = pattern.matcher(NOM.getText().toString());
-			Matcher matcher2 = pattern.matcher(VILLE.getText().toString());
+			Matcher matcher = pattern.matcher(VILLE.getText().toString());
 			
-			if ((!matcher1.matches()) || (!matcher2.matches())) {
+			if (!matcher.matches()) {
 				String txtToast = "";
 				
-				boolean isNomValid = true;
 				boolean isVilleValid = true;
 				
-				if (!matcher1.matches()) {
-					NOM.setBackgroundResource(R.drawable.border_edittext_error);
-					isNomValid = false;
-				} else {
-					NOM.setBackgroundResource(R.drawable.border_edittext);
-				}
-
-				if (!matcher2.matches()) {
+				if (!matcher.matches()) {
 					VILLE.setBackgroundResource(R.drawable.border_edittext_error);
 					isVilleValid = false;
 				} else {
 					VILLE.setBackgroundResource(R.drawable.border_edittext);
 				}
 
-				if (!isNomValid && !isVilleValid) {
-					txtToast = "Les champs \"Nom\" et \"Ville\" ne peuvent contenir que des chiffres et des lettres.";
-				} else if(!isNomValid) {
-					txtToast = "Le champ \"Nom\" ne peut contenir que des chiffres et des lettres.";
-				} else if(!isVilleValid) {
+				if (!isVilleValid) {
 					txtToast = "Le champ \"Ville\" ne peut contenir que des chiffres et des lettres.";
-				}
+				} 
 
 				toast.setText(txtToast);
 				toast.show();
@@ -103,14 +113,19 @@ public class CreationEtablissement extends Activity {
 			e.setNom(NOM.getText().toString());
 			e.setVille(VILLE.getText().toString());	
 			
-			ProgressDialog progress = new ProgressDialog(activity);
-			progress.setMessage("Chargement...");
-			new CreerEtablissement(progress, Constantes.URL_SERVER + "etablissement" +
-					"?nom=" + URLEncoder.encode(e.getNom()) +
-					"&ville=" + URLEncoder.encode(e.getVille()) +
-					"&token=" + FileUtils.readFile(Constantes.FILE_TOKEN) + 
-					"&pseudo=" + FileUtils.readFile(Constantes.FILE_PSEUDO) +
-					"&timestamp=" + new java.util.Date().getTime()).execute();	
+			try {
+				ProgressDialog progress = new ProgressDialog(activity);
+				progress.setMessage("Chargement...");
+				new CreerEtablissement(progress, Constantes.URL_SERVER + "etablissement" +
+						"?nom=" + URLEncoder.encode(e.getNom(), "UTF-8") +
+						"&ville=" + URLEncoder.encode(e.getVille(), "UTF-8") +
+						"&token=" + FileUtils.readFile(Constantes.FILE_TOKEN) + 
+						"&pseudo=" + FileUtils.readFile(Constantes.FILE_PSEUDO) +
+						"&timestamp=" + new java.util.Date().getTime()).execute();	
+			} catch (UnsupportedEncodingException ex) {
+				toast.setText("Erreur d'encodage (UTF-8).");
+				toast.show();
+			}	
 		} else {
 			boolean isNomOK = true;
 			boolean isVilleOK = true;
@@ -165,10 +180,10 @@ public class CreationEtablissement extends Activity {
 
 		protected Void doInBackground(Void... arg0) {
 			HttpClient httpclient = new DefaultHttpClient();
-		    HttpPut httppost = new HttpPut(pathUrl);
+		    HttpPut httpPut = new HttpPut(pathUrl);
 
 		    try {
-		        HttpResponse response = httpclient.execute(httppost);
+		        HttpResponse response = httpclient.execute(httpPut);
 		        
 		        if (response.getStatusLine().getStatusCode() == 200) {
 		        	toast.setText("Etablissement créé.");
@@ -249,21 +264,6 @@ public class CreationEtablissement extends Activity {
 	 */
 	@Override
 	public void onBackPressed() {
-		if ((NOM.getText().toString().length() != 0) || (VILLE.getText().toString().length() != 0)) {
-			AlertDialog.Builder confirmQuitter = new AlertDialog.Builder(this);
-			confirmQuitter.setTitle("Annulation");
-			confirmQuitter.setMessage("Voulez-vous vraiment annuler ?");
-			confirmQuitter.setCancelable(false);
-			confirmQuitter.setPositiveButton("Oui", new AlertDialog.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-					finish();
-				}
-			});
-
-			confirmQuitter.setNegativeButton("Non", null);
-			confirmQuitter.show();
-		} else {
-			finish();
-		}
+		testBack();
 	}
 }

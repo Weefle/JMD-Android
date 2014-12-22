@@ -73,6 +73,29 @@ public class CreationRegle extends Activity {
 		initListe();
 	}
 
+	public void back(View view) {
+		testBack();
+	}
+	
+	private void testBack() {
+		if (VALUE.getText().toString().length() != 0) {
+			AlertDialog.Builder confirmQuitter = new AlertDialog.Builder(this);
+			confirmQuitter.setTitle("Annulation");
+			confirmQuitter.setMessage("Voulez-vous vraiment annuler ?");
+			confirmQuitter.setCancelable(false);
+			confirmQuitter.setPositiveButton("Oui", new AlertDialog.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					finish();
+				}
+			});
+
+			confirmQuitter.setNegativeButton("Non", null);
+			confirmQuitter.show();
+		} else {
+			finish();
+		}
+	}
+	
 	/**
 	 * Méthode permettant de créer une règle (déclenchée lors d'un click sur le bouton "créer").
 	 * 
@@ -121,7 +144,7 @@ public class CreationRegle extends Activity {
 				VALUE.setBackgroundResource(R.drawable.border_edittext);
 			}			
 			
-			toast.setText("Au moins un des champs est vide.");
+			toast.setText("Le champ \"Valeur\" est vide.");
 			toast.show();
 		}
 	}
@@ -591,21 +614,6 @@ public class CreationRegle extends Activity {
 	 */
 	@Override
 	public void onBackPressed() {
-		if (VALUE.getText().toString().length() != 0) {
-			AlertDialog.Builder confirmQuitter = new AlertDialog.Builder(this);
-			confirmQuitter.setTitle("Annulation");
-			confirmQuitter.setMessage("Voulez-vous vraiment annuler ?");
-			confirmQuitter.setCancelable(false);
-			confirmQuitter.setPositiveButton("Oui", new AlertDialog.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-					finish();
-				}
-			});
-
-			confirmQuitter.setNegativeButton("Non", null);
-			confirmQuitter.show();
-		} else {
-			finish();
-		}
+		testBack();
 	}
 }

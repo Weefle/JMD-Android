@@ -54,7 +54,7 @@ public class ListeMatiereA extends Activity {
 	}
 	
 	private void initTextView() {
-		TextView tvTitre = (TextView) findViewById(R.id.admin_liste_matier_titre);
+		TextView tvTitre = (TextView) findViewById(R.id.admin_liste_matiere_titre);
 		
 		if (ue.getNom().length() > 20) {
 			tvTitre.setText(ue.getNom().substring(0, 20) + "...");
@@ -125,6 +125,10 @@ public class ListeMatiereA extends Activity {
 
 			liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.simple_list, new String[] {"titre"}, new int[] {R.id.titre})); 
 		}
+	}
+	
+	public void back(View view) {
+		finish();
 	}
 	
 	public void creerMatiere(View view) {

@@ -1,4 +1,4 @@
-package org.gl.jmd.view.menu.admin;
+package org.gl.jmd.view.admin;
 
 import java.io.*;
 import java.net.SocketTimeoutException;
@@ -71,7 +71,7 @@ public class AjouterAdminA extends Activity {
 				public void onItemClick(AdapterView<?> arg0, View arg1, final int position, long arg3) {
 					AlertDialog.Builder confirmAjout = new AlertDialog.Builder(AjouterAdminA.this);
 					confirmAjout.setTitle("Confirmation");
-					confirmAjout.setMessage("Nommer " + listeAdmins.get(position).getPseudo() + " ?");
+					confirmAjout.setMessage("Nommer " + listeAdmins.get(position).getPseudo() + " administrateur de l'application ?");
 					confirmAjout.setCancelable(false);
 					confirmAjout.setPositiveButton("Oui", new AlertDialog.OnClickListener() {
 						public void onClick(DialogInterface dialog, int id) {								
@@ -94,7 +94,7 @@ public class AjouterAdminA extends Activity {
 			final ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
 			
 			HashMap<String, String> map = new HashMap<String, String>();
-			map.put("titre", "Aucun compte en attente.");
+			map.put("titre", "Aucun compte en attente de validation.");
 
 			listItem.add(map);
 

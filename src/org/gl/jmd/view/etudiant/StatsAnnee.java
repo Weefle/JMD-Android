@@ -9,7 +9,7 @@ import org.gl.jmd.utils.*;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.*;
 import android.app.*;
 import android.content.Intent;
 
@@ -22,6 +22,10 @@ public class StatsAnnee extends Activity {
 	
 	private Annee ann;
 	
+	private Activity activity;
+
+	private Toast toast;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -30,6 +34,9 @@ public class StatsAnnee extends Activity {
 		overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
 		
 		ann = (Annee) getIntent().getSerializableExtra("annee");
+		
+		activity = this;
+		toast = Toast.makeText(activity, "", Toast.LENGTH_SHORT);
 		
 		initTextViews();
 	}
@@ -50,12 +57,22 @@ public class StatsAnnee extends Activity {
 		tvMention.setText(ann.getMention());
 	}
 	
+	/**
+	 * Méthode déclenchée lors d'un click sur le bouton de stats d'une année.
+	 * 
+	 * @param view La vue lors du click sur le bouton de stats.
+	 */
 	public void export(View view) {		
-		PdfUtils.generateYearRapport(ann, this.getApplicationContext());
-		
-		Intent intent = new Intent(Intent.ACTION_VIEW);
-		intent.setDataAndType(Uri.fromFile(new File("/sdcard/cacheJMD/rapport-" + ann.getId() + ".pdf")), "application/pdf");
-		intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-		startActivity(intent); 
+		if (ann.getMoyenne() != -1.0) {
+			PdfUtils.generateYearRapport(ann, this.getApplicationContext());
+			
+			Intent intent = new Intent(Intent.ACTION_VIEW);
+			intent.setDataAndType(Uri.fromFile(new File("/sdcard/cacheJMD/rapport-" + ann.getId() + ".pdf")), "application/pdf");
+			intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+			startActivity(intent); 
+		} else {
+			toast.setText("Il faut au moins rentrer une note pour pouvoir générer un PDF.");
+			toast.show();
+		}
 	}
 }

@@ -11,12 +11,23 @@
         android:background="#FF5E3A"
         android:orientation="horizontal" >
 
+        <ImageView
+            android:id="@+id/admin_liste_annee_img_previous"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerInParent="true"
+            android:layout_marginStart="20dp"
+            android:contentDescription="@string/desc_img"
+            android:onClick="back"
+            android:src="@drawable/previous" />
+
         <TextView
             android:id="@+id/admin_liste_annee_titre"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
             android:layout_centerInParent="true"
+            android:gravity="center_horizontal"
             android:textColor="#FFFFFF"
             android:textSize="20sp" />
 
@@ -26,7 +37,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerInParent="true"
-            android:layout_marginEnd="15dp"
+            android:layout_marginEnd="20dp"
             android:contentDescription="@string/desc_img"
             android:onClick="creerAnnee"
             android:src="@drawable/plus" />

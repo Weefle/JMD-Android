@@ -134,6 +134,10 @@ public class ListeUERegleA extends TabActivity {
 		return view;
 	}
 	
+	public void back(View view) {
+		finish();
+	}
+	
 	/**
 	 * Méthode permettant de faire apparaitre la popup lors du click sur le bouton "plus".
 	 * 

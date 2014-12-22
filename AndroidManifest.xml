@@ -73,14 +73,14 @@
         <!-- Création -->
 
         <activity
-            android:name="org.gl.jmd.view.etudiant.create.AjouterAnneeE"
+            android:name="org.gl.jmd.view.etudiant.AjouterAnneeE"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/etudiant_modifier_ae_view_name"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
         <activity
-            android:name="org.gl.jmd.view.etudiant.create.SaisieNoteE"
+            android:name="org.gl.jmd.view.etudiant.SaisieNoteE"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/etudiant_saisie_note_titre_view_name"
             android:theme="@android:style/Theme.NoTitleBar"
@@ -119,7 +119,7 @@
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
         <activity
-            android:name="org.gl.jmd.view.menu.admin.AjouterAdminA"
+            android:name="org.gl.jmd.view.admin.AjouterAdminA"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/administrateur_ajout_admin_view_name"
             android:screenOrientation="portrait"

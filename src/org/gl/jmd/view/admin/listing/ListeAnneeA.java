@@ -215,6 +215,10 @@ public class ListeAnneeA extends Activity {
 
 		startActivity(newIntent);
 	}
+	
+	public void back(View view) {
+		finish();
+	}
 
 	/* Classes internes. */
 

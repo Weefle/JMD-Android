@@ -1,15 +1,12 @@
 package org.gl.jmd.utils;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.*;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.gl.jmd.model.Annee;
-import org.gl.jmd.model.enumeration.DecoupageType;
-import org.gl.jmd.model.enumeration.DecoupageYearType;
+import org.gl.jmd.model.enumeration.*;
 
 import android.content.Context;
 import android.graphics.*;
@@ -57,9 +54,10 @@ public class PdfUtils {
 		
 		PageInfo pageInfo = new PageInfo.Builder(595, 842, 1).create();
 		PageInfo pageInfo2 = new PageInfo.Builder(595, 842, 1).create();
-		
+		PageInfo pageInfo3 = new PageInfo.Builder(595, 842, 1).create();
+
 		if (ann.getMoyenne() != -1.0) {
-			// Si l'année n'a pas de découpage (=> Apprentissage).
+			// Apprentissage
 			if (ann.getDecoupage() == DecoupageType.NULL) {
 				Page page = document.startPage(pageInfo);
 				
@@ -127,7 +125,7 @@ public class PdfUtils {
 				page.getCanvas().drawText("Fait à " + ann.getEtablissement().getVille() + ", le " + new SimpleDateFormat("dd/MM/yyyy").format(new Date()) + ".", 50, startY, paint);	
 			
 				document.finishPage(page);
-			} else if (ann.getDecoupage() == DecoupageType.SEMESTRE) {
+			} else if (ann.getDecoupage() == DecoupageType.SEMESTRE) { 
 				Page page = document.startPage(pageInfo);
 				
 				Paint paint = new Paint(); 
@@ -148,7 +146,9 @@ public class PdfUtils {
 				
 				page.getCanvas().drawText("A obtenu les notes suivantes :", 50, 85, paint); 
 				
-				page.getCanvas().drawText("Semestre 1 :", 50, 115, paint);
+				paint.setUnderlineText(true);
+				page.getCanvas().drawText("Semestre 1", 50, 115, paint);
+				paint.setUnderlineText(false);
 				
 				// Semestre 1
 				int startY = 145;
@@ -195,8 +195,10 @@ public class PdfUtils {
 				paint2.setColor(Color.BLACK); 
 				paint2.setTextSize(12); 
 				
-				page2.getCanvas().drawText("Semestre 2 :", 50, 60, paint2);
-			
+				paint2.setUnderlineText(true);
+				page2.getCanvas().drawText("Semestre 2", 50, 60, paint2);
+				paint2.setUnderlineText(false);
+				
 				int startY_2 = 90;
 				
 				for (int i = 0; i < ann.getListeUE().size(); i++) {
@@ -243,42 +245,185 @@ public class PdfUtils {
 				page2.getCanvas().drawText("Fait à " + ann.getEtablissement().getVille() + ", le " + new SimpleDateFormat("dd/MM/yyyy").format(new Date()) + ".", 50, startY_2, paint2);	
 			
 				document.finishPage(page2);
-			} else if (ann.getDecoupage() == DecoupageType.TRIMESTRE) {
-				// TODO
+			} else if (ann.getDecoupage() == DecoupageType.TRIMESTRE) {				
+				Page page = document.startPage(pageInfo);
+				
+				Paint paint = new Paint(); 
+				paint.setColor(Color.WHITE); 
+				paint.setStyle(Style.FILL); 
+				
+				page.getCanvas().drawPaint(paint); 
+
+				paint.setColor(Color.BLACK); 
+				paint.setTextSize(12); 
+				
+				paint.setFakeBoldText(true);
+				paint.setTextSize(18);
+				page.getCanvas().drawText("RELEVE DE NOTES ET RESULTATS", 150, 40, paint);
+				paint.setFakeBoldText(false);
+				paint.setTextSize(12);
+				page.getCanvas().drawText("Inscrit en : " + ann.getNom() + ".", 50, 70, paint);
+				
+				page.getCanvas().drawText("A obtenu les notes suivantes :", 50, 85, paint); 
+				
+				paint.setUnderlineText(true);
+				page.getCanvas().drawText("Trimestre 1", 50, 115, paint);
+				paint.setUnderlineText(false);
+				
+				// Trimestre 1
+				int startY = 145;
+			
+				for (int i = 0; i < ann.getListeUE().size(); i++) {
+					if (ann.getListeUE().get(i).getDecoupage() == DecoupageYearType.TRI1) {
+						paint.setFakeBoldText(true);
+						String txtUE = ann.getListeUE().get(i).getNom() + " (coeff : " + ann.getListeUE().get(i).getTotalCoeff() + ") : ";
+						
+						if (ann.getListeUE().get(i).getMoyenne(ann.getListeRegles()) != -1.0) {
+							txtUE += ann.getListeUE().get(i).getMoyenne(ann.getListeRegles()) + "/20";
+						} 
+						
+						page.getCanvas().drawText(txtUE, 50, startY, paint); 
+						
+						for (int j = 0; j < ann.getListeUE().get(i).getListeMatieres().size(); j++) {
+							paint.setFakeBoldText(false);
+							startY += 15;
+							String txtMatiere = ann.getListeUE().get(i).getListeMatieres().get(j).getNom() + " (coeff : " + ann.getListeUE().get(i).getListeMatieres().get(j).getCoefficient() + ")"; 
+							
+							if (ann.getListeUE().get(i).getListeMatieres().get(j).getNoteFinale() != -1.0) {
+								page.getCanvas().drawText(txtMatiere + " : " + ann.getListeUE().get(i).getListeMatieres().get(j).getNoteFinale() + "/20", 50, startY, paint); 
+							} else {
+								page.getCanvas().drawText(txtMatiere + " : Aucune note.", 50, startY, paint); 
+							}
+						}
+						
+						startY += 30;
+					}
+				}
+				
+				document.finishPage(page);
+				
+				// Trimestre 2
+				Page page2 = document.startPage(pageInfo2);
+				
+				Paint paint2 = new Paint(); 
+				paint2.setColor(Color.WHITE); 
+				paint2.setStyle(Style.FILL); 
+				
+				page2.getCanvas().drawPaint(paint2); 
+
+				paint2.setColor(Color.BLACK); 
+				paint2.setTextSize(12); 
+				
+				paint2.setUnderlineText(true);
+				page2.getCanvas().drawText("Trimestre 2", 50, 60, paint2);
+				paint2.setUnderlineText(false);
+				
+				int startY_2 = 90;
+				
+				for (int i = 0; i < ann.getListeUE().size(); i++) {
+					if (ann.getListeUE().get(i).getDecoupage() == DecoupageYearType.TRI2) {
+						paint2.setFakeBoldText(true);
+						
+						String txtUE = ann.getListeUE().get(i).getNom() + " (coeff : " + ann.getListeUE().get(i).getTotalCoeff() + ") : ";
+						
+						if (ann.getListeUE().get(i).getMoyenne(ann.getListeRegles()) != -1.0) {
+							txtUE += ann.getListeUE().get(i).getMoyenne(ann.getListeRegles()) + "/20";
+						} 
+						
+						page2.getCanvas().drawText(txtUE, 50, startY_2, paint2); 
+						
+						for (int j = 0; j < ann.getListeUE().get(i).getListeMatieres().size(); j++) {
+							paint2.setFakeBoldText(false);
+							startY_2 += 15;
+							String txtMatiere = ann.getListeUE().get(i).getListeMatieres().get(j).getNom() + " (coeff : " + ann.getListeUE().get(i).getListeMatieres().get(j).getCoefficient() + ")"; 
+							
+							if (ann.getListeUE().get(i).getListeMatieres().get(j).getNoteFinale() != -1.0) {
+								page2.getCanvas().drawText(txtMatiere + " : " + ann.getListeUE().get(i).getListeMatieres().get(j).getNoteFinale() + "/20", 50, startY_2, paint2); 
+							} else {
+								page2.getCanvas().drawText(txtMatiere + " : Aucune note.", 50, startY_2, paint2); 
+							}
+						}
+						
+						startY_2 += 30;
+					}
+				} 
+				
+				// Trimestre 3
+				Page page3 = document.startPage(pageInfo3);
+				
+				Paint paint3 = new Paint(); 
+				paint3.setColor(Color.WHITE); 
+				paint3.setStyle(Style.FILL); 
+				
+				page3.getCanvas().drawPaint(paint3); 
+
+				paint3.setColor(Color.BLACK); 
+				paint3.setTextSize(12); 
+				
+				paint3.setUnderlineText(true);
+				page3.getCanvas().drawText("Trimestre 3", 50, 60, paint3);
+				paint3.setUnderlineText(false);
+				
+				int startY_3 = 90;
+				
+				for (int i = 0; i < ann.getListeUE().size(); i++) {
+					if (ann.getListeUE().get(i).getDecoupage() == DecoupageYearType.TRI3) {
+						paint3.setFakeBoldText(true);
+						
+						String txtUE = ann.getListeUE().get(i).getNom() + " (coeff : " + ann.getListeUE().get(i).getTotalCoeff() + ") : ";
+						
+						if (ann.getListeUE().get(i).getMoyenne(ann.getListeRegles()) != -1.0) {
+							txtUE += ann.getListeUE().get(i).getMoyenne(ann.getListeRegles()) + "/20";
+						} 
+						
+						page3.getCanvas().drawText(txtUE, 50, startY_3, paint3); 
+						
+						for (int j = 0; j < ann.getListeUE().get(i).getListeMatieres().size(); j++) {
+							paint3.setFakeBoldText(false);
+							startY_3 += 15;
+							String txtMatiere = ann.getListeUE().get(i).getListeMatieres().get(j).getNom() + " (coeff : " + ann.getListeUE().get(i).getListeMatieres().get(j).getCoefficient() + ")"; 
+							
+							if (ann.getListeUE().get(i).getListeMatieres().get(j).getNoteFinale() != -1.0) {
+								page3.getCanvas().drawText(txtMatiere + " : " + ann.getListeUE().get(i).getListeMatieres().get(j).getNoteFinale() + "/20", 50, startY_3, paint3); 
+							} else {
+								page3.getCanvas().drawText(txtMatiere + " : Aucune note.", 50, startY_3, paint3); 
+							}
+						}
+						
+						startY_3 += 30;
+					}
+				} 
+				
+				String txtRes = "Résultat : ";
+				
+				if (ann.getMoyenne() >= 10) {
+					txtRes += "Admis - Mention " + ann.getMention();
+				} else {
+					txtRes += "Ajourné";
+				}
+				
+				page3.getCanvas().drawText("Moyenne générale : " + ann.getMoyenne() + "/20", 50, startY_3, paint3);
+				startY_3 += 15;
+				page3.getCanvas().drawText(txtRes, 50, startY_3, paint3);
+				startY_3 += 30;
+	
+				page3.getCanvas().drawText("Fait à " + ann.getEtablissement().getVille() + ", le " + new SimpleDateFormat("dd/MM/yyyy").format(new Date()) + ".", 50, startY_3, paint3);	
+			
+				document.finishPage(page3); 
 			}
-		} else {
-			Page page = document.startPage(pageInfo);
 			
-			Paint paint = new Paint(); 
-			paint.setColor(Color.WHITE); 
-			paint.setStyle(Style.FILL); 
-			
-			page.getCanvas().drawPaint(paint); 
-
-			paint.setColor(Color.BLACK); 
-			paint.setTextSize(12); 
-			
-			paint.setFakeBoldText(true);
-			paint.setTextSize(18);
-			page.getCanvas().drawText("RELEVE DE NOTES ET RESULTATS", 150, 40, paint);
-			paint.setFakeBoldText(false);
-			paint.setTextSize(12);
-			page.getCanvas().drawText("Inscrit en : " + ann.getNom() + ".", 50, 70, paint);
-			
-			page.getCanvas().drawText("Aucune note entrée.", 50, 100, paint);
-			page.getCanvas().drawText("Fait à " + ann.getEtablissement().getVille() + ", le " + new SimpleDateFormat("dd/MM/yyyy").format(new Date()), 50, 130, paint);	
-			
-			document.finishPage(page);
-		}
-
-		try {
-			document.writeTo(new FileOutputStream(new File("/sdcard/cacheJMD/rapport-" + ann.getId() + ".pdf")));
-			res = true;
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+			// Ecriture du rapport.
+			try {
+				document.writeTo(new FileOutputStream(new File("/sdcard/cacheJMD/rapport-" + ann.getId() + ".pdf")));
+				res = true;
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+				res = false;
+			} catch (IOException e) {
+				e.printStackTrace();
+				res = false;
+			}
+		} 
 		
 		return res;
 	}

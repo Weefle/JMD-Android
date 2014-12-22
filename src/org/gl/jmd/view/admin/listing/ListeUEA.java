@@ -212,7 +212,7 @@ public class ListeUEA extends Activity {
 								ProgressDialog progress = new ProgressDialog(activity);
 								progress.setMessage("Chargement...");
 								new DeleteUE(progress, Constantes.URL_SERVER + "ue" +
-										"?id=" + listeUE.get(arg2).getId() +
+										"?id=" + ((ListItemUE) adapter.getItem(arg2)).getUE().getId() +
 										"&token=" + FileUtils.readFile(Constantes.FILE_TOKEN) + 
 										"&pseudo=" + FileUtils.readFile(Constantes.FILE_PSEUDO) +
 										"&timestamp=" + new java.util.Date().getTime()).execute();

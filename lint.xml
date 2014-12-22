@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <lint>
     <issue id="DefaultLocale" severity="ignore" />
-    <issue id="InflateParams">
+    <issue id="InflateParams" severity="ignore">
         <ignore path="src/org/gl/jmd/view/list/Header.java" />
     </issue>
     <issue id="SdCardPath" severity="ignore" />

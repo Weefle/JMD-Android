@@ -11,13 +11,23 @@
         android:layout_height="60dp"
         android:background="#FF5E3A"
         android:orientation="horizontal" >
+        
+        <ImageView
+            android:id="@+id/etudiant_liste_ue_img_previous"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerInParent="true"
+            android:layout_marginStart="20dp"
+            android:contentDescription="@string/desc_img"
+            android:onClick="back"
+            android:src="@drawable/previous" />
 
         <TextView
             android:id="@+id/etudiant_liste_ue_tabs_titre"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="30dp"
+            android:gravity="center_horizontal"
             android:layout_centerInParent="true"
             android:textColor="#FFFFFF"
             android:textSize="20sp" />

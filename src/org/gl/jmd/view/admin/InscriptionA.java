@@ -62,6 +62,10 @@ public class InscriptionA extends Activity {
 		PASSWORD_AGAIN = (EditText) findViewById(R.id.admin_inscription_ta_password_again);
 		EMAIL = (EditText) findViewById(R.id.admin_inscription_ta_email);
 	}
+	
+	public void back(View view) {
+		finish();
+	}
 
 	/**
 	 * Méthode permettant de tenter d'inscrire l'utilisateur.

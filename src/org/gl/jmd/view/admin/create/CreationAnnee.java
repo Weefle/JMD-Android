@@ -66,6 +66,29 @@ public class CreationAnnee extends Activity {
 		initListeDecoupage();
 	}
 	
+	public void back(View view) {
+		testBack();
+	}
+	
+	private void testBack() {
+		if (NOM.getText().toString().length() != 0) {
+			AlertDialog.Builder confirmQuitter = new AlertDialog.Builder(this);
+			confirmQuitter.setTitle("Annulation");
+			confirmQuitter.setMessage("Voulez-vous vraiment annuler ?");
+			confirmQuitter.setCancelable(false);
+			confirmQuitter.setPositiveButton("Oui", new AlertDialog.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					finish();
+				}
+			});
+
+			confirmQuitter.setNegativeButton("Non", null);
+			confirmQuitter.show();
+		} else {
+			finish();
+		}
+	}
+	
 	private void initListeDecoupage() {
 		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.decoupage_array, android.R.layout.simple_spinner_item);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -121,32 +144,25 @@ public class CreationAnnee extends Activity {
 			Annee a = new Annee();
 			a.setNom(NOM.getText().toString());
 			a.setDecoupage(decoupage);
-			a.setIsLast(LAST_YEAR.isChecked());
+			a.setIsLast(LAST_YEAR.isChecked());			
+			a.setEtablissement(selectedEta);	
 			
-			Etablissement etablissement = selectedEta;
-			
-			if (etablissement == null) {
-				ETA.setBackgroundResource(R.drawable.border_edittext_error);
-				
-				toast.setText("L'établissement entré n'est pas valide.");
+			try {
+				ProgressDialog progress = new ProgressDialog(activity);
+				progress.setMessage("Chargement...");
+				new CreerAnnee(progress, Constantes.URL_SERVER + "annee" +
+						"?nom=" + URLEncoder.encode(a.getNom(), "UTF-8") +
+						"&idEtablissement=" + a.getEtablissement().getId() +
+						"&idDiplome=" +  idDiplome +
+						"&decoupage=" + a.getDecoupage().name() +
+						"&isLastYear" + a.isLast() +
+						"&token=" + FileUtils.readFile(Constantes.FILE_TOKEN) + 
+						"&pseudo=" + FileUtils.readFile(Constantes.FILE_PSEUDO) +
+						"&timestamp=" + new java.util.Date().getTime()).execute(); 
+			} catch (UnsupportedEncodingException ex) {
+				toast.setText("Erreur d'encodage (UTF-8).");
 				toast.show();
-				
-				return;
-			}
-			
-			a.setEtablissement(etablissement);	
-			
-			ProgressDialog progress = new ProgressDialog(activity);
-			progress.setMessage("Chargement...");
-			new CreerAnnee(progress, Constantes.URL_SERVER + "annee" +
-					"?nom=" + URLEncoder.encode(a.getNom()) +
-					"&idEtablissement=" + a.getEtablissement().getId() +
-					"&idDiplome=" +  idDiplome +
-					"&decoupage=" + a.getDecoupage().name() +
-					"&isLastYear" + a.isLast() +
-					"&token=" + FileUtils.readFile(Constantes.FILE_TOKEN) + 
-					"&pseudo=" + FileUtils.readFile(Constantes.FILE_PSEUDO) +
-					"&timestamp=" + new java.util.Date().getTime()).execute(); 
+			}	
 		} else {
 			boolean isNomOK = true;
 			boolean isEtaOK = true;
@@ -156,11 +172,15 @@ public class CreationAnnee extends Activity {
 			if (NOM.getText().toString().length() == 0) {
 				NOM.setBackgroundResource(R.drawable.border_edittext_error);
 				isNomOK = false;
+			} else {
+				NOM.setBackgroundResource(R.drawable.border_edittext);
 			}
 			
 			if (ETA.getText().toString().length() == 0) {
 				ETA.setBackgroundResource(R.drawable.border_edittext_error);
 				isEtaOK = false;
+			} else {
+				ETA.setBackgroundResource(R.drawable.border_edittext);
 			}
 			
 			if (!isNomOK && !isEtaOK) {
@@ -406,21 +426,6 @@ public class CreationAnnee extends Activity {
 	 */
 	@Override
 	public void onBackPressed() {
-		if (NOM.getText().toString().length() != 0) {
-			AlertDialog.Builder confirmQuitter = new AlertDialog.Builder(this);
-			confirmQuitter.setTitle("Annulation");
-			confirmQuitter.setMessage("Voulez-vous vraiment annuler ?");
-			confirmQuitter.setCancelable(false);
-			confirmQuitter.setPositiveButton("Oui", new AlertDialog.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-					finish();
-				}
-			});
-
-			confirmQuitter.setNegativeButton("Non", null);
-			confirmQuitter.show();
-		} else {
-			finish();
-		}
+		testBack();
 	}
 }

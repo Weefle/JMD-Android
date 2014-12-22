@@ -37,6 +37,8 @@ public class CreationUE extends Activity {
 	
 	private DecoupageYearType decoupage = null;
 	
+	private EditText NOM;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -47,9 +49,34 @@ public class CreationUE extends Activity {
 		activity = this;
 		toast = Toast.makeText(activity, "", Toast.LENGTH_SHORT);
 		
+		NOM = (EditText) findViewById(R.id.admin_creation_ue_nom);
+		
 		a = (Annee) getIntent().getExtras().getSerializable("annee");
 		
 		initListeDecoupage();
+	}
+	
+	public void back(View view) {
+		testBack();
+	}
+	
+	private void testBack() {
+		if (NOM.getText().toString().length() != 0) {
+			AlertDialog.Builder confirmQuitter = new AlertDialog.Builder(this);
+			confirmQuitter.setTitle("Annulation");
+			confirmQuitter.setMessage("Voulez-vous vraiment annuler ?");
+			confirmQuitter.setCancelable(false);
+			confirmQuitter.setPositiveButton("Oui", new AlertDialog.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					finish();
+				}
+			});
+
+			confirmQuitter.setNegativeButton("Non", null);
+			confirmQuitter.show();
+		} else {
+			finish();
+		}
 	}
 	
 	private void initListeDecoupage() {
@@ -111,15 +138,20 @@ public class CreationUE extends Activity {
 				ue.setDecoupage(decoupage);
 			}
 			
-			ProgressDialog progress = new ProgressDialog(activity);
-			progress.setMessage("Chargement...");
-			new CreerUE(progress, Constantes.URL_SERVER + "ue" +
-					"?nom=" + URLEncoder.encode(ue.getNom()) +
-					"&yearType=" + ue.getDecoupage().name() +
-					"&idAnnee=" + a.getId() +
-					"&token=" + FileUtils.readFile(Constantes.FILE_TOKEN) + 
-					"&pseudo=" + FileUtils.readFile(Constantes.FILE_PSEUDO) +
-					"&timestamp=" + new java.util.Date().getTime()).execute(); 
+			try {
+				ProgressDialog progress = new ProgressDialog(activity);
+				progress.setMessage("Chargement...");
+				new CreerUE(progress, Constantes.URL_SERVER + "ue" +
+						"?nom=" + URLEncoder.encode(ue.getNom(), "UTF-8") +
+						"&yearType=" + ue.getDecoupage().name() +
+						"&idAnnee=" + a.getId() +
+						"&token=" + FileUtils.readFile(Constantes.FILE_TOKEN) + 
+						"&pseudo=" + FileUtils.readFile(Constantes.FILE_PSEUDO) +
+						"&timestamp=" + new java.util.Date().getTime()).execute(); 
+			} catch (UnsupportedEncodingException ex) {
+				toast.setText("Erreur d'encodage (UTF-8).");
+				toast.show();
+			}	
 		} else {
 			NOM.setBackgroundResource(R.drawable.border_edittext_error);
 			
@@ -230,23 +262,6 @@ public class CreationUE extends Activity {
 	 */
 	@Override
 	public void onBackPressed() {
-		final EditText NOM = (EditText) findViewById(R.id.admin_creation_ue_nom);
-		
-		if (NOM.getText().toString().length() != 0) {
-			AlertDialog.Builder confirmQuitter = new AlertDialog.Builder(this);
-			confirmQuitter.setTitle("Annulation");
-			confirmQuitter.setMessage("Voulez-vous vraiment annuler ?");
-			confirmQuitter.setCancelable(false);
-			confirmQuitter.setPositiveButton("Oui", new AlertDialog.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-					finish();
-				}
-			});
-
-			confirmQuitter.setNegativeButton("Non", null);
-			confirmQuitter.show();
-		} else {
-			finish();
-		}
+		testBack();
 	}
 }

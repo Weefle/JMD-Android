@@ -1,4 +1,4 @@
-package org.gl.jmd.view.etudiant.create;
+package org.gl.jmd.view.etudiant;
 
 import java.util.*;
 
@@ -279,6 +279,10 @@ public class SaisieNoteE extends Activity {
 				}); 
 			}
 		});
+	}
+	
+	public void back(View view) {
+		finish();
 	}
 
 	public void save(View view) {

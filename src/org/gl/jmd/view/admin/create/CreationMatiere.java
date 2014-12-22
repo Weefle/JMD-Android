@@ -57,6 +57,29 @@ public class CreationMatiere extends Activity {
 		idUE = getIntent().getExtras().getInt("idUE");
 	}
 	
+	public void back(View view) {
+		testBack();
+	}
+	
+	private void testBack() {
+		if ((NOM.getText().toString().length() != 0) || (COEFF.getText().toString().length() != 0)) {
+			AlertDialog.Builder confirmQuitter = new AlertDialog.Builder(this);
+			confirmQuitter.setTitle("Annulation");
+			confirmQuitter.setMessage("Voulez-vous vraiment annuler ?");
+			confirmQuitter.setCancelable(false);
+			confirmQuitter.setPositiveButton("Oui", new AlertDialog.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					finish();
+				}
+			});
+
+			confirmQuitter.setNegativeButton("Non", null);
+			confirmQuitter.show();
+		} else {
+			finish();
+		}
+	}
+	
 	/**
 	 * Méthode permettant de créer une matière (déclenchée lors d'un click sur le bouton "créer").
 	 * 
@@ -78,21 +101,30 @@ public class CreationMatiere extends Activity {
 				COEFF.setBackgroundResource(R.drawable.border_edittext);
 			}
 			
+			if (NOM.getText().toString().length() != 0) {
+				COEFF.setBackgroundResource(R.drawable.border_edittext);
+			} 
+			
 			Matiere m = new Matiere();
 			m.setNom(NOM.getText().toString());
 			m.setCoefficient(Integer.parseInt(COEFF.getText().toString()));
 			m.setIsOption(IS_OPTION.isChecked());
 			
-			ProgressDialog progress = new ProgressDialog(activity);
-			progress.setMessage("Chargement...");
-			new CreerMatiere(progress, Constantes.URL_SERVER + "matiere" +
-					"?nom=" + URLEncoder.encode(m.getNom()) +
-					"&coefficient=" + m.getCoefficient() +
-					"&isOption=" + m.isOption() +
-					"&idUE=" + idUE +
-					"&token=" + FileUtils.readFile(Constantes.FILE_TOKEN) + 
-					"&pseudo=" + FileUtils.readFile(Constantes.FILE_PSEUDO) +
-					"&timestamp=" + new java.util.Date().getTime()).execute();	
+			try {
+				ProgressDialog progress = new ProgressDialog(activity);
+				progress.setMessage("Chargement...");
+				new CreerMatiere(progress, Constantes.URL_SERVER + "matiere" +
+						"?nom=" + URLEncoder.encode(m.getNom(), "UTF-8") +
+						"&coefficient=" + m.getCoefficient() +
+						"&isOption=" + m.isOption() +
+						"&idUE=" + idUE +
+						"&token=" + FileUtils.readFile(Constantes.FILE_TOKEN) + 
+						"&pseudo=" + FileUtils.readFile(Constantes.FILE_PSEUDO) +
+						"&timestamp=" + new java.util.Date().getTime()).execute();	
+			} catch (UnsupportedEncodingException ex) {
+				toast.setText("Erreur d'encodage (UTF-8).");
+				toast.show();
+			}	
 		} else {
 			boolean isCoeffOK = true;
 			boolean isNomOK = true;
@@ -228,21 +260,6 @@ public class CreationMatiere extends Activity {
 	 */
 	@Override
 	public void onBackPressed() {		
-		if ((NOM.getText().toString().length() != 0) || (COEFF.getText().toString().length() != 0)) {
-			AlertDialog.Builder confirmQuitter = new AlertDialog.Builder(this);
-			confirmQuitter.setTitle("Annulation");
-			confirmQuitter.setMessage("Voulez-vous vraiment annuler ?");
-			confirmQuitter.setCancelable(false);
-			confirmQuitter.setPositiveButton("Oui", new AlertDialog.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-					finish();
-				}
-			});
-
-			confirmQuitter.setNegativeButton("Non", null);
-			confirmQuitter.show();
-		} else {
-			finish();
-		}
+		testBack();
 	}
 }

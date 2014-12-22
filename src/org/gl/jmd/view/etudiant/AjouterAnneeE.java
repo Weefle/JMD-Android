@@ -1,4 +1,4 @@
-package org.gl.jmd.view.etudiant.create;
+package org.gl.jmd.view.etudiant;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
@@ -13,6 +13,7 @@ import org.gl.jmd.utils.WebUtils;
 import org.json.*;
 
 import android.os.*;
+import android.util.Log;
 import android.view.View;
 import android.widget.*;
 import android.app.*;
@@ -62,6 +63,10 @@ public class AjouterAnneeE extends Activity {
 													"?idDiplome=" + selectedDiplome.getId() +
 													"&idEtablissement=" + selectedEta.getId()).execute();	
 		}
+	}
+	
+	public void back(View view) {
+		finish();
 	}
 	
 	public void openListEta(View view) {
@@ -209,6 +214,8 @@ public class AjouterAnneeE extends Activity {
 			if (jsonStr.length() > 0) {            	
 				try {
 					JSONObject anneeJSON = new JSONObject(jsonStr);
+					
+					Log.e("AjouterAnneeE", jsonStr);
 
 					a.setId(anneeJSON.getInt("idAnnee"));
 					a.setNom(anneeJSON.getString("nom"));
@@ -284,7 +291,7 @@ public class AjouterAnneeE extends Activity {
 	                        ue.setListeMatieres(listeMatieres);
                         } catch (JSONException ex) {
                         	ex.printStackTrace();
-                        }
+                        } 
                         
                         listeUE.add(ue);
                     }
@@ -362,7 +369,7 @@ public class AjouterAnneeE extends Activity {
 		}
 
 		protected Void doInBackground(Void... arg0) {
-String jsonStr = "";
+			String jsonStr = "";
             
 			try {
 				jsonStr = WebUtils.call(pathUrl, WebUtils.GET);
@@ -476,7 +483,7 @@ String jsonStr = "";
 		}
 
 		protected Void doInBackground(Void... arg0) {
-String jsonStr = "";
+			String jsonStr = "";
             
 			try {
 				jsonStr = WebUtils.call(pathUrl, WebUtils.GET);
@@ -604,7 +611,7 @@ String jsonStr = "";
 		}
 
 		protected Void doInBackground(Void... arg0) {
-String jsonStr = "";
+			String jsonStr = "";
             
 			try {
 				jsonStr = WebUtils.call(pathUrl, WebUtils.GET);

@@ -14,7 +14,6 @@ import org.gl.jmd.utils.FileUtils;
 import org.gl.jmd.view.*;
 import org.gl.jmd.view.admin.create.*;
 import org.gl.jmd.view.admin.listing.*;
-import org.gl.jmd.view.menu.admin.*;
 
 import android.app.*;
 import android.content.*;
@@ -206,6 +205,10 @@ public class AccueilA extends TabActivity {
 		map = new HashMap<String, String>();
 		map.put("titre", "Nommer un admin");
 		listItem.add(map);
+		
+		map = new HashMap<String, String>();
+		map.put("titre", "Clôturer ce compte");
+		listItem.add(map);
         
         dList.setAdapter(new SimpleAdapter(getBaseContext(), listItem, R.menu.slide_menu_simple_list, new String[] {"titre"}, new int[] {R.id.titre}));
 		
@@ -218,11 +221,18 @@ public class AccueilA extends TabActivity {
 					ProgressDialog progress = new ProgressDialog(activity);
 					progress.setMessage("Chargement...");
 					new SeDeco(progress, Constantes.URL_SERVER + "admin/logout" +
-							"&token=" + FileUtils.readFile(Constantes.FILE_TOKEN) + 
+							"?token=" + FileUtils.readFile(Constantes.FILE_TOKEN) + 
 							"&pseudo=" + FileUtils.readFile(Constantes.FILE_PSEUDO) +
 							"&timestamp=" + new java.util.Date().getTime()).execute(); 
         		} else if (listItem.get(position).get("titre").equals("Nommer un admin")) {
         			startActivity(new Intent(AccueilA.this, AjouterAdminA.class));			
+        		} else if (listItem.get(position).get("titre").equals("Clôturer ce compte")) {
+        			ProgressDialog progress = new ProgressDialog(activity);
+					progress.setMessage("Chargement...");
+					new CloturerCompte(progress, Constantes.URL_SERVER + "admin/closeAdminAccount" +
+							"?token=" + FileUtils.readFile(Constantes.FILE_TOKEN) + 
+							"&pseudo=" + FileUtils.readFile(Constantes.FILE_PSEUDO) +
+							"&timestamp=" + new java.util.Date().getTime()).execute(); 		
         		}
 			}
         });
@@ -270,7 +280,7 @@ public class AccueilA extends TabActivity {
 		}
 	}
 	
-	/* Classe interne. */
+	/* Classes internes. */
 	
 	private class SeDeco extends AsyncTask<Void, Void, Void> {
 		private ProgressDialog progress;
@@ -291,17 +301,14 @@ public class AccueilA extends TabActivity {
 
 		protected Void doInBackground(Void... arg0) {
 			HttpClient httpclient = new DefaultHttpClient();
-		    HttpGet httppost = new HttpGet(pathUrl);
+		    HttpGet httpGet = new HttpGet(pathUrl);
 
 		    try {
-		        HttpResponse response = httpclient.execute(httppost);
+		        HttpResponse response = httpclient.execute(httpGet);
 		        
 		        if (response.getStatusLine().getStatusCode() == 200) {
-		        	File filePseudo = new File("/sdcard/cacheJMD/pseudo.jmd");
-					File fileToken = new File("/sdcard/cacheJMD/token.jmd");
-					
-					filePseudo.delete();
-					fileToken.delete();
+		        	Constantes.FILE_PSEUDO.delete();
+		        	Constantes.FILE_PARAM.delete();
 
 					finish();
 					startActivity(new Intent(AccueilA.this, ConnexionA.class));		
@@ -318,7 +325,91 @@ public class AccueilA extends TabActivity {
 		        	toast.setText("Une erreur est survenue au niveau de la BDD.");	
 					toast.show();
 		        } else {
-		        	toast.setText("Erreur inconnue. Veuillez r�essayer.");	
+		        	toast.setText("Erreur inconnue. Veuillez réessayer.");	
+					toast.show();
+		        }
+		    } catch (ClientProtocolException e) {
+		    	AccueilA.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(AccueilA.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								AccueilA.this.finish();
+							}
+						});
+
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+		    } catch (IOException e) {
+		    	AccueilA.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(AccueilA.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								AccueilA.this.finish();
+							}
+						});
+
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+		    }
+
+			return null;
+		}
+	}
+	
+	private class CloturerCompte extends AsyncTask<Void, Void, Void> {
+		private ProgressDialog progress;
+		private String pathUrl;
+
+		public CloturerCompte(ProgressDialog progress, String pathUrl) {
+			this.progress = progress;
+			this.pathUrl = pathUrl;
+		}
+
+		public void onPreExecute() {
+			progress.show();
+		}
+
+		public void onPostExecute(Void unused) {
+			progress.dismiss();
+		}
+
+		protected Void doInBackground(Void... arg0) {
+			HttpClient httpclient = new DefaultHttpClient();
+		    HttpGet httpGet = new HttpGet(pathUrl);
+		    
+		    try {
+		        HttpResponse response = httpclient.execute(httpGet);
+		        
+		        if (response.getStatusLine().getStatusCode() == 200) {
+		        	Constantes.FILE_PSEUDO.delete();
+		        	Constantes.FILE_PARAM.delete();
+
+					finish();
+					startActivity(new Intent(AccueilA.this, ConnexionA.class));		
+		        	
+		        	toast.setText("Votre compte a bien été supprimé.");
+		        	toast.show();
+		        } else if (response.getStatusLine().getStatusCode() == 401) {
+					activity.finishAffinity();
+		        	startActivity(new Intent(AccueilA.this, Accueil.class));	
+		        	
+		        	toast.setText("Erreur.");	
+					toast.show();
+		        } else if (response.getStatusLine().getStatusCode() == 500) {
+		        	toast.setText("Une erreur est survenue au niveau de la BDD.");	
+					toast.show();
+		        } else {
+		        	toast.setText("Erreur inconnue. Veuillez réessayer.");	
 					toast.show();
 		        }
 		    } catch (ClientProtocolException e) {

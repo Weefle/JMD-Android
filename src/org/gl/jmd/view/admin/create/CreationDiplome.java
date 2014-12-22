@@ -9,7 +9,6 @@ import org.apache.http.client.*;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.gl.jmd.*;
-import org.gl.jmd.model.Diplome;
 import org.gl.jmd.utils.*;
 import org.gl.jmd.view.Accueil;
 
@@ -46,6 +45,29 @@ public class CreationDiplome extends Activity {
 		NOM = (EditText) findViewById(R.id.admin_creation_diplome_nom);
 	}
 	
+	public void back(View view) {
+		testBack();
+	}
+	
+	private void testBack() {
+		if (NOM.getText().toString().length() != 0) {
+			AlertDialog.Builder confirmQuitter = new AlertDialog.Builder(this);
+			confirmQuitter.setTitle("Annulation");
+			confirmQuitter.setMessage("Voulez-vous vraiment annuler ?");
+			confirmQuitter.setCancelable(false);
+			confirmQuitter.setPositiveButton("Oui", new AlertDialog.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					finish();
+				}
+			});
+
+			confirmQuitter.setNegativeButton("Non", null);
+			confirmQuitter.show();
+		} else {
+			finish();
+		}
+	}
+	
 	/**
 	 * Méthode permettant de créer un diplôme (déclenchée lors d'un click sur le bouton "créer").
 	 * 
@@ -65,16 +87,18 @@ public class CreationDiplome extends Activity {
 				return;
 			}
 			
-			Diplome d = new Diplome();
-			d.setNom(NOM.getText().toString());	
-			
-			ProgressDialog progress = new ProgressDialog(activity);
-			progress.setMessage("Chargement...");
-			new CreerDiplome(progress, Constantes.URL_SERVER + "diplome" +
-					"?nom=" + URLEncoder.encode(d.getNom()) +
-					"&token=" + FileUtils.readFile(Constantes.FILE_TOKEN) + 
-					"&pseudo=" + FileUtils.readFile(Constantes.FILE_PSEUDO) +
-					"&timestamp=" + new java.util.Date().getTime()).execute();	
+			try {
+				ProgressDialog progress = new ProgressDialog(activity);
+				progress.setMessage("Chargement...");
+				new CreerDiplome(progress, Constantes.URL_SERVER + "diplome" +
+							"?nom=" + URLEncoder.encode(NOM.getText().toString(), "UTF-8") +
+							"&token=" + FileUtils.readFile(Constantes.FILE_TOKEN) + 
+							"&pseudo=" + FileUtils.readFile(Constantes.FILE_PSEUDO) +
+							"&timestamp=" + new java.util.Date().getTime()).execute();
+			} catch (UnsupportedEncodingException e) {
+				toast.setText("Erreur d'encodage (UTF-8).");
+				toast.show();
+			}	
 		} else {
 			NOM.setBackgroundResource(R.drawable.border_edittext_error);
 			
@@ -104,10 +128,10 @@ public class CreationDiplome extends Activity {
 
 		protected Void doInBackground(Void... arg0) {
 			HttpClient httpclient = new DefaultHttpClient();
-		    HttpPut httppost = new HttpPut(pathUrl);
+		    HttpPut httpPut = new HttpPut(pathUrl);
 
 		    try {
-		        HttpResponse response = httpclient.execute(httppost);
+		        HttpResponse response = httpclient.execute(httpPut);
 		        
 		        if (response.getStatusLine().getStatusCode() == 200) {
 		        	toast.setText("Diplôme créé.");
@@ -188,21 +212,6 @@ public class CreationDiplome extends Activity {
 	 */
 	@Override
 	public void onBackPressed() {
-		if (NOM.getText().toString().length() != 0) {
-			AlertDialog.Builder confirmQuitter = new AlertDialog.Builder(this);
-			confirmQuitter.setTitle("Annulation");
-			confirmQuitter.setMessage("Voulez-vous vraiment annuler ?");
-			confirmQuitter.setCancelable(false);
-			confirmQuitter.setPositiveButton("Oui", new AlertDialog.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-					finish();
-				}
-			});
-
-			confirmQuitter.setNegativeButton("Non", null);
-			confirmQuitter.show();
-		} else {
-			finish();
-		}
+		testBack();
 	}
 }
