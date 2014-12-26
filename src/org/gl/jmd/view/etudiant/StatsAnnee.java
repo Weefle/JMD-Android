@@ -7,6 +7,7 @@ import org.gl.jmd.model.Annee;
 import org.gl.jmd.utils.*;
 
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.*;
@@ -57,6 +58,10 @@ public class StatsAnnee extends Activity {
 		tvMention.setText(ann.getMention());
 	}
 	
+	public void back(View view) {
+		finish();
+	}
+	
 	/**
 	 * Méthode déclenchée lors d'un click sur le bouton de stats d'une année.
 	 * 
@@ -64,15 +69,46 @@ public class StatsAnnee extends Activity {
 	 */
 	public void export(View view) {		
 		if (ann.getMoyenne() != -1.0) {
-			PdfUtils.generateYearRapport(ann, this.getApplicationContext());
-			
-			Intent intent = new Intent(Intent.ACTION_VIEW);
-			intent.setDataAndType(Uri.fromFile(new File("/sdcard/cacheJMD/rapport-" + ann.getId() + ".pdf")), "application/pdf");
-			intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-			startActivity(intent); 
+			ProgressDialog progress = new ProgressDialog(activity);
+			progress.setMessage("Chargement...");
+			new GenerateReport(progress).execute();	
 		} else {
-			toast.setText("Il faut au moins rentrer une note pour pouvoir générer un PDF.");
+			toast.setText("Il faut au moins rentrer une note pour pouvoir générer un rapport au format PDF.");
 			toast.show();
+		}
+	}
+	
+	/* Classe interne. */
+
+	private class GenerateReport extends AsyncTask<Void, Void, Void> {
+		private ProgressDialog progress;
+
+		public GenerateReport(ProgressDialog progress) {
+			this.progress = progress;
+		}
+
+		public void onPreExecute() {
+			progress.show();
+		}
+
+		public void onPostExecute(Void unused) {
+			progress.dismiss();
+		}
+
+		protected Void doInBackground(Void... arg0) {
+			boolean res = PdfUtils.generateYearRapport(ann, activity);
+
+			if (res) {
+				Intent intent = new Intent(Intent.ACTION_VIEW);
+				intent.setDataAndType(Uri.fromFile(new File("/sdcard/cacheJMD/rapport-" + ann.getId() + ".pdf")), "application/pdf");
+				intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+				startActivity(intent); 
+			} else {
+				toast.setText("Une erreur est survenue lors de la génération du rapport. Veuillez réessayer.");
+				toast.show();
+			}
+			
+			return null;
 		}
 	}
 }

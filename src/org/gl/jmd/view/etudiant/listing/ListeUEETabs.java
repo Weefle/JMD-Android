@@ -66,9 +66,9 @@ public class ListeUEETabs extends TabActivity {
 	}
 
 	/**
-	 * Méthode déclenchée lors d'un click sur le bouton de simulation.
+	 * Méthode déclenchée lors d'un click sur le bouton de retour.
 	 * 
-	 * @param view La vue lors du click sur le bouton de simulation.
+	 * @param view La vue lors du click sur le bouton de retour.
 	 */
 	public void back(View view) {
 		finish();

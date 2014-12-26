@@ -52,6 +52,21 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
+        <activity
+            android:name="org.gl.jmd.view.etudiant.AjouterAnneeE"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/etudiant_modifier_ae_view_name"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar" >
+        </activity>
+        <activity
+            android:name="org.gl.jmd.view.etudiant.SaisieNoteE"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/etudiant_saisie_note_titre_view_name"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" >
+        </activity>
 
         <!-- Listing -->
 
@@ -68,24 +83,6 @@
             android:label="@string/etudiant_liste_ue__tabs_view_name"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
-        </activity>
-
-        <!-- Création -->
-
-        <activity
-            android:name="org.gl.jmd.view.etudiant.AjouterAnneeE"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/etudiant_modifier_ae_view_name"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" >
-        </activity>
-        <activity
-            android:name="org.gl.jmd.view.etudiant.SaisieNoteE"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/etudiant_saisie_note_titre_view_name"
-            android:theme="@android:style/Theme.NoTitleBar"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan" >
         </activity>
 
         <!-- Vues de l'administrateur. -->

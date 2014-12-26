@@ -174,7 +174,7 @@ public class AccueilE extends Activity {
 	 * @param view La vue lors du click sur le bouton de modification.
 	 */
 	public void modifierListe(View view) {
-		startActivity(new Intent(AccueilE.this, AjouterAnneeE.class));	
+		startActivity(new Intent(AccueilE.this, org.gl.jmd.view.etudiant.AjouterAnneeE.class));	
 	}
 	
 	public void navigateToAccueil(View view) {

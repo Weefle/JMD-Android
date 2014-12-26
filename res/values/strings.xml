@@ -134,7 +134,7 @@
 	<!-- Autres -->
 	
 	<string name="accueil_choix_user_admin_txt">Qui êtes-vous ?</string>
-	<string name="ecran_choix_user_checkbox_texte">Se souvenir de mon choix ?</string>
+	<string name="ecran_choix_user_checkbox_texte">Se souvenir de mon choix</string>
 	
 	<string name="desc_img">Description</string>
 	
@@ -148,7 +148,7 @@
 	<string name="admin_choix_ue">Choisir une UE</string>
 	<string name="admin_choix_matiere">Choisir une matière</string>
 	<string name="admin_connexion_subtitle">Connectez-vous à votre compte Administrateur</string>
-	<string name="admin_creation_annee_checkbox_derniere_annee">Dernière année d\'un diplôme ?</string>
+	<string name="admin_creation_annee_checkbox_derniere_annee">Dernière année du diplôme</string>
 	<string name="admin_creation_matiere_coefficient_tv">Coefficient</string>
 	<string name="admin_creation_regle_sapplique_sur">S\'applique sur : </string>
 	

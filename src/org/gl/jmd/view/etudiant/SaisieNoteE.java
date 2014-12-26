@@ -5,6 +5,7 @@ import java.util.*;
 import org.gl.jmd.EtudiantDAO;
 import org.gl.jmd.R;
 import org.gl.jmd.model.*;
+import org.gl.jmd.view.list.item.ListItem;
 
 import android.os.*;
 import android.view.View;
@@ -282,7 +283,18 @@ public class SaisieNoteE extends Activity {
 	}
 	
 	public void back(View view) {
-		finish();
+		AlertDialog.Builder confirmQuitter = new AlertDialog.Builder(SaisieNoteE.this);
+		confirmQuitter.setTitle("Annulation");
+		confirmQuitter.setMessage("Voulez-vous vraiment annuler ?\nToute modification ne sera pas enregistrée.");
+		confirmQuitter.setCancelable(false);
+		confirmQuitter.setPositiveButton("Oui", new AlertDialog.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {								
+				finish();
+			}
+		});
+
+		confirmQuitter.setNegativeButton("Non", null);
+		confirmQuitter.show();
 	}
 
 	public void save(View view) {
@@ -298,6 +310,16 @@ public class SaisieNoteE extends Activity {
 		EditText coeffPartiel = (EditText) listeCoeffPartiel.findViewById(R.id.noteCC);
 
 		if (noteS1ET.getText().toString().length() > 0) {
+			// Si la note rentrée est non valide (> 20 ou < 0).
+			if ((Double.parseDouble(noteS1ET.getText().toString()) < 0.0) || (Double.parseDouble(noteS1ET.getText().toString()) > 20.0)) {
+				noteS1ET.setBackgroundResource(R.drawable.border_edittext_error);
+					
+				toast.setText("Une note doit être comprise entre 0 et 20.");
+				toast.show();
+					
+				return;
+			} 
+			
 			Note noteS1 = new Note();
 			noteS1.setNote(Double.parseDouble(noteS1ET.getText().toString()));
 			

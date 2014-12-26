@@ -53,6 +53,15 @@ public class ListeUEE extends Activity {
 			initTitleView();
 		}
 	}
+	
+	/**
+	 * Méthode déclenchée lors d'un click sur le bouton de retour.
+	 * 
+	 * @param view La vue lors du click sur le bouton de retour.
+	 */
+	public void back(View view) {
+		finish();
+	}
 
 	private void initTitleView() {
 		TextView tvTitre = (TextView) findViewById(R.id.etudiant_liste_ue_titre);

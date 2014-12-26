@@ -66,6 +66,8 @@ public class UE implements Serializable {
 	/**
 	 * Méthode permettant de calculer la moyenne de l'UE.
 	 * 
+	 * @param listeRegles La liste des règles de l'année de l'UE.
+	 * 
 	 * @return La moyenne de l'UE.
 	 */
 	public double getMoyenne(ArrayList<Regle> listeRegles) {
@@ -141,6 +143,15 @@ public class UE implements Serializable {
 		return res;
 	}
 	
+	/**
+	 * Méthode permettant de savoir si l'UE est ajournée (i.e une note 
+	 * de l'UE est inférieure à la note minimale définie).
+	 * 
+	 * @param listeRegles La liste des règles de l'année de l'UE.
+	 * 
+	 * @return <b>true</b> si l'UE est ajournée.<br />
+	 * <b>false</b> sinon.
+	 */
 	public boolean estAjourne(ArrayList<Regle> listeRegles) {
 		boolean res = false;
 		
