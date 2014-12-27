@@ -13,7 +13,6 @@ import org.gl.jmd.utils.WebUtils;
 import org.json.*;
 
 import android.os.*;
-import android.util.Log;
 import android.view.View;
 import android.widget.*;
 import android.app.*;
@@ -214,8 +213,6 @@ public class AjouterAnneeE extends Activity {
 			if (jsonStr.length() > 0) {            	
 				try {
 					JSONObject anneeJSON = new JSONObject(jsonStr);
-					
-					Log.e("AjouterAnneeE", jsonStr);
 
 					a.setId(anneeJSON.getInt("idAnnee"));
 					a.setNom(anneeJSON.getString("nom"));
@@ -236,65 +233,79 @@ public class AjouterAnneeE extends Activity {
 					a.setDiplome(d);
 					
 					// Liste des règles.
-					JSONArray reglesJSON = anneeJSON.getJSONArray("regles");
+	
 					ArrayList<Regle> listeRegles = new ArrayList<Regle>();
-					Regle r = null;
-					
-                    for (int i = 0; i < reglesJSON.length(); i++) {
-                    	JSONObject regleJSON = reglesJSON.getJSONObject(i);
-                        
-                        r = new Regle();
-                        r.setId(regleJSON.getInt("id"));
-                        r.setIdAnnee(regleJSON.getInt("idAnnee"));
-                        r.setIdMatiere(regleJSON.getInt("idMatiere"));
-                        r.setIdUE(regleJSON.getInt("idUE"));
-                        r.setOperateur(regleJSON.getInt("operateur"));
-                        r.setRegle(regleJSON.getInt("regle"));
-                        r.setValeur(regleJSON.getInt("valeur"));
 
-                        listeRegles.add(r);
-                    }
+					try {
+						JSONArray reglesJSON = anneeJSON.getJSONArray("regles");
+						
+						Regle r = null;
+						
+	                    for (int i = 0; i < reglesJSON.length(); i++) {
+	                    	JSONObject regleJSON = reglesJSON.getJSONObject(i);
+	                        
+	                        r = new Regle();
+	                        r.setId(regleJSON.getInt("id"));
+	                        r.setIdAnnee(regleJSON.getInt("idAnnee"));
+	                        r.setIdMatiere(regleJSON.getInt("idMatiere"));
+	                        r.setIdUE(regleJSON.getInt("idUE"));
+	                        r.setOperateur(regleJSON.getInt("operateur"));
+	                        r.setRegle(regleJSON.getInt("regle"));
+	                        r.setValeur(regleJSON.getInt("valeur"));
+	
+	                        listeRegles.add(r);
+	                    }
+					} catch (JSONException ex) {
+						ex.printStackTrace();
+					}
                     
                     a.setListeRegles(listeRegles);
 					
 					// Liste des UE.
-					JSONArray uesJSON = anneeJSON.getJSONArray("ues");
-					ArrayList<UE> listeUE = new ArrayList<UE>();
-					UE ue = null;
-					
-                    for (int i = 0; i < uesJSON.length(); i++) {
-                    	JSONObject ueJSON = uesJSON.getJSONObject(i);
-                        
-                        ue = new UE();
-                        ue.setId(ueJSON.getInt("idUE"));
-                        ue.setNom(ueJSON.getString("nom"));
-                        ue.setDecoupage(DecoupageYearType.valueOf(ueJSON.getString("yearType")));
-                        
-                        ArrayList<Matiere> listeMatieres = new ArrayList<Matiere>();
-                        Matiere m = null;
-                        
-                        try {
-	                        JSONArray matieresJSON = ueJSON.getJSONArray("matieres");
+                    
+                    ArrayList<UE> listeUE = new ArrayList<UE>();
+                    
+					try {
+	                    JSONArray uesJSON = anneeJSON.getJSONArray("ues");
+						
+						UE ue = null;
+						
+	                    for (int i = 0; i < uesJSON.length(); i++) {
+	                    	JSONObject ueJSON = uesJSON.getJSONObject(i);
 	                        
-	                        for (int j = 0; j < matieresJSON.length(); j++) {
-	                        	JSONObject matiereJSON = matieresJSON.getJSONObject(j);
-	                        	
-	                        	m = new Matiere();
-	                        	m.setId(matiereJSON.getInt("idMatiere"));
-	                        	m.setCoefficient(matiereJSON.getLong("coefficient"));
-	                        	m.setNom(matiereJSON.getString("nom"));
-	                        	m.setIsOption(matiereJSON.getBoolean("isOption"));
-	                        	
-	                        	listeMatieres.add(m);
-	                        }
+	                        ue = new UE();
+	                        ue.setId(ueJSON.getInt("idUE"));
+	                        ue.setNom(ueJSON.getString("nom"));
+	                        ue.setDecoupage(DecoupageYearType.valueOf(ueJSON.getString("yearType")));
 	                        
-	                        ue.setListeMatieres(listeMatieres);
-                        } catch (JSONException ex) {
-                        	ex.printStackTrace();
-                        } 
-                        
-                        listeUE.add(ue);
-                    }
+	                        ArrayList<Matiere> listeMatieres = new ArrayList<Matiere>();
+	                        Matiere m = null;
+	                        
+	                        try {
+		                        JSONArray matieresJSON = ueJSON.getJSONArray("matieres");
+		                        
+		                        for (int j = 0; j < matieresJSON.length(); j++) {
+		                        	JSONObject matiereJSON = matieresJSON.getJSONObject(j);
+		                        	
+		                        	m = new Matiere();
+		                        	m.setId(matiereJSON.getInt("idMatiere"));
+		                        	m.setCoefficient(matiereJSON.getLong("coefficient"));
+		                        	m.setNom(matiereJSON.getString("nom"));
+		                        	m.setIsOption(matiereJSON.getBoolean("isOption"));
+		                        	
+		                        	listeMatieres.add(m);
+		                        }
+		                        
+		                        ue.setListeMatieres(listeMatieres);
+	                        } catch (JSONException ex) {
+	                        	ex.printStackTrace();
+	                        } 
+	                        
+	                        listeUE.add(ue);
+	                    }
+					} catch (JSONException ex) {
+						ex.printStackTrace();
+					}
                     
                     a.setListeUE(listeUE);
 
