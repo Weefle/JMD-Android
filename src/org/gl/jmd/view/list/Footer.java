@@ -41,7 +41,7 @@ public class Footer implements Item {
 		RelativeLayout.LayoutParams r = (RelativeLayout.LayoutParams) isValid.getLayoutParams();
 
 		if (this.isAjourne) {
-			isValid.setText("Ajournée.");
+			isValid.setText("Défaillant.");
 			
 			r.width = 150;
 		} else if (this.moyenne < 10.0) {

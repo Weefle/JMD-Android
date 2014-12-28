@@ -35,9 +35,20 @@ public class Matiere implements Serializable {
 	private boolean isOption;
 	
 	/**
+	 * Booléen permettant de savoir si la matière est rattrapable, ou non.
+	 */
+	private boolean isRattrapable;
+	
+	/**
 	 * Le coefficient du partiel.
 	 */
 	private double coeffPartiel = 0;
+	
+	/**
+	 * La note minimale de la matière.
+	 * Une note inférieure signifie que la matière est défaillante.
+	 */
+	private double noteMini = -1.0;
 	
 	/**
 	 * La note de première session.
@@ -101,6 +112,17 @@ public class Matiere implements Serializable {
 		return res;
 	}
 	
+	/**
+	 * Méthode permettant de savoir si la matière est défaillante ou non
+	 * (dans le cas où une note minimale existe).
+	 * 
+	 * @return <b>true</b> si la matière est défaillante.
+	 * <b>false</b> sinon.
+	 */
+	public boolean isDefaillant() {
+		return (this.getNoteFinale() < this.noteMini);
+	}
+	
 	/* Getters. */
 	
 	/**
@@ -141,12 +163,31 @@ public class Matiere implements Serializable {
 	}
 	
 	/**
+	 * Méthode permettant de savoir si la matière est rattrapable, ou non.
+	 * 
+	 * @return <b>true</b> si la matière est rattrapable.<br />
+	 * <b>false</b> sinon.
+	 */
+	public boolean isRattrapable() {
+		return this.isRattrapable;
+	}
+	
+	/**
 	 * Méthode retournant le coefficient du partiel de la matière.
 	 * 
 	 * @return Le coefficient du partiel de la matière.
 	 */
 	public double getCoeffPartiel() {
 		return this.coeffPartiel;
+	}
+	
+	/**
+	 * Méthode retournant la note minimale de la matière.
+	 * 
+	 * @return La note minimale de la matière.
+	 */
+	public double getNoteMini() {
+		return this.noteMini;
 	}
 	
 	/**
@@ -215,12 +256,30 @@ public class Matiere implements Serializable {
 	}
 	
 	/**
+	 * Méthode permettant de modifier le fait que la matière soit rattrapable, ou non. 
+	 * 
+	 * @param isRattrapable Le booléan représentant le fait que la matière soit rattrapable, ou non.
+	 */
+	public void setIsRattrapable(boolean isRattrapable) {
+		this.isRattrapable = isRattrapable;
+	}
+	
+	/**
 	 * Méthode permettant de modifier le coefficient du partiel de la matière.
 	 * 
 	 * @param coeffPartiel Le nouveau coefficient du partiel de la matière.
 	 */
 	public void setCoeffPartiel(double coeffPartiel) {
 		this.coeffPartiel = coeffPartiel;
+	}
+	
+	/**
+	 * Méthode permettant de modifier la note minimale de la matière.
+	 * 
+	 * @param noteMini La nouvelle note minimale de la matière.
+	 */
+	public void setNoteMini(double noteMini) {
+		this.noteMini = noteMini;
 	}
 
 	/**

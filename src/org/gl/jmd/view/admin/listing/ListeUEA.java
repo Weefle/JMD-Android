@@ -15,9 +15,9 @@ import org.gl.jmd.model.enumeration.DecoupageType;
 import org.gl.jmd.model.enumeration.DecoupageYearType;
 import org.gl.jmd.utils.*;
 import org.gl.jmd.view.Accueil;
+import org.gl.jmd.view.admin.create.CreationUE;
 import org.gl.jmd.view.list.*;
-import org.gl.jmd.view.list.item.Item;
-import org.gl.jmd.view.list.item.ListItemUE;
+import org.gl.jmd.view.list.item.*;
 import org.json.*;
 
 import android.app.*;
@@ -42,6 +42,8 @@ public class ListeUEA extends Activity {
 	
 	private ArrayList<UE> listeUE = new ArrayList<UE>();
 	
+	private TextView tvTitre = null;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -54,7 +56,25 @@ public class ListeUEA extends Activity {
 		activity = this;
 		toast = Toast.makeText(getBaseContext(), "", Toast.LENGTH_SHORT);
 		
+		tvTitre = (TextView) findViewById(R.id.administrateur_liste_ue);
+		
+		if (tvTitre.length() > 20) {
+			tvTitre.setText(annee.getNom().substring(0, 20) + "...");
+		} else {
+			tvTitre.setText(annee.getNom());
+		}
+		
 		actualiserListe();
+	}
+	
+	public void openPopupCreation(View view) {
+		Intent intent = new Intent(ListeUEA.this, CreationUE.class);
+		intent.putExtra("annee", annee);
+		startActivity(intent);	
+	}
+	
+	public void back(View view) {
+		finish();
 	}
 
 	private void actualiserListe() {		

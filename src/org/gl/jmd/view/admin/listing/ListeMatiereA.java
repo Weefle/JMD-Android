@@ -85,7 +85,10 @@ public class ListeMatiereA extends Activity {
 				map.put("id", "" + listeMatieres.get(s).getId());
 				map.put("titre", ((listeMatieres.get(s).getNom().length() > 20) ? listeMatieres.get(s).getNom().substring(0, 20) + "..." : listeMatieres.get(s).getNom()));
 				map.put("isOption", (listeMatieres.get(s).isOption() ? "Option" : "Obligatoire"));
-				map.put("description", "Coefficient : " + listeMatieres.get(s).getCoefficient());
+				map.put("description", "Coefficient : " + listeMatieres.get(s).getCoefficient() + "\n" +
+									   "Rattrapable : " + (listeMatieres.get(s).isRattrapable() ? "oui" : "non") + 
+									   ((listeMatieres.get(s).getNoteMini() != -1.0) ? "\n" + 
+									   "Note minimale : " + listeMatieres.get(s).getNoteMini() : ""));
 
 				listItem.add(map);		
 			}
@@ -159,7 +162,7 @@ public class ListeMatiereA extends Activity {
 
 		protected Void doInBackground(Void... arg0) {			
 			String jsonStr = "";
-            
+			
 			try {
 				jsonStr = WebUtils.call(pathUrl, WebUtils.GET);
 			} catch (SocketTimeoutException e1) {
@@ -214,8 +217,8 @@ public class ListeMatiereA extends Activity {
             
             Matiere matiere = null;
             
-            if (jsonStr.length() > 0) {            	
-                try {
+            if (jsonStr.length() > 0) {  
+            	try {
                     JSONArray matieres = new JSONArray(jsonStr);
  
                     for (int i = 0; i < matieres.length(); i++) {
@@ -226,6 +229,8 @@ public class ListeMatiereA extends Activity {
                         matiere.setId(c.getInt("idMatiere"));
                         matiere.setIsOption(c.getBoolean("isOption"));
                         matiere.setNom(c.getString("nom"));
+                        matiere.setIsRattrapable(c.getBoolean("isRattrapable"));
+                        matiere.setNoteMini(c.getDouble("noteMini"));
                         
                         listeMatieres.add(matiere);
                     }

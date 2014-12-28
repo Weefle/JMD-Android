@@ -21,17 +21,17 @@
             android:contentDescription="@string/desc_img"
             android:onClick="back"
             android:src="@drawable/previous" />
-        
+
         <TextView
             android:id="@+id/admin_crea_ue_titre"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
             android:layout_centerInParent="true"
+            android:gravity="center_horizontal"
             android:text="@string/administrateur_creation_ue_titre_texte"
             android:textColor="#FFFFFF"
             android:textSize="20sp" />
-        
+
         <TextView
             android:id="@+id/admin_crea_ue_btn_save"
             android:layout_width="wrap_content"
@@ -42,7 +42,7 @@
             android:clickable="true"
             android:onClick="creerUE"
             android:text="@string/bout_ok_txt"
-            android:textColor="@drawable/button_color_selector" 
+            android:textColor="@drawable/button_color_selector"
             android:textSize="18sp" />
     </RelativeLayout>
 
@@ -52,10 +52,32 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="30dp"
-        android:hint="@string/hint_nom"
+        android:hint="Nom *"
         android:inputType="text"
         android:singleLine="true" />
-    
+
+    <EditText
+        android:id="@+id/admin_creation_ue_nb_option"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:hint="Nombre d&apos;option(s) minimum"
+        android:inputType="number"
+        android:maxLength="1"
+        android:singleLine="true" />
+
+    <EditText
+        android:id="@+id/admin_creation_ue_moyenne_mini"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:hint="@string/admin_creation_ue_moyenne_minimale_tv"
+        android:inputType="number"
+        android:maxLength="1"
+        android:singleLine="true" />
+
     <Spinner
         android:id="@+id/admin_creation_ue_spinner"
         android:layout_width="fill_parent"
@@ -63,5 +85,15 @@
         android:layout_marginTop="20dp"
         android:gravity="center"
         android:prompt="@string/crea_ue_decoupage" />
+
+    <TextView
+        android:id="@+id/admin_crea_ue_champ_obligatoire"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="5dp"
+        android:textColor="#000000"
+        android:text="* : Champ obligatoire"
+        android:textSize="11sp" />
 
 </LinearLayout>

@@ -47,6 +47,10 @@ public class AjouterAdminA extends Activity {
 		new InitListeComptes(progress, Constantes.URL_SERVER + "admin/getAllAdminInactive").execute();	
 	}
 	
+	public void back(View view) {
+		finish();
+	}
+	
 	private void initListe(final ArrayList<Admin> listeAdmins) {
 		final ListView liste = (ListView) findViewById(android.R.id.list);
 

@@ -39,6 +39,10 @@ public class CreationUE extends Activity {
 	
 	private EditText NOM;
 	
+	private EditText MOYENNE_MINI;
+	
+	private EditText NB_OPTION_MINI;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -50,6 +54,8 @@ public class CreationUE extends Activity {
 		toast = Toast.makeText(activity, "", Toast.LENGTH_SHORT);
 		
 		NOM = (EditText) findViewById(R.id.admin_creation_ue_nom);
+		MOYENNE_MINI = (EditText) findViewById(R.id.admin_creation_ue_moyenne_mini);
+		NB_OPTION_MINI = (EditText) findViewById(R.id.admin_creation_ue_nb_option);
 		
 		a = (Annee) getIntent().getExtras().getSerializable("annee");
 		
@@ -139,15 +145,25 @@ public class CreationUE extends Activity {
 			}
 			
 			try {
-				ProgressDialog progress = new ProgressDialog(activity);
-				progress.setMessage("Chargement...");
-				new CreerUE(progress, Constantes.URL_SERVER + "ue" +
+				String URL = Constantes.URL_SERVER + "ue" +
 						"?nom=" + URLEncoder.encode(ue.getNom(), "UTF-8") +
 						"&yearType=" + ue.getDecoupage().name() +
 						"&idAnnee=" + a.getId() +
 						"&token=" + FileUtils.readFile(Constantes.FILE_TOKEN) + 
 						"&pseudo=" + FileUtils.readFile(Constantes.FILE_PSEUDO) +
-						"&timestamp=" + new java.util.Date().getTime()).execute(); 
+						"&timestamp=" + new java.util.Date().getTime();
+				
+				if (NB_OPTION_MINI.getText().toString().length() > 0) {
+					URL += "&nbOptMini=" + NB_OPTION_MINI.getText().toString();
+				}
+				
+				if (MOYENNE_MINI.getText().toString().length() > 0) {
+					URL += "&noteMinimale=" + MOYENNE_MINI.getText().toString();
+				}
+				
+				ProgressDialog progress = new ProgressDialog(activity);
+				progress.setMessage("Chargement...");
+				new CreerUE(progress, URL).execute(); 
 			} catch (UnsupportedEncodingException ex) {
 				toast.setText("Erreur d'encodage (UTF-8).");
 				toast.show();
@@ -181,10 +197,10 @@ public class CreationUE extends Activity {
 
 		protected Void doInBackground(Void... arg0) {
 			HttpClient httpclient = new DefaultHttpClient();
-		    HttpPut httppost = new HttpPut(pathUrl);
+		    HttpPut httpPut = new HttpPut(pathUrl);
 
 		    try {
-		        HttpResponse response = httpclient.execute(httppost);
+		        HttpResponse response = httpclient.execute(httpPut);
 		        
 		        if (response.getStatusLine().getStatusCode() == 200) {
 		        	toast.setText("UE créée.");

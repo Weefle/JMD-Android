@@ -136,7 +136,7 @@ public class FavoriA extends Activity {
 
 			liste.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 				public void onItemClick(AdapterView<?> arg0, View arg1, final int position, long arg3) {
-					Intent newIntent = new Intent(FavoriA.this, ListeUERegleA.class);
+					Intent newIntent = new Intent(FavoriA.this, ListeUEA.class);
 					newIntent.putExtra("annee", listeAnnees.get(position));
 					startActivity(newIntent);
 				}

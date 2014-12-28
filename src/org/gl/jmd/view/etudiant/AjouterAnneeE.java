@@ -232,35 +232,6 @@ public class AjouterAnneeE extends Activity {
 
 					a.setDiplome(d);
 					
-					// Liste des règles.
-	
-					ArrayList<Regle> listeRegles = new ArrayList<Regle>();
-
-					try {
-						JSONArray reglesJSON = anneeJSON.getJSONArray("regles");
-						
-						Regle r = null;
-						
-	                    for (int i = 0; i < reglesJSON.length(); i++) {
-	                    	JSONObject regleJSON = reglesJSON.getJSONObject(i);
-	                        
-	                        r = new Regle();
-	                        r.setId(regleJSON.getInt("id"));
-	                        r.setIdAnnee(regleJSON.getInt("idAnnee"));
-	                        r.setIdMatiere(regleJSON.getInt("idMatiere"));
-	                        r.setIdUE(regleJSON.getInt("idUE"));
-	                        r.setOperateur(regleJSON.getInt("operateur"));
-	                        r.setRegle(regleJSON.getInt("regle"));
-	                        r.setValeur(regleJSON.getInt("valeur"));
-	
-	                        listeRegles.add(r);
-	                    }
-					} catch (JSONException ex) {
-						ex.printStackTrace();
-					}
-                    
-                    a.setListeRegles(listeRegles);
-					
 					// Liste des UE.
                     
                     ArrayList<UE> listeUE = new ArrayList<UE>();
@@ -277,6 +248,8 @@ public class AjouterAnneeE extends Activity {
 	                        ue.setId(ueJSON.getInt("idUE"));
 	                        ue.setNom(ueJSON.getString("nom"));
 	                        ue.setDecoupage(DecoupageYearType.valueOf(ueJSON.getString("yearType")));
+	                        ue.setMoyenneMini(ueJSON.getDouble("noteMini"));
+	                        ue.setNbOptionsMini(ueJSON.getInt("nbOptMini"));
 	                        
 	                        ArrayList<Matiere> listeMatieres = new ArrayList<Matiere>();
 	                        Matiere m = null;
@@ -292,6 +265,8 @@ public class AjouterAnneeE extends Activity {
 		                        	m.setCoefficient(matiereJSON.getLong("coefficient"));
 		                        	m.setNom(matiereJSON.getString("nom"));
 		                        	m.setIsOption(matiereJSON.getBoolean("isOption"));
+		                        	m.setIsRattrapable(matiereJSON.getBoolean("isRattrapable"));
+		                        	m.setNoteMini(matiereJSON.getDouble("noteMini"));
 		                        	
 		                        	listeMatieres.add(m);
 		                        }

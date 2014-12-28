@@ -93,14 +93,14 @@ public class PdfUtils {
 					
 					String txtUE = ann.getListeUE().get(i).getNom() + " : ";
 					
-					if (ann.getListeUE().get(i).getMoyenne(ann.getListeRegles()) != -1.0) {
-						txtUE += ann.getListeUE().get(i).getMoyenne(ann.getListeRegles()) + "/20";
+					if (ann.getListeUE().get(i).getMoyenne() != -1.0) {
+						txtUE += ann.getListeUE().get(i).getMoyenne() + "/20";
 						
-						if (ann.getListeUE().get(i).estAjourne(ann.getListeRegles())) {
+						if (ann.getListeUE().get(i).isDefaillant()) {
 							txtUE += " (Ajourné)";
-						} else if (ann.getListeUE().get(i).getMoyenne(ann.getListeRegles()) >= 10.0) {
+						} else if (ann.getListeUE().get(i).getMoyenne() >= 10.0) {
 							txtUE += " (Admis)";
-						} else if (ann.getListeUE().get(i).getMoyenne(ann.getListeRegles()) < 10.0) {
+						} else if (ann.getListeUE().get(i).getMoyenne() < 10.0) {
 							txtUE += " (Non validé)";
 						}
 					} 
@@ -135,8 +135,8 @@ public class PdfUtils {
 				
 				String txtRes = "";
 				
-				if (ann.isAjourne()) {
-					txtRes = "Ajourné";
+				if (ann.isDefaillant()) {
+					txtRes = "Défaillant";
 				} else if (ann.getMoyenne() >= 10.0) {
 					txtRes = "Admis (" + ann.getMention() + ")";
 				} else if (ann.getMoyenne() < 10.0) {
@@ -192,14 +192,14 @@ public class PdfUtils {
 						
 						String txtUE = ann.getListeUE().get(i).getNom() + " : ";
 						
-						if (ann.getListeUE().get(i).getMoyenne(ann.getListeRegles()) != -1.0) {
-							txtUE += ann.getListeUE().get(i).getMoyenne(ann.getListeRegles()) + "/20";
+						if (ann.getListeUE().get(i).getMoyenne() != -1.0) {
+							txtUE += ann.getListeUE().get(i).getMoyenne() + "/20";
 							
-							if (ann.getListeUE().get(i).estAjourne(ann.getListeRegles())) {
+							if (ann.getListeUE().get(i).isDefaillant()) {
 								txtUE += " (Ajourné)";
-							} else if (ann.getListeUE().get(i).getMoyenne(ann.getListeRegles()) >= 10.0) {
+							} else if (ann.getListeUE().get(i).getMoyenne() >= 10.0) {
 								txtUE += " (Admis)";
-							} else if (ann.getListeUE().get(i).getMoyenne(ann.getListeRegles()) < 10.0) {
+							} else if (ann.getListeUE().get(i).getMoyenne() < 10.0) {
 								txtUE += " (Non validé)";
 							}
 						} 
@@ -256,14 +256,14 @@ public class PdfUtils {
 						
 						String txtUE = ann.getListeUE().get(i).getNom() + " : ";
 						
-						if (ann.getListeUE().get(i).getMoyenne(ann.getListeRegles()) != -1.0) {
-							txtUE += ann.getListeUE().get(i).getMoyenne(ann.getListeRegles()) + "/20";
+						if (ann.getListeUE().get(i).getMoyenne() != -1.0) {
+							txtUE += ann.getListeUE().get(i).getMoyenne() + "/20";
 							
-							if (ann.getListeUE().get(i).estAjourne(ann.getListeRegles())) {
+							if (ann.getListeUE().get(i).isDefaillant()) {
 								txtUE += " (Ajourné)";
-							} else if (ann.getListeUE().get(i).getMoyenne(ann.getListeRegles()) >= 10.0) {
+							} else if (ann.getListeUE().get(i).getMoyenne() >= 10.0) {
 								txtUE += " (Admis)";
-							} else if (ann.getListeUE().get(i).getMoyenne(ann.getListeRegles()) < 10.0) {
+							} else if (ann.getListeUE().get(i).getMoyenne() < 10.0) {
 								txtUE += " (Non validé)";
 							}
 						} 
@@ -299,8 +299,8 @@ public class PdfUtils {
 				
 				String txtRes = "";
 				
-				if (ann.isAjourne()) {
-					txtRes = "Ajourné";
+				if (ann.isDefaillant()) {
+					txtRes = "Défaillant";
 				} else if (ann.getMoyenne() >= 10.0) {
 					txtRes = "Admis (" + ann.getMention() + ")";
 				} else if (ann.getMoyenne() < 10.0) {
@@ -355,14 +355,14 @@ public class PdfUtils {
 						paint.setFakeBoldText(true);
 						String txtUE = ann.getListeUE().get(i).getNom() + " : ";
 						
-						if (ann.getListeUE().get(i).getMoyenne(ann.getListeRegles()) != -1.0) {
-							txtUE += ann.getListeUE().get(i).getMoyenne(ann.getListeRegles()) + "/20";
+						if (ann.getListeUE().get(i).getMoyenne() != -1.0) {
+							txtUE += ann.getListeUE().get(i).getMoyenne() + "/20";
 							
-							if (ann.getListeUE().get(i).estAjourne(ann.getListeRegles())) {
+							if (ann.getListeUE().get(i).isDefaillant()) {
 								txtUE += " (Ajourné)";
-							} else if (ann.getListeUE().get(i).getMoyenne(ann.getListeRegles()) >= 10.0) {
+							} else if (ann.getListeUE().get(i).getMoyenne() >= 10.0) {
 								txtUE += " (Admis)";
-							} else if (ann.getListeUE().get(i).getMoyenne(ann.getListeRegles()) < 10.0) {
+							} else if (ann.getListeUE().get(i).getMoyenne() < 10.0) {
 								txtUE += " (Non validé)";
 							}
 						} 
@@ -419,14 +419,14 @@ public class PdfUtils {
 						
 						String txtUE = ann.getListeUE().get(i).getNom() + " : ";
 						
-						if (ann.getListeUE().get(i).getMoyenne(ann.getListeRegles()) != -1.0) {
-							txtUE += ann.getListeUE().get(i).getMoyenne(ann.getListeRegles()) + "/20";
+						if (ann.getListeUE().get(i).getMoyenne() != -1.0) {
+							txtUE += ann.getListeUE().get(i).getMoyenne() + "/20";
 							
-							if (ann.getListeUE().get(i).estAjourne(ann.getListeRegles())) {
+							if (ann.getListeUE().get(i).isDefaillant()) {
 								txtUE += " (Ajourné)";
-							} else if (ann.getListeUE().get(i).getMoyenne(ann.getListeRegles()) >= 10.0) {
+							} else if (ann.getListeUE().get(i).getMoyenne() >= 10.0) {
 								txtUE += " (Admis)";
-							} else if (ann.getListeUE().get(i).getMoyenne(ann.getListeRegles()) < 10.0) {
+							} else if (ann.getListeUE().get(i).getMoyenne() < 10.0) {
 								txtUE += " (Non validé)";
 							}
 						} 
@@ -483,14 +483,14 @@ public class PdfUtils {
 						
 						String txtUE = ann.getListeUE().get(i).getNom() + " : ";
 						
-						if (ann.getListeUE().get(i).getMoyenne(ann.getListeRegles()) != -1.0) {
-							txtUE += ann.getListeUE().get(i).getMoyenne(ann.getListeRegles()) + "/20";
+						if (ann.getListeUE().get(i).getMoyenne() != -1.0) {
+							txtUE += ann.getListeUE().get(i).getMoyenne() + "/20";
 							
-							if (ann.getListeUE().get(i).estAjourne(ann.getListeRegles())) {
+							if (ann.getListeUE().get(i).isDefaillant()) {
 								txtUE += " (Ajourné)";
-							} else if (ann.getListeUE().get(i).getMoyenne(ann.getListeRegles()) >= 10.0) {
+							} else if (ann.getListeUE().get(i).getMoyenne() >= 10.0) {
 								txtUE += " (Admis)";
-							} else if (ann.getListeUE().get(i).getMoyenne(ann.getListeRegles()) < 10.0) {
+							} else if (ann.getListeUE().get(i).getMoyenne() < 10.0) {
 								txtUE += " (Non validé)";
 							}
 						} 
@@ -526,8 +526,8 @@ public class PdfUtils {
 				
 				String txtRes = "";
 				
-				if (ann.isAjourne()) {
-					txtRes = "Ajourné";
+				if (ann.isDefaillant()) {
+					txtRes = "Défaillant";
 				} else if (ann.getMoyenne() >= 10.0) {
 					txtRes = "Admis (" + ann.getMention() + ")";
 				} else if (ann.getMoyenne() < 10.0) {

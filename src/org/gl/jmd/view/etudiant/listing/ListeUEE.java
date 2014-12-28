@@ -108,16 +108,13 @@ public class ListeUEE extends Activity {
 						items.add(new ListItemMatiere(etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getListeMatieres().get(b), s, b));	
 					}
 
-					if (etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getMoyenne(etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeRegles()) != -1.0) {
-						if (etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).estAjourne(etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeRegles())) {
-							items.add(new Footer(true, 
-												 etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getMoyenne(etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeRegles())));
-						} else if (etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getMoyenne(etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeRegles()) < 10) {
-							items.add(new Footer(false, 
-									 			 etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getMoyenne(etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeRegles())));
+					if (etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getMoyenne() != -1.0) {						
+						if (etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).isDefaillant()) {
+							items.add(new Footer(true, etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getMoyenne()));
+						} else if (etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getMoyenne() < 10) {
+							items.add(new Footer(false, etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getMoyenne()));
 						} else {
-							items.add(new Footer(false,
-									 			 etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getMoyenne(etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeRegles())));
+							items.add(new Footer(false, etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getMoyenne()));
 						}
 					}
 				}
@@ -165,7 +162,7 @@ public class ListeUEE extends Activity {
 	}
 
 	private void initListe(DecoupageYearType d) {
-		if (etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE(d).size() == 0) {
+		if (etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUEByDecoupage(d).size() == 0) {
 			ListView liste = (ListView) findViewById(R.id.listUEEtu);
 			ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
 
@@ -179,24 +176,24 @@ public class ListeUEE extends Activity {
 		} else {
 			List<Item> items = new ArrayList<Item>();
 
-			for (int s = 0; s < etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE(d).size(); s++) {
-				items.add(new Header(etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE(d).get(s).getNom()));	
+			for (int s = 0; s < etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUEByDecoupage(d).size(); s++) {
+				items.add(new Header(etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUEByDecoupage(d).get(s).getNom()));	
 
-				if (!etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE(d).get(s).getListeMatieres().isEmpty()) {
-					for (int b = 0; b < etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE(d).get(s).getListeMatieres().size(); b++) {
-						items.add(new ListItemMatiere(etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE(d).get(s).getListeMatieres().get(b), s, b));	
+				if (!etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUEByDecoupage(d).get(s).getListeMatieres().isEmpty()) {
+					for (int b = 0; b < etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUEByDecoupage(d).get(s).getListeMatieres().size(); b++) {
+						items.add(new ListItemMatiere(etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUEByDecoupage(d).get(s).getListeMatieres().get(b), s, b));	
 					}
 				} else {
 					items.add(new ListItemMatiere());	
 				}
 
-				if (etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getMoyenne(etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeRegles()) != -1.0) {
-					if (etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).estAjourne(etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeRegles())) {
-						items.add(new Footer(true, etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getMoyenne(etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeRegles())));
-					} else if (etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getMoyenne(etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeRegles()) < 10) {
-						items.add(new Footer(false, etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getMoyenne(etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeRegles())));
+				if (etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUEByDecoupage(d).get(s).getMoyenne() != -1.0) {
+					if (etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUEByDecoupage(d).get(s).isDefaillant()) {
+						items.add(new Footer(true, etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUEByDecoupage(d).get(s).getMoyenne()));
+					} else if (etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUEByDecoupage(d).get(s).getMoyenne() < 10) {
+						items.add(new Footer(false, etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUEByDecoupage(d).get(s).getMoyenne()));
 					} else {
-						items.add(new Footer(false, etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUE().get(s).getMoyenne(etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeRegles())));
+						items.add(new Footer(false, etud.getListeDiplomes().get(positionDip).getListeAnnees().get(positionAnn).getListeUEByDecoupage(d).get(s).getMoyenne()));
 					}
 				}
 			}

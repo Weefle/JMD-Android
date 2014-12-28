@@ -56,11 +56,6 @@ public class Annee implements Serializable {
 	private List<UE> listeUE = new ArrayList<UE>();
 
 	/**
-	 * La liste des règles de l'année.
-	 */
-	private ArrayList<Regle> listeRegles = new ArrayList<Regle>();
-
-	/**
 	 * Constructeur par défaut de la classe.
 	 */
 	public Annee() {
@@ -95,17 +90,17 @@ public class Annee implements Serializable {
 	}
 	
 	/**
-	 * Méthode permettant de savoir si l'année est ajournée.
-	 * Ici, une année est ajournée si au moins une de ses UE l'est.
+	 * Méthode permettant de savoir si l'année est défaillante.
+	 * Ici, une année est défaillante si au moins une de ses UE l'est.
 	 * 
-	 * @return <b>true</b> si l'année est ajournée.<br />
+	 * @return <b>true</b> si l'année est défaillante.<br />
 	 * <b>false</b> sinon.
 	 */
-	public boolean isAjourne() {
+	public boolean isDefaillant() {
 		boolean res = false;
 		
 		for (int i = 0; i < this.listeUE.size(); i++) {			
-			if (this.listeUE.get(i).estAjourne(this.listeRegles)) {
+			if (this.listeUE.get(i).isDefaillant()) {
 				res = true;
 				break;
 			}
@@ -165,7 +160,14 @@ public class Annee implements Serializable {
 		return res;
 	}
 
-	public List<UE> getListeUE(DecoupageYearType d) {
+	/**
+	 * 
+	 * 
+	 * @param d
+	 * 
+	 * @return
+	 */
+	public List<UE> getListeUEByDecoupage(DecoupageYearType d) {
 		List<UE> l = new ArrayList<UE>();
 		
 		for (int i = 0; i < this.listeUE.size(); i++) {
@@ -253,15 +255,6 @@ public class Annee implements Serializable {
 		return this.listeUE;
 	}
 
-	/**
-	 * Méthode retournant la liste des règles de l'année.
-	 * 
-	 * @return La liste des règles de l'année.
-	 */
-	public ArrayList<Regle> getListeRegles() {
-		return this.listeRegles;
-	}
-
 	/* Setters. */
 
 	/**
@@ -334,14 +327,5 @@ public class Annee implements Serializable {
 	 */
 	public void setListeUE(ArrayList<UE> listeUE) {
 		this.listeUE = listeUE;
-	}
-
-	/**
-	 * Méthode permettant de modifier la liste des règles de l'année.
-	 * 
-	 * @param listeRegles La nouvelle liste des règles de l'année.
-	 */
-	public void setListeRegles(ArrayList<Regle> listeRegles) {
-		this.listeRegles = listeRegles;
 	}
 }

@@ -52,7 +52,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="30dp"
-        android:hint="@string/hint_nom"
+        android:hint="Nom *"
         android:inputType="text"
         android:singleLine="true" />
 
@@ -62,9 +62,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="20dp"
-        android:hint="@string/admin_crea_eta_hint_coeff"
-        android:inputType="number"
-        android:maxLength="4"
+        android:hint="Coefficient *"
+        android:inputType="number|numberDecimal"
+        android:maxLength="3"
         android:singleLine="true" />
 
     <CheckBox
@@ -74,5 +74,34 @@
         android:layout_marginTop="20dp"
         android:text="@string/admin_crea_mat_checkbox_option_txt"
         android:textColor="#000000" />
+    
+    <EditText
+        android:id="@+id/admin_creation_matiere_note_mini"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:hint="@string/admin_crea_note_mini"
+        android:inputType="number"
+        android:maxLength="2"
+        android:singleLine="true" />
+    
+    <CheckBox
+        android:id="@+id/admin_creation_matiere_checkbox_rattrapable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/admin_crea_mat_checkbox_rattrapable_txt"
+        android:textColor="#000000" />
+    
+    <TextView
+        android:id="@+id/admin_crea_matiere_champ_obligatoire"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="5dp"
+        android:textColor="#000000"
+        android:text="* : Champ obligatoire"
+        android:textSize="11sp" />
 
 </LinearLayout>

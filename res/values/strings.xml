@@ -13,14 +13,12 @@
     
     <string name="etudiant_liste_annees_view_name">Liste des années</string>
     <string name="etudiant_liste_ue_view_name">Liste des UE</string>
-    <string name="etudiant_liste_ue__tabs_view_name">Liste des UE</string>
+    <string name="etudiant_liste_ue_tabs_view_name">Liste des UE</string>
     <string name="etudiant_liste_matieres_view_name">Liste des matières</string>
-    <string name="etudiant_liste_trimestre_view_name">Trimestres</string>
-    <string name="etudiant_liste_semestre_view_name">Semestres</string>
    
     <string name="etudiant_ajouter_annee_ae_view_name">Ajout des années</string>
-    <string name="etudiant_modifier_ae_view_name">Bienvenue</string>
     <string name="etudiant_accueil_view_name">Bienvenue</string>
+    <string name="etudiant_ajouter_annee_view_name">Ajouter une année</string>
     <string name="etudiant_saisie_note_titre_view_name">Saisie de notes</string>
     <string name="etudiant_stats_annee_view_name">Stats sur l\'année</string>
     
@@ -38,8 +36,6 @@
     <string name="administrateur_liste_annee_view_name">Liste des années</string>
     <string name="administrateur_liste_ue_view_name">Liste des UE</string>
     <string name="administrateur_liste_matiere_view_name">Liste des matières</string>
-    <string name="administrateur_liste_ue_regle_view_name">Accueil liste ue / règle</string>
-    <string name="administrateur_liste_regle_view_name">Liste des règles</string>
     
     <string name="administrateur_accueil_view_name">Accueil (Administrateur)</string>
     <string name="administrateur_ajout_admin_view_name">Ajouter un administrateur</string>
@@ -53,7 +49,8 @@
 	
 	<string name="menu_deconnexion">Déconnexion</string>
 	<string name="menu_nommer_admin">Nommer un admin</string>
-
+	<string name="menu_cloturer_compte">Clôturer ce compte</string>
+	
 	<!-- Connexion / inscription -->
 	
 	<string name="connex_texte_mdp_oublie"><b>Mot de passe \r\n oublié ?</b></string>
@@ -80,7 +77,6 @@
     <!-- Hints -->
     
     <string name="hint_nom">Nom</string>
-    <string name="hint_valeur">Valeur</string>
     <string name="hint_note">Note</string>
     <string name="hint_coefficient">Coefficient</string>
     <string name="hint_nom_epreuve">Nom de l\'épreuve</string>
@@ -90,7 +86,10 @@
 	<string name="admin_crea_annee_hint_etablissement">Etablissement</string>
 	<string name="admin_crea_eta_hint_ville">Ville</string>
 	<string name="admin_crea_eta_hint_coeff">Coefficient</string>
+	<string name="admin_crea_note_mini">Note minimale</string>
+	
 	<string name="admin_crea_mat_checkbox_option_txt">Cette matière est une option</string>
+	<string name="admin_crea_mat_checkbox_rattrapable_txt">Cette matière est rattrapable</string>
 	
     <string name="admin_inscr_password_retype">Retapez votre mot de passe</string>
     <string name="admin_inscr_email">Email</string>
@@ -107,14 +106,13 @@
     <string name="administrateur_creation_annee_titre_texte">Nouvelle année</string>
     <string name="administrateur_creation_ue_titre_texte">Nouvelle UE</string>
     <string name="administrateur_creation_matiere_titre_texte">Nouvelle matière</string>
-    <string name="administrateur_creation_regle_titre_texte">Nouvelle règle</string>
         
     <string name="administrateur_mdp_oublie_titre_texte">Password oublié</string>
     <string name="administrateur_ajout_admin_titre_texte">Ajouter un administrateur</string>
     <string name="administrateur_connexion_titre_texte">Connexion</string>
     <string name="administrateur_inscription_titre_texte">Inscription</string>
     <string name="administrateur_accueil_bienvenue">Bienvenue</string>
-    <string name="administrateur_liste_ue_regle_titre">UE</string>
+    <string name="administrateur_liste_ue_titre">UE</string>
     
     <string name="admin_liste_eta_titre_texte">Liste des établissements</string>
 	<string name="admin_liste_diplome_titre">Liste des diplômes</string>
@@ -148,9 +146,10 @@
 	<string name="admin_choix_ue">Choisir une UE</string>
 	<string name="admin_choix_matiere">Choisir une matière</string>
 	<string name="admin_connexion_subtitle">Connectez-vous à votre compte Administrateur</string>
+	
 	<string name="admin_creation_annee_checkbox_derniere_annee">Dernière année du diplôme</string>
 	<string name="admin_creation_matiere_coefficient_tv">Coefficient</string>
-	<string name="admin_creation_regle_sapplique_sur">S\'applique sur : </string>
+	<string name="admin_creation_ue_moyenne_minimale_tv">Moyenne minimale</string>
 	
 	<!-- Spinners -->
 	
@@ -187,20 +186,5 @@
         <item>Semestre 1</item>
         <item>Semestre 2</item>
     </string-array>  
-	
-    <string name="crea_regle_type">Type</string>
-    <string-array name="type_regle_array">
-        <item>Note minimale</item>
-        <item>Nombre d\'options minimum</item>
-    </string-array> 
-    
-    <string name="crea_regle_operateur">Opérateur</string>
-    <string-array name="operateur_array">
-        <item>Supérieur</item>
-        <item>Supérieur ou égal</item>
-        <item>Egal</item>
-        <item>Inférieur</item>
-        <item>Inférieur ou égal</item>
-    </string-array> 
     
 </resources>

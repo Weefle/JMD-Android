@@ -36,6 +36,18 @@ public class UE implements Serializable {
 	private int idAnnee;
 	
 	/**
+	 * La moyenne minimale de l'UE.
+	 * Champ optionnel : s'il existe, il est précisé dans le RCC.
+	 */
+	private double moyenneMini;
+	
+	/**
+	 * Le nombre d'option minimum que l'étudiant devra choisir dans l'UE.
+	 * Champ optionnel.
+	 */
+	private int nbOptionsMini;
+	
+	/**
 	 * La liste des matières de l'UE.
 	 */
 	private ArrayList<Matiere> listeMatieres = new ArrayList<Matiere>();
@@ -48,45 +60,17 @@ public class UE implements Serializable {
 	}
 	
 	/**
-	 * Méthode permettant de récupérer la somme totale des coefficients des matières 
-	 * présentes dans l'UE.
-	 * 
-	 * @return La somme des coefficients des matières de l'UE.
-	 */
-	public double getTotalCoeff() {
-		double res = 0;
-		
-		for (int i = 0; i < this.listeMatieres.size(); i++) {
-			res += this.listeMatieres.get(i).getCoefficient();
-		}
-		
-		return res;
-	}
-	
-	/**
 	 * Méthode permettant de calculer la moyenne de l'UE.
-	 * 
-	 * @param listeRegles La liste des règles de l'année de l'UE.
 	 * 
 	 * @return La moyenne de l'UE.
 	 */
-	public double getMoyenne(ArrayList<Regle> listeRegles) {
+	public double getMoyenne() {
 		double res = -1.0;
 		
 		int coeffGlobalUE = 0;
 		double produitMatiereCoeff = 0.0;
 		
 		// Récupération des options.
-		int nbOptionMini = 0;
-		
-		for (int i = 0; i < listeRegles.size(); i++) {
-			if ((listeRegles.get(i).getRegle() == RegleType.NB_OPT_MINI) &&
-					(listeRegles.get(i).getIdUE() == this.id)) {
-				
-				nbOptionMini = listeRegles.get(i).getValeur();
-			}
-		}
-		
 		ArrayList<Matiere> listOptions = new ArrayList<Matiere>();
 		
 		for (int i = 0; i < this.listeMatieres.size(); i++) {
@@ -109,8 +93,8 @@ public class UE implements Serializable {
 	    }
 		
 		// Moyenne des n meilleurs options.
-		if (listOptions.size() > nbOptionMini) {				
-			for (int i = 0; i < nbOptionMini; i++) {
+		if (listOptions.size() > this.nbOptionsMini) {				
+			for (int i = 0; i < this.nbOptionsMini; i++) {
 				if (listOptions.get(i).getNoteFinale() != -1.0) {					
 					coeffGlobalUE += listOptions.get(i).getCoefficient();
 					produitMatiereCoeff += listOptions.get(i).getNoteFinale() * listOptions.get(i).getCoefficient();
@@ -138,39 +122,31 @@ public class UE implements Serializable {
 		if ((coeffGlobalUE != 0) && (produitMatiereCoeff != 0.0)) {
 			res = produitMatiereCoeff / coeffGlobalUE;
 			res = NumberUtils.round(res, 2);
-		}
+		}	
 		
 		return res;
 	}
 	
 	/**
-	 * Méthode permettant de savoir si l'UE est ajournée (i.e une note 
-	 * de l'UE est inférieure à la note minimale définie).
+	 * Méthode permettant de savoir si l'UE est défaillante.
+	 * Défaillant : 
+	 * - une note de l'UE est inférieure à la note minimale définie pour la matière en question.
+	 * - la moyenne de l'UE est inférieure à la moyenne minimale définie pour cette UE.
 	 * 
-	 * @param listeRegles La liste des règles de l'année de l'UE.
-	 * 
-	 * @return <b>true</b> si l'UE est ajournée.<br />
+	 * @return <b>true</b> si l'UE est défaillante.<br />
 	 * <b>false</b> sinon.
 	 */
-	public boolean estAjourne(ArrayList<Regle> listeRegles) {
-		boolean res = false;
+	public boolean isDefaillant() {		
+		boolean isMatiereDef = false;
 		
-		for (int i = 0; i < listeRegles.size(); i++) {			
-			if ((listeRegles.get(i).getRegle() == RegleType.NOTE_MINIMALE) &&
-					(listeRegles.get(i).getIdUE() == this.id)) {
-				
-				for (int k = 0; k < this.listeMatieres.size(); k++) {	
-					if ((this.listeMatieres.get(k).getNoteFinale() != -1.0) && 
-							(this.listeMatieres.get(k).getNoteFinale() < listeRegles.get(i).getValeur())) {
-						
-						res = true;
-						break;
-					}
-				}
-			} 
+		for (int k = 0; k < this.listeMatieres.size(); k++) {	
+			if ((this.listeMatieres.get(k).isDefaillant()) && (this.listeMatieres.get(k).getNoteFinale() != -1.0)) {
+				isMatiereDef = true;
+				break;
+			}
 		}
 		
-		return res;
+		return isMatiereDef || (this.getMoyenne() < this.moyenneMini);
 	}
 	
 	/* Getters. */
@@ -209,6 +185,24 @@ public class UE implements Serializable {
 	 */
 	public int getIdAnnee() {
 		return this.idAnnee;
+	}
+	
+	/**
+	 * Méthode retournant la moyenne minimale de l'UE.
+	 * 
+	 * @return La moyenne minimale de l'UE.
+	 */
+	public double getMoyenneMini() {
+		return this.moyenneMini;
+	}
+	
+	/**
+	 * Méthode retournant le nombre d'options que devra chosiir l'étudiant dans l'UE.
+	 * 
+	 * @return Le nombre d'options que devra choisir l'étudiant dans l'UE.
+	 */
+	public int getNbOptionsMini() {
+		return this.nbOptionsMini;
 	}
 	
 	/**
@@ -256,6 +250,24 @@ public class UE implements Serializable {
 	 */
 	public void setIdAnnee(int idAnnee) {
 		this.idAnnee = idAnnee;
+	}
+	
+	/**
+	 * Méthode permettant de modifier la moyenne minimale de l'UE.
+	 * 
+	 * @param moyenneMini La nouvelle moyenne minimale de l'UE.
+	 */
+	public void setMoyenneMini(double moyenneMini) {
+		this.moyenneMini = moyenneMini;
+	}
+	
+	/**
+	 * Méthode permettant de modifier le nombre d'options minimum que l'étudiant devra choisir dans l'UE.
+	 * 
+	 * @param nbOptionsMini Le nouveau nombre d'options minimum que l'étudiant devra choisir dans l'UE.
+	 */
+	public void setNbOptionsMini(int nbOptionsMini) {
+		this.nbOptionsMini = nbOptionsMini;
 	}
 	
 	/**

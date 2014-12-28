@@ -210,7 +210,7 @@ public class AccueilA extends TabActivity {
 		map.put("titre", "Clôturer ce compte");
 		listItem.add(map);
         
-        dList.setAdapter(new SimpleAdapter(getBaseContext(), listItem, R.menu.slide_menu_simple_list, new String[] {"titre"}, new int[] {R.id.titre}));
+        dList.setAdapter(new SimpleAdapter(getBaseContext(), listItem, R.layout.slide_menu_simple_list, new String[] {"titre"}, new int[] {R.id.titre}));
 		
         dList.setOnItemClickListener(new OnItemClickListener(){
 			@Override
@@ -227,12 +227,23 @@ public class AccueilA extends TabActivity {
         		} else if (listItem.get(position).get("titre").equals("Nommer un admin")) {
         			startActivity(new Intent(AccueilA.this, AjouterAdminA.class));			
         		} else if (listItem.get(position).get("titre").equals("Clôturer ce compte")) {
-        			ProgressDialog progress = new ProgressDialog(activity);
-					progress.setMessage("Chargement...");
-					new CloturerCompte(progress, Constantes.URL_SERVER + "admin/closeAdminAccount" +
-							"?token=" + FileUtils.readFile(Constantes.FILE_TOKEN) + 
-							"&pseudo=" + FileUtils.readFile(Constantes.FILE_PSEUDO) +
-							"&timestamp=" + new java.util.Date().getTime()).execute(); 		
+        			AlertDialog.Builder confirmSuppr = new AlertDialog.Builder(AccueilA.this);
+					confirmSuppr.setTitle("Suppression");
+					confirmSuppr.setMessage("Voulez-vous vraiment supprimer votre compte ?");
+					confirmSuppr.setCancelable(false);
+					confirmSuppr.setPositiveButton("Oui", new AlertDialog.OnClickListener() {
+						public void onClick(DialogInterface dialog, int id) {
+							ProgressDialog progress = new ProgressDialog(activity);
+							progress.setMessage("Chargement...");
+							new CloturerCompte(progress, Constantes.URL_SERVER + "admin/closeAdminAccount" +
+									"?token=" + FileUtils.readFile(Constantes.FILE_TOKEN) + 
+									"&pseudo=" + FileUtils.readFile(Constantes.FILE_PSEUDO) +
+									"&timestamp=" + new java.util.Date().getTime()).execute(); 		
+						}
+					});
+					
+					confirmSuppr.setNegativeButton("Non", null);
+					confirmSuppr.show();
         		}
 			}
         });

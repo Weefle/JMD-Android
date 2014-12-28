@@ -97,9 +97,7 @@ public class AccueilE extends Activity {
 						
 						if (((ListItem) adapter.getItem(position)).getAnnee().getDecoupage() == DecoupageType.NULL) {
 							c = ListeUEE.class;
-						} else if (((ListItem) adapter.getItem(position)).getAnnee().getDecoupage() == DecoupageType.SEMESTRE) {
-							c = ListeUEETabs.class;
-						} else if (((ListItem) adapter.getItem(position)).getAnnee().getDecoupage() == DecoupageType.TRIMESTRE) {
+						} else {
 							c = ListeUEETabs.class;
 						}
 						

@@ -38,7 +38,11 @@ public class CreationMatiere extends Activity {
 	
 	private EditText COEFF;
 	
+	private EditText NOTE_MINI;
+	
 	private CheckBox IS_OPTION;
+	
+	private CheckBox IS_RATTRAPABLE;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -51,8 +55,12 @@ public class CreationMatiere extends Activity {
 		toast = Toast.makeText(activity, "", Toast.LENGTH_SHORT);
 		
 		NOM = (EditText) findViewById(R.id.admin_creation_matiere_nom);
+		NOTE_MINI = (EditText) findViewById(R.id.admin_creation_matiere_note_mini);
 		COEFF = (EditText) findViewById(R.id.admin_creation_matiere_coefficient);
 		IS_OPTION = (CheckBox) findViewById(R.id.admin_creation_matiere_checkbox_option);
+		IS_RATTRAPABLE = (CheckBox) findViewById(R.id.admin_creation_matiere_checkbox_rattrapable);
+		
+		IS_RATTRAPABLE.setChecked(true);
 		
 		idUE = getIntent().getExtras().getInt("idUE");
 	}
@@ -99,28 +107,36 @@ public class CreationMatiere extends Activity {
 				return;
 			} else {
 				COEFF.setBackgroundResource(R.drawable.border_edittext);
-			}
-			
-			if (NOM.getText().toString().length() != 0) {
-				COEFF.setBackgroundResource(R.drawable.border_edittext);
 			} 
 			
 			Matiere m = new Matiere();
 			m.setNom(NOM.getText().toString());
 			m.setCoefficient(Integer.parseInt(COEFF.getText().toString()));
 			m.setIsOption(IS_OPTION.isChecked());
+			m.setIsRattrapable(IS_RATTRAPABLE.isChecked());
+			
+			if (NOTE_MINI.getText().toString().length() > 0) {
+				m.setNoteMini(Double.parseDouble(NOTE_MINI.getText().toString()));
+			}
 			
 			try {
-				ProgressDialog progress = new ProgressDialog(activity);
-				progress.setMessage("Chargement...");
-				new CreerMatiere(progress, Constantes.URL_SERVER + "matiere" +
+				String URL = Constantes.URL_SERVER + "matiere" +
 						"?nom=" + URLEncoder.encode(m.getNom(), "UTF-8") +
 						"&coefficient=" + m.getCoefficient() +
 						"&isOption=" + m.isOption() +
+						"&isRattrapable=" + m.isRattrapable() +
 						"&idUE=" + idUE +
 						"&token=" + FileUtils.readFile(Constantes.FILE_TOKEN) + 
 						"&pseudo=" + FileUtils.readFile(Constantes.FILE_PSEUDO) +
-						"&timestamp=" + new java.util.Date().getTime()).execute();	
+						"&timestamp=" + new java.util.Date().getTime();
+				
+				if (m.getNoteMini() != -1.0) {
+					URL += "&noteMini=" + m.getNoteMini();
+				}
+				
+				ProgressDialog progress = new ProgressDialog(activity);
+				progress.setMessage("Chargement...");
+				new CreerMatiere(progress, URL).execute();		
 			} catch (UnsupportedEncodingException ex) {
 				toast.setText("Erreur d'encodage (UTF-8).");
 				toast.show();
@@ -179,10 +195,10 @@ public class CreationMatiere extends Activity {
 
 		protected Void doInBackground(Void... arg0) {
 			HttpClient httpclient = new DefaultHttpClient();
-		    HttpPut httppost = new HttpPut(pathUrl);
+		    HttpPut httpPut = new HttpPut(pathUrl);
 
 		    try {
-		        HttpResponse response = httpclient.execute(httppost);
+		        HttpResponse response = httpclient.execute(httpPut);
 		        
 		        if (response.getStatusLine().getStatusCode() == 200) {
 		        	toast.setText("Matière créée.");

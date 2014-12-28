@@ -55,7 +55,7 @@
         <activity
             android:name="org.gl.jmd.view.etudiant.AjouterAnneeE"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/etudiant_modifier_ae_view_name"
+            android:label="@string/etudiant_ajouter_annee_view_name"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
@@ -80,7 +80,7 @@
         <activity
             android:name="org.gl.jmd.view.etudiant.listing.ListeUEETabs"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/etudiant_liste_ue__tabs_view_name"
+            android:label="@string/etudiant_liste_ue_tabs_view_name"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
@@ -124,14 +124,7 @@
         </activity>
 
         <!-- Création -->
-
-        <activity
-            android:name="org.gl.jmd.view.admin.create.CreationRegle"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/administrateur_creation_regle_view_name"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" >
-        </activity>
+        
         <activity
             android:name="org.gl.jmd.view.admin.create.CreationEtablissement"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -175,20 +168,6 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/administrateur_favori_view_name"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" >
-        </activity>
-        <activity
-            android:name="org.gl.jmd.view.admin.listing.ListeUERegleA"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/administrateur_liste_ue_regle_view_name"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" >
-        </activity>
-        <activity
-            android:name="org.gl.jmd.view.admin.listing.ListeRegleA"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:label="@string/administrateur_liste_regle_view_name"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
         <activity

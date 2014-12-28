@@ -2,10 +2,8 @@ package org.gl.jmd.view.etudiant;
 
 import java.util.*;
 
-import org.gl.jmd.EtudiantDAO;
-import org.gl.jmd.R;
+import org.gl.jmd.*;
 import org.gl.jmd.model.*;
-import org.gl.jmd.view.list.item.ListItem;
 
 import android.os.*;
 import android.view.View;
@@ -74,10 +72,12 @@ public class SaisieNoteE extends Activity {
 
 		listItem.add(map);
 
-		map = new HashMap<String, String>();
-		map.put("titre", "Rattrapage");
-
-		listItem.add(map);
+		if (matiere.isRattrapable()) {
+			map = new HashMap<String, String>();
+			map.put("titre", "Rattrapage");
+			
+			listItem.add(map);
+		}
 
 		liste.setAdapter(new SimpleAdapter (getBaseContext(), listItem, R.layout.etudiant_saisie_note_list, new String[] {"titre", "note"}, new int[] {R.id.titre, R.id.noteCC})); 
 

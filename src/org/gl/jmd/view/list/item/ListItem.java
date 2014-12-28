@@ -67,13 +67,13 @@ public class ListItem implements Item {
 			text2.setText(a.getEtablissement().getNom());
 			text3.setText("" + NumberUtils.round(a.getMoyenne(), 2));
 	
-			if (a.isAjourne()) {
+			if ((a.isDefaillant()) || (a.getMoyenne() < 10) && (a.getMoyenne() >= 0)) {
 				text3.setBackgroundResource(R.drawable.badge_moyenne_nok);
 			} else if (a.getMoyenne() >= 10) {
 				text3.setBackgroundResource(R.drawable.badge_moyenne_ok);
-			} else if ((a.getMoyenne() < 10) && (a.getMoyenne() >= 0)) {
-				text3.setBackgroundResource(R.drawable.badge_moyenne_nok);
-			} else if (a.getMoyenne() == -1.0) {
+			} 
+			
+			if (a.getMoyenne() == -1.0) {
 				text3.setText("0 note");
 				text3.setBackgroundResource(R.drawable.badge_note);
 			} 
