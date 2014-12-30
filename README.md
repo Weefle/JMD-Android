@@ -1,28 +1,30 @@
 # JMD-Android
 
-This Github project is the Android application of JMD.
+This Github project is a module containing the Android application of JMD.
 
-JMD is a university project started in "M1 MIAGE" and finished in "M2 MIAGE" by Jordi CARPENTER and Yoann VANHOESERLANDE.
+### Presentation of JMD
 
-Its purpose is to provide to the students with application to calculate their average and simulate their graduation in real time.
+JMD ('J'ai Mon Diplôme' in French, 'I Have My Diploma' in English) is a university project started in "M1 MIAGE" and finished in "M2 MIAGE" by Jordi CHARPENTIER and Yoann VANHOESERLANDE. 
+
+Its purpose is to provide to all students an application to calculate their average marks and simulate their graduation in real time.
 
 Several other features are also available.
 Examples:
-- For students: export one year as PDF.
-- For administrators: tracking changes from one year (mail for each change).
+- For students: export one year as PDF. 
+You can see an example here : http://www.jordi-charpentier.com/jmd/Example_Mail_Modif.png
+- For administrators: tracking changes from one year, with a mail for each change.
+You can see an example here : http://www.jordi-charpentier.com/jmd/Example_PDF.pdf
 
-### Technologies used on the project
+### Technologies used on JMD
 
 - Webservices : Java (+ JAX-RS library).
+- Database : MySQL.
 - iOS application : Swift
 - Android application : Java
-- Database : MySQL.
 
-### Screens
+### Content of 'JMD-Android'
 
-### Content 
+### Screen
 
 ### Example
-
-
 
