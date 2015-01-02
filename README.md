@@ -28,12 +28,12 @@ This project was created with Eclipse with ADT.
 You can see below some explanations of the architecture :
 
 JMD
---src : contains all controllers of the application. All the logic of JMD. Mostly divided in 2 parts : student and admin.
---res
-----drawable : contains all images and XML drawable files.
-----layout : contains all views of the applications.
-----values
-------string.xml : contains most of the string of the application.
+- --src : contains all controllers of the application. All the logic of JMD. Mostly divided in 2 parts : student and admin.
+- --res
+- ----drawable : contains all images and XML drawable files.
+- ----layout : contains all views of the applications.
+- ----values
+- ------string.xml : contains most of the string of the application.
 
 ### Screens
 
