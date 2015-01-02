@@ -47,7 +47,7 @@ http://www.casimages.com/i/15010210182157789.png
 
 ### Example
 
-Here an example of the method I use to receive push notifications send from Google Cloud Messaging :
+Here an example of the method I use to generated a push notifications when I receive a message from Google Cloud Messaging :
 
 ```java
 private static void generateNotification(Context context, String message) {
