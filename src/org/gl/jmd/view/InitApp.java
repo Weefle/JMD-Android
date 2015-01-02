@@ -28,10 +28,10 @@ public class InitApp extends Activity {
 
 		setContentView(R.layout.ecran_choix_user);
 		overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-
+		
 		initCheckbox(); 
 	}
-
+	
 	private void initCheckbox() {		
 		checkbox = (CheckBox) findViewById(R.id.accueil_choix_user_se_souvenir);
 

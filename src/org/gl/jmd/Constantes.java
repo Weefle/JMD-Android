@@ -35,6 +35,11 @@ public class Constantes {
 	/* Fichiers. */
 	
 	/**
+	 * Le fichier contenant le choix sur la réception de notification.
+	 */
+	public static final File FILE_RECEIVE_NOTIF = new File("/sdcard/cacheJMD/notif.jmd");
+	
+	/**
 	 * Le fichier contenant le paramètre sur l'accueil de l'appli.
 	 * C'est à dire savoir si on arrive sur l'accueil étudiant ou sur l'accueil admin ?
 	 */

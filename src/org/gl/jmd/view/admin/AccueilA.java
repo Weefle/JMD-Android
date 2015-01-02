@@ -6,7 +6,7 @@ import java.util.HashMap;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.*;
-import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.*;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.gl.jmd.Constantes;
 import org.gl.jmd.R;
@@ -14,6 +14,8 @@ import org.gl.jmd.utils.FileUtils;
 import org.gl.jmd.view.*;
 import org.gl.jmd.view.admin.create.*;
 import org.gl.jmd.view.admin.listing.*;
+
+import com.google.android.gcm.GCMRegistrar;
 
 import android.app.*;
 import android.content.*;
@@ -47,6 +49,8 @@ public class AccueilA extends TabActivity {
 	
 	private TextView tvTitre = null;
 
+	private String regId = "";
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -63,6 +67,27 @@ public class AccueilA extends TabActivity {
 		initTabs();
 		initTabHost();
 		initElements();
+		
+		checkIfRegisterDevice();
+	}
+	
+	private void checkIfRegisterDevice() {
+		if (!Constantes.FILE_RECEIVE_NOTIF.exists()) {
+			AlertDialog.Builder confirmRegister = new AlertDialog.Builder(AccueilA.this);
+			confirmRegister.setTitle("Notification");
+			confirmRegister.setMessage("Voulez-vous recevoir des notifications de JMD ?");
+			confirmRegister.setCancelable(false);
+			confirmRegister.setPositiveButton("Oui", new AlertDialog.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					ProgressDialog progress = new ProgressDialog(activity);
+					progress.setMessage("Chargement...");
+					new RegisterGCM(progress).execute(); 	
+				}
+			});
+			
+			confirmRegister.setNegativeButton("Non", null);
+			confirmRegister.show();
+		}
 	}
 	
 	private void initTabs() {
@@ -198,16 +223,20 @@ public class AccueilA extends TabActivity {
         final ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
         HashMap<String, String> map;
 		
-        map = new HashMap<String, String>();
-		map.put("titre", "Déconnexion");
-		listItem.add(map);
-		
 		map = new HashMap<String, String>();
-		map.put("titre", "Nommer un admin");
+		map.put("titre", "Nommer un admininistrateur");
 		listItem.add(map);
 		
 		map = new HashMap<String, String>();
 		map.put("titre", "Clôturer ce compte");
+		listItem.add(map);
+		
+		map = new HashMap<String, String>();
+		map.put("titre", "Notifications");
+		listItem.add(map);
+		
+		map = new HashMap<String, String>();
+		map.put("titre", "Déconnexion");
 		listItem.add(map);
         
         dList.setAdapter(new SimpleAdapter(getBaseContext(), listItem, R.layout.slide_menu_simple_list, new String[] {"titre"}, new int[] {R.id.titre}));
@@ -215,7 +244,7 @@ public class AccueilA extends TabActivity {
         dList.setOnItemClickListener(new OnItemClickListener(){
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View v, int position, long id) {
-				dLayout.closeDrawers();					
+				dLayout.closeDrawers();	
 				
 				if (listItem.get(position).get("titre").equals("Déconnexion")) {
 					ProgressDialog progress = new ProgressDialog(activity);
@@ -224,7 +253,7 @@ public class AccueilA extends TabActivity {
 							"?token=" + FileUtils.readFile(Constantes.FILE_TOKEN) + 
 							"&pseudo=" + FileUtils.readFile(Constantes.FILE_PSEUDO) +
 							"&timestamp=" + new java.util.Date().getTime()).execute(); 
-        		} else if (listItem.get(position).get("titre").equals("Nommer un admin")) {
+        		} else if (listItem.get(position).get("titre").equals("Nommer un administrateur")) {
         			startActivity(new Intent(AccueilA.this, AjouterAdminA.class));			
         		} else if (listItem.get(position).get("titre").equals("Clôturer ce compte")) {
         			AlertDialog.Builder confirmSuppr = new AlertDialog.Builder(AccueilA.this);
@@ -244,6 +273,33 @@ public class AccueilA extends TabActivity {
 					
 					confirmSuppr.setNegativeButton("Non", null);
 					confirmSuppr.show();
+        		} else if (listItem.get(position).get("titre").equals("Notifications")) {
+        			final CharSequence[] items = {"Recevoir les notifications", "Ne pas recevoir les notifications"};
+        			final int pos = (FileUtils.readFile(Constantes.FILE_RECEIVE_NOTIF).equals("f") ? 1 : 0);        			
+        			
+        			final AlertDialog.Builder notifD = new AlertDialog.Builder(AccueilA.this);
+        			notifD.setTitle("Suppression");
+        			notifD.setSingleChoiceItems(items, pos, new DialogInterface.OnClickListener() {
+        				public void onClick(DialogInterface dialog, int item) {
+        					ProgressDialog progress = new ProgressDialog(activity);
+    						progress.setMessage("Chargement...");
+    						
+        					switch(item) {
+	        					case 0:
+	        						new RegisterGCM(progress).execute(); 	
+	        						
+	        						break;
+	        					case 1:
+	        						FileUtils.writeFile("f", Constantes.FILE_RECEIVE_NOTIF);
+	        						
+	        						new UnregisterGCM(progress).execute(); 		
+	        						
+	        						break;
+	        				}   
+        				}
+        			});	
+        			
+        			notifD.show();
         		}
 			}
         });
@@ -291,7 +347,260 @@ public class AccueilA extends TabActivity {
 		}
 	}
 	
+	private void setRegId(String regId) {
+		this.regId = regId;
+		
+		ProgressDialog progress = new ProgressDialog(activity);
+		progress.setMessage("Chargement...");
+		new RegisterDevice(progress, Constantes.URL_SERVER + "admin/registerAndroidDevice" +
+				"?idGCM=" + this.regId +
+				"&token=" + FileUtils.readFile(Constantes.FILE_TOKEN) + 
+				"&pseudo=" + FileUtils.readFile(Constantes.FILE_PSEUDO) +
+				"&timestamp=" + new java.util.Date().getTime()).execute(); 
+	}
+	
 	/* Classes internes. */
+	
+	private class RegisterGCM extends AsyncTask<Void, Void, Void> {
+		private ProgressDialog progress;
+
+		public RegisterGCM(ProgressDialog progress) {
+			this.progress = progress;
+		}
+
+		public void onPreExecute() {
+			progress.show();
+		}
+
+		public void onPostExecute(Void unused) {
+			progress.dismiss();    
+		}
+
+		protected Void doInBackground(Void... arg0) {
+			GCMRegistrar.checkDevice(getApplicationContext());
+			
+			GCMRegistrar.checkManifest(getApplicationContext());
+
+			if (GCMRegistrar.getRegistrationId(getApplicationContext()).equals("")) {
+				GCMRegistrar.register(getApplicationContext(), "1029438593914");
+			} 	
+			
+			AccueilA.this.runOnUiThread(new Runnable() {
+				public void run() {
+					Handler handler = new Handler();
+					handler.postDelayed(new Runnable() {
+						public void run() {
+							setRegId(GCMRegistrar.getRegistrationId(getApplicationContext()));
+						}
+					}, 3000);
+				}
+			});
+			
+			return null;
+		}
+	}
+	
+	private class UnregisterGCM extends AsyncTask<Void, Void, Void> {
+		private ProgressDialog progress;
+
+		public UnregisterGCM(ProgressDialog progress) {
+			this.progress = progress;
+		}
+
+		public void onPreExecute() {
+			progress.show();
+		}
+
+		public void onPostExecute(Void unused) {
+			progress.dismiss();    
+		}
+
+		protected Void doInBackground(Void... arg0) {
+			GCMRegistrar.checkDevice(getApplicationContext());
+			GCMRegistrar.unregister(getApplicationContext());
+			GCMRegistrar.checkManifest(getApplicationContext());
+
+			AccueilA.this.runOnUiThread(new Runnable() {
+				public void run() {
+					Handler handler = new Handler();
+					handler.postDelayed(new Runnable() {
+						public void run() {
+							ProgressDialog progress = new ProgressDialog(activity);
+							progress.setMessage("Chargement...");
+							new UnregisterDevice(progress, Constantes.URL_SERVER + "admin/unregisterAndroidDevice" +
+									"?idGCM=" + FileUtils.readFile(Constantes.FILE_RECEIVE_NOTIF) +
+									"&token=" + FileUtils.readFile(Constantes.FILE_TOKEN) + 
+									"&pseudo=" + FileUtils.readFile(Constantes.FILE_PSEUDO) +
+									"&timestamp=" + new java.util.Date().getTime()).execute(); 
+							
+							toast.setText("Effectué.");
+							toast.show();
+						}
+					}, 3000);
+				}
+			});
+			
+			return null;
+		}
+	}
+	
+	private class RegisterDevice extends AsyncTask<Void, Void, Void> {
+		private ProgressDialog progress;
+		private String pathUrl;
+
+		public RegisterDevice(ProgressDialog progress, String pathUrl) {
+			this.progress = progress;
+			this.pathUrl = pathUrl;
+		}
+
+		public void onPreExecute() {
+			progress.show();
+		}
+
+		public void onPostExecute(Void unused) {
+			progress.dismiss();
+		}
+
+		protected Void doInBackground(Void... arg0) {
+			HttpClient httpclient = new DefaultHttpClient();
+		    HttpPut httpPut = new HttpPut(pathUrl);
+
+		    try {
+		        HttpResponse response = httpclient.execute(httpPut);
+		        
+		        if (response.getStatusLine().getStatusCode() == 200) {
+		        	toast.setText("Appareil enregistré.");
+		        	toast.show();
+		        	
+		        	FileUtils.writeFile(regId, Constantes.FILE_RECEIVE_NOTIF);
+		        } else if (response.getStatusLine().getStatusCode() == 401) {
+					activity.finishAffinity();
+		        	startActivity(new Intent(AccueilA.this, Accueil.class));	
+		        	
+		        	toast.setText("Erreur. Redirection vers l'accueil.");	
+					toast.show();
+		        } else if (response.getStatusLine().getStatusCode() == 500) {
+		        	toast.setText("Une erreur est survenue au niveau de la BDD.");	
+					toast.show();
+		        } else {
+		        	toast.setText("Erreur inconnue. Veuillez réessayer.");	
+					toast.show();
+		        }
+		    } catch (ClientProtocolException e) {
+		    	AccueilA.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(AccueilA.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								AccueilA.this.finish();
+							}
+						});
+
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+		    } catch (IOException e) {
+		    	AccueilA.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(AccueilA.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								AccueilA.this.finish();
+							}
+						});
+
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+		    }
+
+			return null;
+		}
+	}
+	
+	private class UnregisterDevice extends AsyncTask<Void, Void, Void> {
+		private ProgressDialog progress;
+		private String pathUrl;
+
+		public UnregisterDevice(ProgressDialog progress, String pathUrl) {
+			this.progress = progress;
+			this.pathUrl = pathUrl;
+		}
+
+		public void onPreExecute() {
+			progress.show();
+		}
+
+		public void onPostExecute(Void unused) {
+			progress.dismiss();
+		}
+
+		protected Void doInBackground(Void... arg0) {
+			HttpClient httpclient = new DefaultHttpClient();
+		    HttpPut httpPut = new HttpPut(pathUrl);
+
+		    try {
+		        HttpResponse response = httpclient.execute(httpPut);
+		        
+		        if (response.getStatusLine().getStatusCode() == 200) {
+		        	toast.setText("Appareil supprimé.");
+		        	toast.show();
+		        } else if (response.getStatusLine().getStatusCode() == 401) {
+					activity.finishAffinity();
+		        	startActivity(new Intent(AccueilA.this, Accueil.class));	
+		        	
+		        	toast.setText("Erreur. Redirection vers l'accueil.");	
+					toast.show();
+		        } else if (response.getStatusLine().getStatusCode() == 500) {
+		        	toast.setText("Une erreur est survenue au niveau de la BDD.");	
+					toast.show();
+		        } else {
+		        	toast.setText("Erreur inconnue. Veuillez réessayer.");	
+					toast.show();
+		        }
+		    } catch (ClientProtocolException e) {
+		    	AccueilA.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(AccueilA.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								AccueilA.this.finish();
+							}
+						});
+
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+		    } catch (IOException e) {
+		    	AccueilA.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(AccueilA.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								AccueilA.this.finish();
+							}
+						});
+
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+		    }
+
+			return null;
+		}
+	}
 	
 	private class SeDeco extends AsyncTask<Void, Void, Void> {
 		private ProgressDialog progress;
