@@ -8,6 +8,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.*;
 import org.apache.http.client.methods.*;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.gl.jmd.Constantes;
 import org.gl.jmd.R;
 import org.gl.jmd.utils.FileUtils;
@@ -25,6 +26,7 @@ import android.os.*;
 import android.support.v4.widget.DrawerLayout;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
+import android.util.Log;
 import android.view.*;
 import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
@@ -50,6 +52,8 @@ public class AccueilA extends TabActivity {
 	private TextView tvTitre = null;
 
 	private String regId = "";
+	
+	private boolean isMailAccepted = false;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +89,12 @@ public class AccueilA extends TabActivity {
 				}
 			});
 			
-			confirmRegister.setNegativeButton("Non", null);
+			confirmRegister.setNegativeButton("Non", new AlertDialog.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					FileUtils.writeFile("0", Constantes.FILE_RECEIVE_NOTIF);
+				}
+			});
+			
 			confirmRegister.show();
 		}
 	}
@@ -236,6 +245,10 @@ public class AccueilA extends TabActivity {
 		listItem.add(map);
 		
 		map = new HashMap<String, String>();
+		map.put("titre", "Mails");
+		listItem.add(map);
+		
+		map = new HashMap<String, String>();
 		map.put("titre", "Déconnexion");
 		listItem.add(map);
         
@@ -275,31 +288,40 @@ public class AccueilA extends TabActivity {
 					confirmSuppr.show();
         		} else if (listItem.get(position).get("titre").equals("Notifications")) {
         			final CharSequence[] items = {"Recevoir les notifications", "Ne pas recevoir les notifications"};
-        			final int pos = (FileUtils.readFile(Constantes.FILE_RECEIVE_NOTIF).equals("f") ? 1 : 0);        			
-        			
-        			final AlertDialog.Builder notifD = new AlertDialog.Builder(AccueilA.this);
-        			notifD.setTitle("Suppression");
+        			final int pos = (FileUtils.readFile(Constantes.FILE_RECEIVE_NOTIF).equals("0") ? 1 : 0);        			
+
+        			final AlertDialog.Builder notifD = new AlertDialog.Builder(activity);
+        			notifD.setTitle("Notifications natives");
         			notifD.setSingleChoiceItems(items, pos, new DialogInterface.OnClickListener() {
         				public void onClick(DialogInterface dialog, int item) {
         					ProgressDialog progress = new ProgressDialog(activity);
-    						progress.setMessage("Chargement...");
-    						
+        					progress.setMessage("Chargement...");
+
         					switch(item) {
 	        					case 0:
 	        						new RegisterGCM(progress).execute(); 	
-	        						
+	
 	        						break;
 	        					case 1:
-	        						FileUtils.writeFile("f", Constantes.FILE_RECEIVE_NOTIF);
-	        						
+	        						FileUtils.writeFile("0", Constantes.FILE_RECEIVE_NOTIF);
+	
 	        						new UnregisterGCM(progress).execute(); 		
-	        						
+	
 	        						break;
-	        				}   
+        					}  
+        					
+        					dialog.cancel();
         				}
         			});	
-        			
+
         			notifD.show();
+        		} else if (listItem.get(position).get("titre").equals("Mails")) {
+        			ProgressDialog progress = new ProgressDialog(activity);
+					progress.setMessage("Chargement...");
+					new GetIfMailAccepted(progress, Constantes.URL_SERVER + "admin/isMailAccepted" +
+							"?token=" + FileUtils.readFile(Constantes.FILE_TOKEN) + 
+							"&pseudo=" + FileUtils.readFile(Constantes.FILE_PSEUDO) +
+							"&timestamp=" + new java.util.Date().getTime()).execute(); 
         		}
 			}
         });
@@ -360,6 +382,208 @@ public class AccueilA extends TabActivity {
 	}
 	
 	/* Classes internes. */
+	
+	private class AcceptMail extends AsyncTask<Void, Void, Void> {
+		private ProgressDialog progress;
+		private String pathUrl;
+
+		public AcceptMail(ProgressDialog progress, String pathUrl) {
+			this.progress = progress;
+			this.pathUrl = pathUrl;
+		}
+
+		public void onPreExecute() {
+			progress.show();
+		}
+
+		public void onPostExecute(Void unused) {
+			progress.dismiss();
+		}
+
+		protected Void doInBackground(Void... arg0) {
+			HttpClient httpclient = new DefaultHttpClient();
+		    HttpPut httpPut = new HttpPut(pathUrl);
+
+		    try {
+		        HttpResponse response = httpclient.execute(httpPut);
+		        
+		        if (response.getStatusLine().getStatusCode() == 200) {
+		        	toast.setText("Mis à jour.");
+		        	toast.show();
+		        } else if (response.getStatusLine().getStatusCode() == 401) {
+		        	Constantes.FILE_PSEUDO.delete();
+					Constantes.FILE_TOKEN.delete();
+					
+					activity.finishAffinity();
+		        	startActivity(new Intent(AccueilA.this, Accueil.class));	
+		        	
+		        	toast.setText("Erreur. Redirection vers l'accueil.");	
+					toast.show();
+		        } else if (response.getStatusLine().getStatusCode() == 500) {
+		        	toast.setText("Une erreur est survenue au niveau de la BDD.");	
+					toast.show();
+		        } else {
+		        	toast.setText("Erreur inconnue. Veuillez réessayer.");	
+					toast.show();
+		        }
+		    } catch (ClientProtocolException e) {
+		    	AccueilA.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(AccueilA.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								AccueilA.this.finish();
+							}
+						});
+
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+		    } catch (IOException e) {
+		    	AccueilA.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(AccueilA.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								AccueilA.this.finish();
+							}
+						});
+
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+		    }
+
+			return null;
+		}
+	}
+	
+	private class GetIfMailAccepted extends AsyncTask<Void, Void, Void> {
+		private ProgressDialog progress;
+		private String pathUrl;
+
+		public GetIfMailAccepted(ProgressDialog progress, String pathUrl) {
+			this.progress = progress;
+			this.pathUrl = pathUrl;
+		}
+
+		public void onPreExecute() {
+			progress.show();
+		}
+
+		public void onPostExecute(Void unused) {
+			progress.dismiss();
+		}
+
+		protected Void doInBackground(Void... arg0) {
+			HttpClient httpclient = new DefaultHttpClient();
+		    HttpGet httpGet = new HttpGet(pathUrl);
+
+		    try {
+		        final HttpResponse response = httpclient.execute(httpGet);
+
+		        if (response.getStatusLine().getStatusCode() == 200) {
+		        	String reponse = EntityUtils.toString(response.getEntity());
+		        	
+		        	final boolean isMailAccepted = Boolean.parseBoolean(reponse);
+		        	
+		        	AccueilA.this.runOnUiThread(new Runnable() {
+		        		public void run() {    		
+		        			final CharSequence[] items = {"Recevoir les mails", "Ne pas recevoir les mails"};
+		        			final int pos = (isMailAccepted ? 0 : 1);        			
+
+		        			final AlertDialog.Builder notifD = new AlertDialog.Builder(activity);
+		        			notifD.setTitle("Notifications par mail");
+		        			notifD.setSingleChoiceItems(items, pos, new DialogInterface.OnClickListener() {
+		        				public void onClick(DialogInterface dialog, int item) {
+		        					ProgressDialog progress = new ProgressDialog(activity);
+		        					progress.setMessage("Chargement...");
+
+		        					switch(item) {
+		        						case 0:
+		        							new AcceptMail(progress, Constantes.URL_SERVER + "admin/acceptMail" +
+		        								"?newValue=" + true +
+		        								"&token=" + FileUtils.readFile(Constantes.FILE_TOKEN) + 
+		        								"&pseudo=" + FileUtils.readFile(Constantes.FILE_PSEUDO) +
+		        								"&timestamp=" + new java.util.Date().getTime()).execute(); 
+
+		        							break;
+		        						case 1:
+		        							new AcceptMail(progress, Constantes.URL_SERVER + "admin/acceptMail" +
+			        							"?newValue=" + false +
+			        							"&token=" + FileUtils.readFile(Constantes.FILE_TOKEN) + 
+			        							"&pseudo=" + FileUtils.readFile(Constantes.FILE_PSEUDO) +
+			        							"&timestamp=" + new java.util.Date().getTime()).execute(); 
+
+		        							break;
+		        					}  
+
+		        					dialog.cancel();
+		        				}
+		        			});	
+
+		        			notifD.show();
+		        		}
+		        	});
+		        } else if (response.getStatusLine().getStatusCode() == 401) {
+		        	Constantes.FILE_PSEUDO.delete();
+					Constantes.FILE_TOKEN.delete();
+
+		        	activity.finishAffinity();
+		        	startActivity(new Intent(AccueilA.this, Accueil.class));	
+
+		        	toast.setText("Session expirée.");	
+		        	toast.show();
+		        } else if (response.getStatusLine().getStatusCode() == 500) {
+		        	toast.setText("Une erreur est survenue au niveau de la BDD.");	
+					toast.show();
+		        } else {
+		        	toast.setText("Erreur inconnue. Veuillez réessayer.");	
+					toast.show();
+		        }
+		    } catch (ClientProtocolException e) {
+		    	AccueilA.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(AccueilA.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								AccueilA.this.finish();
+							}
+						});
+
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+		    } catch (IOException e) {
+		    	AccueilA.this.runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(AccueilA.this);
+						builder.setMessage("Erreur - Vérifiez votre connexion");
+						builder.setCancelable(false);
+						builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								AccueilA.this.finish();
+							}
+						});
+
+						AlertDialog error = builder.create();
+						error.show();
+					}
+				});
+		    }
+
+			return null;
+		}
+	}
 	
 	private class RegisterGCM extends AsyncTask<Void, Void, Void> {
 		private ProgressDialog progress;
@@ -549,8 +773,12 @@ public class AccueilA extends TabActivity {
 		        HttpResponse response = httpclient.execute(httpPut);
 		        
 		        if (response.getStatusLine().getStatusCode() == 200) {
-		        	toast.setText("Appareil supprimé.");
-		        	toast.show();
+		        	AccueilA.this.runOnUiThread(new Runnable() {
+						public void run() {
+				        	toast.setText("Appareil supprimé.");
+				        	toast.show();
+						}
+					});
 		        } else if (response.getStatusLine().getStatusCode() == 401) {
 					activity.finishAffinity();
 		        	startActivity(new Intent(AccueilA.this, Accueil.class));	
