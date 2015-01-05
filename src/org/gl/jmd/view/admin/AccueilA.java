@@ -233,7 +233,7 @@ public class AccueilA extends TabActivity {
         HashMap<String, String> map;
 		
 		map = new HashMap<String, String>();
-		map.put("titre", "Nommer un admininistrateur");
+		map.put("titre", "Nommer un administrateur");
 		listItem.add(map);
 		
 		map = new HashMap<String, String>();

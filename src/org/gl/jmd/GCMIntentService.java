@@ -6,6 +6,7 @@ import com.google.android.gcm.GCMBaseIntentService;
 
 import android.app.*;
 import android.content.*;
+import android.support.v4.app.NotificationCompat;
 
 public class GCMIntentService extends GCMBaseIntentService {
 
@@ -19,15 +20,29 @@ public class GCMIntentService extends GCMBaseIntentService {
 		String title = context.getString(R.string.app_name);
 		long when = System.currentTimeMillis();
 		
-		Notification notification = new Notification(R.drawable.ic_launcher, message, when);
+		/* Notification notification = new Notification(R.drawable.ic_launcher, message, when);
 		notification.defaults |= Notification.DEFAULT_SOUND;
-		notification.flags |= Notification.FLAG_AUTO_CANCEL;
+		notification.flags |= Notification.FLAG_AUTO_CANCEL; */
 		
 		Intent notificationIntent = new Intent(context, Accueil.class);
 		notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 		
-		notification.setLatestEventInfo(context, title, message, PendingIntent.getActivity(context, 0, notificationIntent, 0));
-		notification.flags |= Notification.FLAG_AUTO_CANCEL;
+		PendingIntent pendIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
+		
+		/* notification.setLatestEventInfo(context, title, message, PendingIntent.getActivity(context, 0, notificationIntent, 0));
+		notification.flags |= Notification.FLAG_AUTO_CANCEL; */
+		
+		NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+		
+	    Notification notification = builder.setContentIntent(pendIntent)
+	            .setSmallIcon(R.drawable.ic_launcher)
+	            .setTicker(title)
+	            .setWhen(when)
+	            .setAutoCancel(true)
+	            .setContentTitle(title)
+	            .setStyle(new NotificationCompat.BigTextStyle().bigText(message))
+	            .setContentText(message)
+	   .build();
 		
 		notificationManager.notify(0, notification);
 	}
