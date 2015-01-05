@@ -20,31 +20,21 @@ public class GCMIntentService extends GCMBaseIntentService {
 		String title = context.getString(R.string.app_name);
 		long when = System.currentTimeMillis();
 		
-		/* Notification notification = new Notification(R.drawable.ic_launcher, message, when);
-		notification.defaults |= Notification.DEFAULT_SOUND;
-		notification.flags |= Notification.FLAG_AUTO_CANCEL; */
-		
 		Intent notificationIntent = new Intent(context, Accueil.class);
 		notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 		
 		PendingIntent pendIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
 		
-		/* notification.setLatestEventInfo(context, title, message, PendingIntent.getActivity(context, 0, notificationIntent, 0));
-		notification.flags |= Notification.FLAG_AUTO_CANCEL; */
+		NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
+			.setSmallIcon(R.drawable.ic_launcher)
+			.setContentTitle(title)
+			.setContentIntent(pendIntent)
+			.setContentText(message)
+			.setWhen(when)
+			.setDefaults(Notification.DEFAULT_ALL) 
+			.setStyle(new NotificationCompat.BigTextStyle().bigText(message));
 		
-		NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
-		
-	    Notification notification = builder.setContentIntent(pendIntent)
-	            .setSmallIcon(R.drawable.ic_launcher)
-	            .setTicker(title)
-	            .setWhen(when)
-	            .setAutoCancel(true)
-	            .setContentTitle(title)
-	            .setStyle(new NotificationCompat.BigTextStyle().bigText(message))
-	            .setContentText(message)
-	   .build();
-		
-		notificationManager.notify(0, notification);
+		notificationManager.notify(0, builder.build());
 	}
 
 	@Override

@@ -1,8 +1,7 @@
 package org.gl.jmd.view.admin;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.*;
@@ -26,7 +25,6 @@ import android.os.*;
 import android.support.v4.widget.DrawerLayout;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
-import android.util.Log;
 import android.view.*;
 import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
@@ -52,8 +50,6 @@ public class AccueilA extends TabActivity {
 	private TextView tvTitre = null;
 
 	private String regId = "";
-	
-	private boolean isMailAccepted = false;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -299,14 +295,16 @@ public class AccueilA extends TabActivity {
 
         					switch(item) {
 	        					case 0:
-	        						new RegisterGCM(progress).execute(); 	
+	        						if (FileUtils.readFile(Constantes.FILE_RECEIVE_NOTIF).equals("0")) {
+	        							new RegisterGCM(progress).execute(); 	
+	        						}
 	
 	        						break;
 	        					case 1:
-	        						FileUtils.writeFile("0", Constantes.FILE_RECEIVE_NOTIF);
-	
-	        						new UnregisterGCM(progress).execute(); 		
-	
+	        						if (!FileUtils.readFile(Constantes.FILE_RECEIVE_NOTIF).equals("0")) {
+	        							new UnregisterGCM(progress).execute(); 		
+	        						}
+	        						
 	        						break;
         					}  
         					
@@ -656,9 +654,6 @@ public class AccueilA extends TabActivity {
 									"&token=" + FileUtils.readFile(Constantes.FILE_TOKEN) + 
 									"&pseudo=" + FileUtils.readFile(Constantes.FILE_PSEUDO) +
 									"&timestamp=" + new java.util.Date().getTime()).execute(); 
-							
-							toast.setText("Effectué.");
-							toast.show();
 						}
 					}, 3000);
 				}
@@ -775,6 +770,8 @@ public class AccueilA extends TabActivity {
 		        if (response.getStatusLine().getStatusCode() == 200) {
 		        	AccueilA.this.runOnUiThread(new Runnable() {
 						public void run() {
+							FileUtils.writeFile("0", Constantes.FILE_RECEIVE_NOTIF);
+							
 				        	toast.setText("Appareil supprimé.");
 				        	toast.show();
 						}
