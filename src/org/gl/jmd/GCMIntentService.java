@@ -6,6 +6,8 @@ import com.google.android.gcm.GCMBaseIntentService;
 
 import android.app.*;
 import android.content.*;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
 import android.support.v4.app.NotificationCompat;
 
 public class GCMIntentService extends GCMBaseIntentService {
@@ -35,6 +37,10 @@ public class GCMIntentService extends GCMBaseIntentService {
 			.setStyle(new NotificationCompat.BigTextStyle().bigText(message));
 		
 		notificationManager.notify(0, builder.build());
+		
+		PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+		WakeLock wl = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "TAG");
+		wl.acquire(5000);
 	}
 
 	@Override

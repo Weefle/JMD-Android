@@ -29,7 +29,6 @@
     <string name="administrateur_creation_annee_view_name">Création d\`une année</string>
     <string name="administrateur_creation_ue_view_name">Création d\`une UE</string>
     <string name="administrateur_creation_diplome_view_name">Création d\`un diplôme</string>
-    <string name="administrateur_creation_regle_view_name">Création d\`une règle</string>
     
     <string name="administrateur_liste_eta_view_name">Liste des établissements</string>
     <string name="administrateur_liste_diplome_view_name">Liste des diplômes</string>
@@ -44,12 +43,6 @@
     <string name="administrateur_connexion_view_name">Connexion</string>
     <string name="administrateur_inscription_view_name">Inscription</string>
     <string name="administrateur_recup_mdp_view_name">Mot de passe oublié</string>
-    
-	<!-- Menu -->
-	
-	<string name="menu_deconnexion">Déconnexion</string>
-	<string name="menu_nommer_admin">Nommer un admin</string>
-	<string name="menu_cloturer_compte">Clôturer ce compte</string>
 	
 	<!-- Connexion / inscription -->
 	
