@@ -51,7 +51,7 @@ public class Footer implements Item {
 		} else {
 			isValid.setText("Validée.");
 			
-			r.width = 135;
+			r.width = 140;
 		}
 		
 		isValid.setLayoutParams(r);

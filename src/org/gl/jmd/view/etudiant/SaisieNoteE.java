@@ -304,7 +304,11 @@ public class SaisieNoteE extends Activity {
 		EditText noteS1ET = (EditText) listeS1Et2.findViewById(R.id.noteCC);
 
 		View listeS2Et2 = (View) liste.getChildAt(3);
-		EditText noteS2ET = (EditText) listeS2Et2.findViewById(R.id.noteCC);
+		EditText noteS2ET = null;
+				
+		if (listeS2Et2 != null) {
+			noteS2ET = (EditText) listeS2Et2.findViewById(R.id.noteCC);
+		}
 
 		View listeCoeffPartiel = (View) liste.getChildAt(2);
 		EditText coeffPartiel = (EditText) listeCoeffPartiel.findViewById(R.id.noteCC);
@@ -328,7 +332,7 @@ public class SaisieNoteE extends Activity {
 			matiere.setNoteSession1(new Note());
 		}
 		
-		if (noteS2ET.getText().toString().length() > 0) {
+		if ((noteS2ET != null) && (noteS2ET.getText().toString().length() > 0)) {
 			Note noteS2 = new Note();
 			noteS2.setNote(Double.parseDouble(noteS2ET.getText().toString()));
 			
@@ -348,7 +352,7 @@ public class SaisieNoteE extends Activity {
 		// Contrôle des informations saisies.
 		
 		// Si une note de seconde session est définie mais pas de note de première session.
-		if ((noteS2ET.getText().toString().length() > 0) && (noteS1ET.getText().toString().length() == 0)) {
+		if ((noteS2ET != null) && (noteS2ET.getText().toString().length() > 0) && (noteS1ET.getText().toString().length() == 0)) {
 			noteS1ET.setBackgroundResource(R.drawable.border_edittext_error);
 			noteS2ET.setBackgroundResource(R.drawable.border_edittext);
 			
@@ -359,7 +363,7 @@ public class SaisieNoteE extends Activity {
 		}
 		
 		// Si uniquement un coefficient de partiel est définie.
-		if (((noteS1ET.getText().toString().length() == 0) && (noteS2ET.getText().toString().length() == 0))
+		if (((noteS1ET.getText().toString().length() == 0) && (noteS2ET != null) && (noteS2ET.getText().toString().length() == 0))
 				&& (coeffPartiel.getText().toString().length() > 0)) {
 			
 			noteS1ET.setBackgroundResource(R.drawable.border_edittext_error);
@@ -368,16 +372,6 @@ public class SaisieNoteE extends Activity {
 			toast.setText("Il faut définir au moins une note de première session.");
 			toast.show();
 					
-			return;
-		}
-		
-		// Si au moins un contrôle continu existe mais que le coefficient partiel n'est pas défini.
-		if ((matiere.getListeNotesCC().size() > 0) && (coeffPartiel.getText().toString().length() == 0)) {
-			coeffPartiel.setBackgroundResource(R.drawable.border_edittext_error);
-			
-			toast.setText("Il faut définir un coefficient pour le partiel s'il y a eu un contrôle continu.");
-			toast.show();
-			
 			return;
 		}
 		

@@ -86,17 +86,7 @@ public class InitApp extends Activity {
 		startActivity(new Intent(InitApp.this, AccueilE.class));
 	}
 
-	/* Méthodes héritées de la classe Activity. */
-
-	/**
-	 * Méthode permettant d'empécher la reconstruction de la vue lors de la rotation de l'écran. 
-	 * 
-	 * @param newConfig L'état de la vue avant la rotation.
-	 */
-	@Override
-	public void onConfigurationChanged(Configuration newConfig) {
-		super.onConfigurationChanged(newConfig);
-	}
+	/* Méthode héritée de la classe Activity. */
 
 	/**
 	 * Méthode déclenchée lors d'un click sur le bouton virtuel Android de retour.

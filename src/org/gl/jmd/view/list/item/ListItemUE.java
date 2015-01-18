@@ -41,16 +41,19 @@ public class ListItemUE implements Item {
 	public View getView(LayoutInflater inflater, View convertView) {
 		View view;
 		
-		if (convertView == null) {
+		if ((ue != null) && (ue.getNbOptionsMini() == 0)) {
 			view = (View) inflater.inflate(R.layout.simple_list, null);
-		} else {
-			view = convertView;
-		}
 
-		TextView text1 = (TextView) view.findViewById(R.id.titre);
-		
-		if (ue != null) {
+			TextView text = (TextView) view.findViewById(R.id.titre);
+			text.setText(ue.getNom());
+		} else if ((ue != null) && (ue.getNbOptionsMini() > 0)) {
+			view = (View) inflater.inflate(R.layout.admin_ue_list, null);
+
+			TextView text1 = (TextView) view.findViewById(R.id.titre);
 			text1.setText(ue.getNom()); 
+			
+			TextView text2 = (TextView) view.findViewById(R.id.description);
+			text2.setText("Nombre d'option(s) minimum : " + ue.getNbOptionsMini());
 		} else {
 			view = (View) inflater.inflate(R.layout.simple_list, null);
 

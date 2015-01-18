@@ -337,6 +337,7 @@ public class ListeUEA extends Activity {
                         ue.setNom(c.getString("nom"));
                         ue.setIdAnnee(c.getInt("idAnnee"));
                         ue.setDecoupage(DecoupageYearType.valueOf(c.getString("yearType")));
+                        ue.setNbOptionsMini(c.getInt("nbOptMini"));
                         
                         listeUE.add(ue);
                     }

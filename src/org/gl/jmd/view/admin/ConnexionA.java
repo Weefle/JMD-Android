@@ -146,7 +146,7 @@ public class ConnexionA extends Activity {
 		protected Void doInBackground(Void... arg0) {
 		    HttpClient httpclient = new DefaultHttpClient();
 		    HttpPost httppost = new HttpPost(pathUrl);
-
+		    
 		    try {
 		        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
 		        nameValuePairs.add(new BasicNameValuePair("username", a.getPseudo()));

@@ -51,6 +51,8 @@ public class AccueilA extends TabActivity {
 
 	private String regId = "";
 	
+	private long back_pressed;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -701,9 +703,12 @@ public class AccueilA extends TabActivity {
 		        } else if (response.getStatusLine().getStatusCode() == 500) {
 		        	toast.setText("Une erreur est survenue au niveau de la BDD.");	
 					toast.show();
+		        } else if (response.getStatusLine().getStatusCode() == 403) {
+		        	toast.setText("Erreur. Appareil déjà enregistré.");	
+					toast.show();
 		        } else {
 		        	toast.setText("Erreur inconnue. Veuillez réessayer.");	
-					toast.show();
+		        	toast.show();
 		        }
 		    } catch (ClientProtocolException e) {
 		    	AccueilA.this.runOnUiThread(new Runnable() {
@@ -997,6 +1002,21 @@ public class AccueilA extends TabActivity {
 
 	/* Méthodes héritées de la classe Activity. */
 
+	/**
+	 * Méthode déclenchée lors d'un click sur le bouton virtuel Android de retour.
+	 */
+	@Override
+	public void onBackPressed() {
+		if (back_pressed + 2000 > System.currentTimeMillis()) {
+			android.os.Process.killProcess(android.os.Process.myPid());
+		} else {
+			Toast.makeText(getBaseContext(), "Appuyez encore une fois sur \"Retour\" pour quitter l'application.", Toast.LENGTH_SHORT).show();
+		}
+		
+        back_pressed = System.currentTimeMillis();
+	}
+	
+	
 	/**
 	 * Méthode permettant d'empécher la reconstruction de la vue lors de la rotation de l'écran. 
 	 * 

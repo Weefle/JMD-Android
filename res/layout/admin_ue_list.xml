@@ -1,0 +1,23 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <TextView
+        android:id="@+id/titre"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:textColor="#000000" >
+    </TextView>
+
+    <TextView
+        android:id="@+id/description"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="20dp"
+        android:textColor="#92928E" >
+    </TextView>
+
+</RelativeLayout>
